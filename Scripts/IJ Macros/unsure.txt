@@ -1,0 +1,46 @@
+//Downsize Y to lines
+
+
+//Obtain image size and produce ROI list
+
+a = getWidth;
+
+n= getHeight;
+
+roiManager("reset");
+
+for (i=0; i
+
+makeLine(0,i,a,i);
+
+roiManager("Add");
+
+}
+
+//Reslice ROIs and make stack
+
+id = getImageID;
+
+n = roiManager("count");
+
+for (i=0; i
+
+roiManager("Select", i);
+
+run("Reslice [/]...", "output=1.000 slice_count=1 avoid"); 
+
+selectImage(id);
+
+}
+
+selectImage(id);
+
+close();
+
+run("Images to Stack", "name=Stack title=[] use");
+
+
+
+
+
+

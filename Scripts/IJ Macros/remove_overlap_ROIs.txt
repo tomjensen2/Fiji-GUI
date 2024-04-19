@@ -1,0 +1,38 @@
+nROIs = roiManager("Count");
+overlappingROIs = newArray();
+
+//setBatchMode(true);
+
+for (k=0; k<nROIs; k++){
+	roiManager("select", k);
+	run("Enlarge...", "enlarge=-1 pixel");
+	roiManager("add");
+}
+
+roiManager("deselect");
+for (l=0; l<nROIs; l++){
+	roiManager("select", 0);
+    roiManager("delete");
+}
+
+for (i = 0; i < roiManager("Count"); i++){ 
+	for (j = 0; j < roiManager("Count"); j++){
+	   if (i != j){
+	   	   	roiManager("Select", newArray(i,j));
+	   		roiManager("AND");
+	    
+			if (selectionType()>-1) {
+				overlappingROIs = Array.concat(overlappingROIs,j);
+				j=nROIs;
+	   		}
+	   }
+	}
+}
+
+roiManager("Select", overlappingROIs);
+roiManager("delete");
+
+print ("Total count: ",nROIs);
+print ("Non-overlapping: ",roiManager("Count"));
+
+print ("That's all, folks!");

@@ -1,0 +1,4 @@
+Plot.getValues(x, y);
+for (i=0; i<x.length; i++)
+print(x[i], y[i]);
+

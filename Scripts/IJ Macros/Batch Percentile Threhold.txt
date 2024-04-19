@@ -1,0 +1,37 @@
+for (i1= 1;  i1<nSlices+1; i1++) {
+setSlice(i1);
+run("Duplicate...", "title=[Current Image]");
+percentage =1.5; 
+nBins = 256; 
+setOption("BlackBackground", true);
+resetMinAndMax(); 
+getHistogram(values, counts, nBins); 
+// find culmulative sum 
+nPixels = 0; 
+for (i = 0; i<counts.length; i++) 
+  nPixels += counts[i]; 
+nBelowThreshold = nPixels * percentage / 100; 
+sum = 0; 
+for (i = 0; i<counts.length; i++) { 
+  sum = sum + counts[i]; 
+  if (sum >= nBelowThreshold) { 
+    setThreshold(values[0], values[i]); 
+    print(values[0]+"-"+values[i]+": "+sum/nPixels*100+"%"); 
+    i = 99999999;//break 
+  } 
+} 
+run("Convert to Mask");
+rename(i1);
+close("Current Image");
+selectWindow("Stack");
+}
+selectWindow("Stack");
+saveAs("Tiff", "e:/Current/Stack.tif");
+close("Stack.tif");
+;
+run("Images to Stack", "name=[Mask Stack] title=[] use");
+saveAs("Tiff", "e:/Current/Mask_Stack.tif");
+run("Analyze Particles...", "size=1-3 show=Outlines display clear summarize add stack");
+open("E:/Current/Stack.tif");
+selectWindow("Drawing of Mask_Stack.tif");
+saveAs("Tiff", "e:/Current/Drawing of Mask_Stack.tif");
