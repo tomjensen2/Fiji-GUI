@@ -454,7 +454,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
 
     properties (Access = public)
-        default_vars % Variables set for various functions as default can be edited in .m file
+        default_vars; % Variables set for various functions as default can be edited in .m file
         roi_2_plot; % the default variable for output of the current Primary Axis trace
         DATA; % Description
         OUTPUT; % Description
@@ -477,13 +477,13 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         matpolyline;
         matlogprofile;
         matline;
-
-        IJM % Description
-        IJPath % Description
-        grammplot % Description
-        File_Browse % Description
-        Variables % Description
-        MapData % Description
+        FGUIpath;
+        IJM; % Description
+        IJPath; % Description
+        grammplot; % Description
+        File_Browse; % Description
+        Variables; % Description
+        MapData; % Description
     end
 
     properties (Access = private)
@@ -2123,12 +2123,13 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         % Code that executes after component creation
         function startupFcn(app)
             app.default_vars=defaultvars;
-            app.MLpath=userpath
-            app.Macrospath=cat(2,app.MLpath,'/Fiji-GUI-2P/Main/Scripts/IJ Macros/')
-            app.Documentspath=app.MLpath(1:size(app.MLpath,2)-6)
-            app.IJPath=cat(2,app.MLpath(1:size(app.MLpath,2)-16),'Documents/Fiji.app/');
+            app.MLpath=app.default_vars.MLpath;
+            app.Macrospath=app.default_vars.Macrospath;
+            app.Documentspath=app.default_vars.Documentspath;
+            app.IJPath=app.default_vars.IJPath;
+            app.FGUIpath=app.default_vars.FGUIpath;
             try
-                app.defaultdir=app.MLpath(1:size(app.MLpath,2)-6);
+                app.defaultdir=app.default_vars.Documentspath;
             catch
             end
             app.file2change=[];
@@ -2222,7 +2223,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             end
             app.Prim_ax_brush=brush(app.Prim_Chan_Ax);
             app.IJM=ij.IJ()
-            banner=app.IJM.openImage(cat(2,app.MLpath,'/Fiji-GUI-2P/Main/Icons/FijiGUI.png'));
+            banner=app.IJM.openImage(cat(2,app.FGUIpath,'Icons/FijiGUI.png'));
             banner.show();
 
             %              app.Aux_Ax_brush=brush(app.Aux_Chan_Ax);
@@ -2260,9 +2261,9 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     MIJ.run('ROI Manager...');
 
                 case "ROI Manager Add"
-                    app.IJM.runMacroFile('C:\Users\tpkje\Documents\MATLAB\Fiji-GUI-2P_2021\Main\Scripts\IJ Macros\AddROI.txt')
+                    app.IJM.runMacroFile(cat(2,app.Macrospath,'AddROI.txt'))
                 case 'Run Macro'
-                    app.IJM.runMacroFile('C:\Users\tpkje\Documents\MATLAB\Fiji-GUI-2P_2021\Main\Scripts\IJ Macros\Percentile Threhold.txt')
+                    app.IJM.runMacroFile(cat(2,app.Macrospath,'Percentile Threhold.txt'))
                 case "Fiji Profile"
                     if app.Datastore_class(app.Data_Selection,1).Type=="FF"
                         MIJ.run('Plot Z-axis Profile')
@@ -2283,11 +2284,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 case "Duplicate"
                     MIJ.run('Duplicate...');
                 case "Sharpen"
-                    %                    MIJ.run('ROI Manager...', ''roiManager("Add")'');
-                    %                  app.IJM.runMacroFile('C:\Users\tpkje\Documents\MATLAB\Fiji-GUI-2P_2021\Main\Scripts\IJ Macros\AddROI.txt')
-                    %                    MIJ.run('roiManager("Add")');
                     MIJ.run('Sharpen');
-                    %                   MIJ.run("Brightness/Contrast...");
+                    
                 case "Adjust B/C"
                     MIJ.run("Brightness/Contrast...");
                 case "Crop"
@@ -4557,9 +4555,9 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             %get time indices to crop to
             for i=1:size(data2crop,1)
                 if data2crop(i,1).TimeDim==2
-                    data2crop2(i,1)=data2crop(i,1).crop_data(2,app.MinSpinner.Value,app.MaxSpinner.Value,"just do",[])
+                    data2crop2(i,1)=data2crop(i,1).crop_data(2,app.MinSpinner.Value,app.MaxSpinner.Value,"just do",'zero')
                 elseif data2crop(i,1).TimeDim==3
-                    data2crop2(i,1)=data2crop(i,1).crop_data(3,app.MinSpinner.Value,app.MaxSpinner.Value,"just do",[])
+                    data2crop2(i,1)=data2crop(i,1).crop_data(3,app.MinSpinner.Value,app.MaxSpinner.Value,"just do",'zero')
                 end
             end
 
@@ -8595,7 +8593,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.FFButton.ValueChangedFcn = createCallbackFcn(app, @Peakfind_version, true);
             app.FFButton.Text = 'FF';
             app.FFButton.Position = [106 132 24 22];
-            app.FFButton.Value = true;
+            app.FFButton.Value = false;
 
             % Create PeakWindowSpinnerLabel
             app.PeakWindowSpinnerLabel = uilabel(app.PeaksTab);

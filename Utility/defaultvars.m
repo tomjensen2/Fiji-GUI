@@ -27,8 +27,14 @@ function defaultvar=defaultvars()
         defaultvar.PCpath2add1="javaaddpath 'C:\Program Files\MATLAB\R2022b\java\mij.jar'";
         defaultvar.PCpath2add2="javaaddpath 'C:\Program Files\MATLAB\R2022b\java\ij-1.53t.jar'";
         
-        defaultvar.macpath2add1='/Applications/MATLAB_R2022b.app/java/MIJ.jar';
-        defaultvar.macpath2add2='/Applications/MATLAB_R2022b.app/java/ij-1.53t.jar';
+        defaultvar.macpath2add1="javaaddpath '/Applications/MATLAB_R2022b.app/java/MIJ.jar'";
+        defaultvar.macpath2add2="javaaddpath '/Applications/MATLAB_R2022b.app/java/ij-1.53t.jar'";
+
+        defaultvar.FGUIpath='C:/Users/Thomas Jensen/Documents/Github/Fiji-GUI/';
+        defaultvar.MLpath='C:/Users/Thomas Jensen/Documents/MATLAB/';
+        defaultvar.Macrospath='C:/Users/Thomas Jensen/Documents/Github/Fiji-GUI/Scripts/IJ Macros/';
+        defaultvar.Documentspath='C:/Users/Thomas Jensen/Documents/';
+        defaultvar.IJPath='C:/Users/Thomas Jensen/Documents/Fiji.app/';
 
 %
 end
