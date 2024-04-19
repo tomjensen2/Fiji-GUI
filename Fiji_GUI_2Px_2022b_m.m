@@ -3441,11 +3441,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
         % Menu selected function: SaveSelectedDataasFGUIMenu
         function Callback_to_Save_Selected(app, event)
-            if app.importtype=='Class'
-                data2save=app.Datastore_class(app.ListBox_2.Value,1);
-            else
-                data2save=app.Datastore(cell2mat(app.ListBox_2.Value));
-            end
+            
+            data2save=app.Datastore_class(app.ListBox_2.Value,1);
             [filename, pathname, filterindex] = uiputfile('C:\Users\Tom PC\Dropbox\data.FGUI');
             savename=cat(2,pathname,filename);
             save(savename, 'data2save');
@@ -4493,42 +4490,20 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             elseif event.Source.Text=="Delete Selected" | event.Source.Text=="Del";
                 flag = ~ismember(dataitems_index,selected_dataitems);
                 index = find(flag);
-                if app.importtype=='Class'
-                    app.Datastore_class=app.Datastore_class(index,1)
-                else
-                    app.Datastore=app.Datastore(index)
-                end
+
+                app.Datastore_class=app.Datastore_class(index,1)
+
             elseif event.Source.Text=="Copy Selected" | event.Source.Text=="Cp";
-                if app.importtype=='Class'
-                    data2copy=copyobj2(app.Datastore_class(selected_dataitems,1))
-                    alldata=cat(1,app.Datastore_class,data2copy)
-                    app.Datastore_class=alldata
-                else
-                    data2copy=app.Datastore(selected_dataitems)
-                    alldata=cat(1,app.Datastore,data2copy)
-                    app.Datastore=alldata
-                end
+
+                data2copy=copyobj2(app.Datastore_class(selected_dataitems,1))
+                alldata=cat(1,app.Datastore_class,data2copy)
+                app.Datastore_class=alldata
+
 
             end
-            if app.importtype=="Class"
-                app.Datastore_class.findComment(app.ListBox_2)
-            else
-                app.ListBox_2.Items={}
-                app.ListBox_2.ItemsData={}
-                for i=1:size(app.Datastore,1)
-                    numberi=sprintf('F%d',i)
-                    %             app.ListBox_2.ItemsData{1,i}=get(mestaghandle(numberi),1,'Comment');
-                    app.ListBox_2.Items{1,i}=sprintf('%s- %s---%s',numberi,app.Datastore(i).Type,app.Datastore(i).comment);
-                    %             app.VariablesTable.Data{i,1}=sprintf('%d',i);
-                    %             app.VariablesTable.Data{i,2}=get(mestaghandle(numberi),1,'Comment');
-                    %             app.VariablesTable.Data{i,3}=false;
-                    app.ListBox_2.ItemsData{1,i}=i;
-                end
-            end
-
-
-
+            app.Datastore_class.findComment(app.ListBox_2)
         end
+
 
         % Menu selected function: NewItemMenu, OverwriteMenu
         function Crop_Time_DImension(app, event)
@@ -4543,11 +4518,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 event.Source.Text="New Item"
             end
 
-
-            if event.Source.Text=="New Item"
-                %               if app.importtype=='Class'
+            if event.Source.Text=="New Item"   
                 data2crop=copyobj2(app.Datastore_class(selected_dataitems,1));
-
             else
                 data2crop=app.Datastore_class(selected_dataitems,1);
             end
@@ -4562,9 +4534,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             end
 
             if event.Source.Text=="New Item"
-                %               if app.importtype=='Class'
                 app.Datastore_class=cat(1,app.Datastore_class,data2crop2);
-                %insert
             end
 
             app.Datastore_class.findComment(app.ListBox_2)
