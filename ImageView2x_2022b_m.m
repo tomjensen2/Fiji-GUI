@@ -1529,7 +1529,7 @@ app.ImageViewUIFigure.Colormap=viridis            %          colormap(app.MainIm
 
         % Button pushed function: Polyroi
         function polygon(app, event)
-            if event.Source.Text=="Rect"
+            if event.Source.Icon=='PolyShape.png'
             app.currentROI=drawpolygon(app.scatterXdata);
            
             elseif event.Source.Text=="Poly"

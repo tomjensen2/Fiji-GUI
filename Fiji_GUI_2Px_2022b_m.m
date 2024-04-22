@@ -5628,13 +5628,13 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             if length(selected_dataitems)==size(app.DATAfile.ephysdata1,3)
                 for i=1:length(selected_dataitems)
                     if ~isrow(app.DATAfile.ephysdata1(:,1,selected_dataitems(i)))
-                        app.Datastore(i).Aux1=app.DATAfile.ephysdata1(:,1,selected_dataitems(i)).'
-                        app.Datastore(i).Aux2=app.DATAfile.ephysdata1(:,3,selected_dataitems(i)).'
+                        app.Datastore_class(i,1).Aux1=app.DATAfile.ephysdata1(:,1,selected_dataitems(i)).';
+                        app.Datastore_class(i,1).Aux2=app.DATAfile.ephysdata1(:,3,selected_dataitems(i)).';
                     else
-                        app.Datastore(i).Aux1=app.DATAfile.ephysdata1(:,1,selected_dataitems(i))
-                        app.Datastore(i).Aux2=app.DATAfile.ephysdata1(:,3,selected_dataitems(i))
+                        app.Datastore_class(i,1).Aux1=app.DATAfile.ephysdata1(:,1,selected_dataitems(i));
+                        app.Datastore_class(i,1).Aux2=app.DATAfile.ephysdata1(:,3,selected_dataitems(i));
                     end
-                    app.Datastore(i).eXData=linspace(0,length(app.DATAfile.ephysdata1)/10000,length(app.DATAfile.ephysdata1))
+                    app.Datastore_class(i,1).eXData=linspace(0,length(app.DATAfile.ephysdata1)/10000,length(app.DATAfile.ephysdata1));
                 end
             else
                 errordlg('Selected Data are not equal length')
