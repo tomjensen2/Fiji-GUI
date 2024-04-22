@@ -5623,21 +5623,27 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             else
                 selected_dataitems=app.ListBox_2.Value;
             end
+            dataitem_idx=1:size(selected_dataitems,2);
+            [file,path] = uigetfile(cat(2,app.defaultdir,'*.abf;*.wcp'),'MultiSelect','on');
+            filename=cat(2,path,file);
+
+            [ephysdata,~,ephysmetadata] = abfload(filename);
             %duplicate data to operate on
             %             data2crop=app.Datastore(selected_dataitems) ;
-            if length(selected_dataitems)==size(app.DATAfile.ephysdata1,3)
+            if length(selected_dataitems)==size(ephysdata,3)
                 for i=1:length(selected_dataitems)
-                    if ~isrow(app.DATAfile.ephysdata1(:,1,selected_dataitems(i)))
-                        app.Datastore_class(i,1).Aux1=app.DATAfile.ephysdata1(:,1,selected_dataitems(i)).';
-                        app.Datastore_class(i,1).Aux2=app.DATAfile.ephysdata1(:,3,selected_dataitems(i)).';
+                    if ~isrow(ephysdata(:,1,dataitem_idx(i)))
+                        app.Datastore_class(selected_dataitems(i),1).Aux1=ephysdata(:,1,dataitem_idx(i)).';
+                        app.Datastore_class(selected_dataitems(i),1).Aux2=ephysdata(:,3,dataitem_idx(i)).';
                     else
-                        app.Datastore_class(i,1).Aux1=app.DATAfile.ephysdata1(:,1,selected_dataitems(i));
-                        app.Datastore_class(i,1).Aux2=app.DATAfile.ephysdata1(:,3,selected_dataitems(i));
+                        app.Datastore_class(selected_dataitems(i),1).Aux1=ephysdata(:,1,dataitem_idx(i));
+                        app.Datastore_class(selected_dataitems(i),1).Aux2=ephysdata(:,3,dataitem_idx(i));
                     end
-                    app.Datastore_class(i,1).eXData=linspace(0,length(app.DATAfile.ephysdata1)/10000,length(app.DATAfile.ephysdata1));
+                    time_start=app.Datastore_class(i,1).TData(1);
+                    app.Datastore_class(selected_dataitems(i),1).eXData=linspace(time_start,time_start+ephysmetadata.sweepLengthInPts/10000,length(ephysdata(:,1,dataitem_idx(i))));
                 end
             else
-                errordlg('Selected Data are not equal length')
+                errordlg('Selected Data are not equal length');
                 return
             end
 
