@@ -2489,6 +2489,16 @@ classdef ImData < dynamicprops
         end
 
         function objout = Line2_2_Mean(objarray,func,linescan)
+             %%%ImData Method Line2_2_Mean
+            %%%
+            %%%     Input Arguements:
+            %%%                 objarray: objects to calculate mean from
+            %%%                 function: mean,sum...
+            %%%                 type: Linescan=1, FF = 0                 
+            %%%     Output Variable
+            %%%                 objout : returns ImData object
+            %%%                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             if linescan==1
                 UGCell=arrayfun(@(o) o.UG, objarray, 'UniformOutput', false);
                 URCell=arrayfun(@(o) o.UR, objarray, 'UniformOutput', false);
@@ -2506,6 +2516,9 @@ classdef ImData < dynamicprops
                     ScYarray=cell2mat(permute(ScYCell,[3,2,1]));
                     predScXarray=cell2mat(permute(predScXCell,[3,2,1]));
                     predScYarray=cell2mat(permute(predScYCell,[3,2,1])); 
+                    Aux1array=cell2mat(permute(Aux1Cell,[3,2,1]));
+                    Aux2array=cell2mat(permute(Aux2Cell,[3,2,1])); 
+                    
                 catch ME
                     %check error
                     if ME.identifier=="MATLAB:catenate:dimensionMismatch" %dimension mismatch
@@ -2573,7 +2586,8 @@ classdef ImData < dynamicprops
                 objout.file='FF';
                 objout.XData=objout.TData;
                 objout.TData=1:1:size(objout.UG,3);
-                
+                objout.Aux1=Aux1array;
+                objout.Aux2=Aux2array;
             else
                 ME.identifier='w';
                 objout.UG=func(UGarray);
@@ -2583,6 +2597,11 @@ classdef ImData < dynamicprops
                 objout.predScX=func(predScXarray);
                 objout.predScY=func(predScYarray);
                 objout.comment=sprintf('%s_%s',func2str(func),objout.comment);
+                objout.Aux1=squeeze(func(Aux1array));
+                try
+                objout.Aux2=squeeze(func(Aux2array));
+                end
+                objout.eXData=objout.eXData-objout.eXData(1);
                 if ME.identifier=="MATLAB:catenate:dimensionMismatch" %dimension mismatch
                 objout.TData=TData;
                 objout.XData=TData;
