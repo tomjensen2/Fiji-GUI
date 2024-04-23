@@ -33,6 +33,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         FromMulitpleSelectionsMenu      matlab.ui.container.Menu
         SelectionMenu                   matlab.ui.container.Menu
         knownSelectionMenu              matlab.ui.container.Menu
+        keeptimeidx                     matlab.ui.container.Menu
         CropYaxisMenu                   matlab.ui.container.Menu
         NewItemMenu_2                   matlab.ui.container.Menu
         OverwriteMenu_2                 matlab.ui.container.Menu
@@ -1433,6 +1434,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             end
             app.Aux_Chan_Ax.ButtonDownFcn = createCallbackFcn(app, @BrushCall, true);
             app.XList=addlistener(app.Prim_Chan_Ax, 'XLim', 'PostSet', @(src, evnt)app.XLim_shift_listener)  ;
+            %xlim(app.Prim_Chan_Ax,"tight");
             if app.Holdlimits.Value==1
                 app.Prim_Chan_Ax.XLim=[app.Xmin app.Xmax]
             end
@@ -5032,13 +5034,19 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             end
         end
 
-        % Menu selected function: UseScXYdataMenu_2
+        % Menu selected function: UseScXYdataMenu_2, keeptimeidx
         function setposorpred(app, event)
             %For app.Spiral2XYT determines whether to use predicted scanner
             %locations or Scanner feedback signals
             %Predicted is almost certainly less accurate, but less liable to
             %arterfacts as data is more uniform over time
-
+            if event.Source.Text=="Keep Time Index"
+                if app.keeptimeidx.Checked=='on'
+                    app.keeptimeidx.Checked=0;
+                elseif app.keeptimeidx.Checked=='off'
+                    app.keeptimeidx.Checked=1;
+                end
+            else
             if app.UseScXYdataMenu_2.Checked==0
                 app.UseScXYdataMenu_2.Checked=1
                 app.UseScXYdataMenu_2.Checked=1
@@ -5048,7 +5056,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             end
 
         end
-
+        end
         % Callback function
         function Collatedataplots(app, event)
             %semi-functional
@@ -5138,7 +5146,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         function changetrace(app, event)
             %Changes the 1D plot displayed in primary channel Axis
             value = app.PeakWindowSpinner.Value;
-            app.Parse_data_4_plot
+            app.Parse_data_4_plot;
         end
 
         % Value changed function: Selction_Edit_Field
@@ -5527,8 +5535,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 [Prim_plot,Prim_ax,roi_2_plot,PrimCh_X,sec1,sec2]=arrayfun(@(x) x.Plot_TData_1D(2,app.ROIsListBox.Value,app.Prim_Chan_Ax,app.Normalisation.Value,app.Baseline_Min.Value,app.Baseline_Max.Value,1,app.Aux_Chan_Ax,[],[]),data,'UniformOutput',false);
             end
 
-            app.Prim_Chan_Ax.XLim(1)=0.02;
-            app.Aux_Chan_Ax.XLim(1)=0.02;
+%             app.Prim_Chan_Ax.XLim(1)=0.02;
+%             app.Aux_Chan_Ax.XLim(1)=0.02;
             hold(app.Prim_Chan_Ax,'off');
             hold(app.Aux_Chan_Ax,'off');
             app.XList=addlistener(app.Prim_Chan_Ax, 'XLim', 'PostSet', @(src, evnt)app.XLim_shift_listener);
@@ -6405,12 +6413,20 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
         % Menu selected function: lastEPMenu
         function crop_from_EP_tidx(app, event)
+            if app.keeptimeidx.Checked == true
+                idx='keep'
+            elseif app.keeptimeidx.Checked == false
+                idx='-'
+            end
+
             dataitem2crop=copyobj2(app.Datastore_class(app.Data_Selection,1))
-            EPtime=app.PeakStats.EP_PeakTime(1)
-            crop_start=EPtime-app.Peak_time_neg_window.Value/1000
-            crop_end=EPtime+app.Peak_time_pos_window.Value/1000
-            dataitem2crop=dataitem2crop.crop_data(dataitem2crop.TimeDim,crop_start,crop_end,'just do')
-            dataitem2crop.comment=sprintf('Crop| +/- %.2f| %s',EPtime-crop_start,dataitem2crop.comment)
+%             EPtime=app.PeakStats.EP_PeakTime(1)
+            back=app.Peak_time_neg_window.Value/1000;
+            forward=app.Peak_time_pos_window.Value/1000;
+%             dataitem2crop=dataitem2crop.crop_data(dataitem2crop.TimeDim,crop_start,crop_end,'just do')
+%             dataitem2crop.comment=sprintf('Crop| +/- %.2f| %s',EPtime-crop_start,dataitem2crop.comment)
+            times=app.PeakStats.EP_PeakTime;
+            dataitem2crop = crop_known_times(dataitem2crop,times,back,forward,idx)
             app.Datastore_class=cat(1,app.Datastore_class,dataitem2crop)
             app.Datastore_class.findComment(app.ListBox_2)
 
@@ -7586,6 +7602,13 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.knownSelectionMenu = uimenu(app.CropX2DtimeaxisMenu);
             app.knownSelectionMenu.MenuSelectedFcn = createCallbackFcn(app, @cropmultiole, true);
             app.knownSelectionMenu.Text = 'Known Timings';
+
+            % Create keeptimeidx
+            app.keeptimeidx = uimenu(app.CropX2DtimeaxisMenu);
+            app.keeptimeidx.Checked = true;
+            app.keeptimeidx.Text = 'Keep Time Index';
+            app.keeptimeidx.Separator = 'on';
+            app.keeptimeidx.MenuSelectedFcn = createCallbackFcn(app, @setposorpred, true);
 
             % Create CropYaxisMenu
             app.CropYaxisMenu = uimenu(app.EditDataMenu);

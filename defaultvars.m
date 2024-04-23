@@ -35,6 +35,7 @@ function defaultvar=defaultvars()
         defaultvar.Macrospath='C:/Users/Thomas Jensen/Documents/Github/Fiji-GUI/Scripts/IJ Macros/';
         defaultvar.Documentspath='C:/Users/Thomas Jensen/Documents/';
         defaultvar.IJPath='C:/Users/Thomas Jensen/Documents/Fiji.app/';
-
+        
+        defaultvar.keeptimeidx='keep'
 %
 end

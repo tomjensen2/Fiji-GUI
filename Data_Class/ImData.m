@@ -2497,6 +2497,8 @@ classdef ImData < dynamicprops
                 predScXCell=arrayfun(@(o) o.predScX, objarray, 'UniformOutput', false);
                 predScYCell=arrayfun(@(o) o.predScY, objarray, 'UniformOutput', false);
                 TDataCell=arrayfun(@(o) o.TData, objarray, 'UniformOutput', false);
+                Aux1Cell=arrayfun(@(o) o.Aux1, objarray, 'UniformOutput', false);
+                Aux2Cell=arrayfun(@(o) o.Aux2, objarray, 'UniformOutput', false);
                 try
                     UGarray=cell2mat(permute(UGCell,[3,2,1]));
                     URarray=cell2mat(permute(URCell,[3,2,1]));
