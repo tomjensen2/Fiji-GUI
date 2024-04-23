@@ -5634,13 +5634,13 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 for i=1:length(selected_dataitems)
                     if ~isrow(ephysdata(:,1,dataitem_idx(i)))
                         app.Datastore_class(selected_dataitems(i),1).Aux1=ephysdata(:,1,dataitem_idx(i)).';
-                        app.Datastore_class(selected_dataitems(i),1).Aux2=ephysdata(:,3,dataitem_idx(i)).';
+                        app.Datastore_class(selected_dataitems(i),1).Aux2=ephysdata(:,2,dataitem_idx(i)).';
                     else
                         app.Datastore_class(selected_dataitems(i),1).Aux1=ephysdata(:,1,dataitem_idx(i));
-                        app.Datastore_class(selected_dataitems(i),1).Aux2=ephysdata(:,3,dataitem_idx(i));
+                        app.Datastore_class(selected_dataitems(i),1).Aux2=ephysdata(:,2,dataitem_idx(i));
                     end
                     time_start=app.Datastore_class(i,1).TData(1);
-                    app.Datastore_class(selected_dataitems(i),1).eXData=linspace(time_start,time_start+ephysmetadata.sweepLengthInPts/10000,length(ephysdata(:,1,dataitem_idx(i))));
+                    app.Datastore_class(selected_dataitems(i),1).eXData=linspace(time_start,time_start+ephysmetadata.sweepLengthInPts/10000,length(app.Datastore_class(selected_dataitems(i),1).Aux1));
                 end
             else
                 errordlg('Selected Data are not equal length');
