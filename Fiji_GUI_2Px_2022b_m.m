@@ -7025,8 +7025,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 data2crop=app.Datastore_class(selected_dataitems,1);
             end
 
-            defaults=defaultvars('Kalman_Stack_Filter');
-            objout=arrayfun(@(x) x.Kalman_Stack_Filter(str2double(app.Switch.Value),defaults.Kalman_gain,defaults.Kalman_Percentvar),data2crop,'UniformOutput',true);
+            
+            objout=arrayfun(@(x) x.Kalman_Stack_Filter(str2double(app.Switch.Value),app.default_vars.Kalman_gain,app.default_vars.Kalman_Percentvar),data2crop,'UniformOutput',true);
             if event.Source.Text=="New Data"
                 app.Datastore_class=cat(1,app.Datastore_class,objout);
             end
