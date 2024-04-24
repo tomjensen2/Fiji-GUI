@@ -2589,7 +2589,7 @@ classdef ImData < dynamicprops
                 objout.Aux1=Aux1array;
                 objout.Aux2=Aux2array;
             else
-                ME.identifier='w';
+                %ME.identifier='w';
                 objout.UG=func(UGarray);
                 objout.UR=func(URarray);
                 objout.ScX=func(ScXarray);
@@ -2890,5 +2890,58 @@ classdef ImData < dynamicprops
         dataout=Data;
         end
        
+        function objout = Line2_2_Mean1(objarray, func, linescan)
+            % Define dimensions based on line scan or folded frame (FF)
+            if linescan == 1
+                dimOrder = [3, 2, 1];
+            else
+                dimOrder = [4, 3, 2, 1];
+            end
+
+            % Predefine cells for data aggregation
+            dataTypes = {'UG', 'UR', 'ScX', 'ScY', 'predScX', 'predScY', 'Aux1', 'Aux2'};
+            arrays = cell(1, numel(dataTypes));
+
+            % Handle different data dimensions and prepare for aggregation
+            for i = 1:numel(dataTypes)
+                type = dataTypes{i};
+                dataCell = arrayfun(@(o) getfield(o, type), objarray, 'UniformOutput', false);
+
+                try
+                    arrays{i} = cell2mat(permute(dataCell, dimOrder));
+                catch
+                    % Handle dimension mismatch by resizing, using maximum dimensions
+                    maxDims = max(cell2mat(cellfun(@size, dataCell, 'UniformOutput', false)), [], 1);
+                    dataCell = cellfun(@(x) imresize(x, maxDims(1:ndims(x))), dataCell, 'UniformOutput', false);
+                    arrays{i} = cell2mat(permute(dataCell, dimOrder));
+                end
+            end
+
+            % Create output object from the first object as a template
+            objout = copyobj2(objarray(1,1));
+
+            % Apply the specified function if provided, otherwise just assign the array
+            if isempty(func)
+                for i = 1:numel(dataTypes)
+                    setfield(objout, dataTypes{i}, arrays{i});
+                end
+                objout.Type = 'FF';
+                objout.file = 'FF';
+                objout.XData = objout.TData-objout.TData(1);
+                objout.TData = objout.TData-objout.TData(1);
+            else
+                % Apply the function to each data type
+                for i = 1:numel(dataTypes)
+                    if isnumeric(arrays{i})
+                        modifiedData = func(arrays{i});
+                        setfield(objout, dataTypes{i}, squeeze(modifiedData));
+                    end
+                end
+                objout.comment = sprintf('%s_%s', func2str(func), objout.comment);
+                objout.eXData = objout.eXData - objout.eXData(1);
+                objout.XData = objout.TData-objout.TData(1);
+                objout.TData = objout.TData-objout.TData(1);
+            end
+end
     end
 end

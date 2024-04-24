@@ -9,6 +9,8 @@ times=eval(answers{1,1}); back=eval(answers{2,1});forward=eval(answers{3,1});ind
 else
 
 end
+m=size(Data,1);
+progressbar %set progressbar
 for j=1:size(Data,1)
     
     
@@ -26,7 +28,7 @@ for j=1:size(Data,1)
                 else
                     data=cat(1,data,currentdataitem2);
                 end
-
+progressbar(j/m) %update progressbar
 end
 
 end

@@ -6130,6 +6130,14 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         [XYTrace]=app.CopyTraces2Clipboard(datax,datay,dataname)
                         MATLABCallOrigin(XYTrace,dataname,'Traces')
                         return
+                     case "Mat2Origin"
+                        if app.Datastore_class(app.Data_Selection, 1).Subtype=='Raster' & numel(app.Data_Selection)==1
+                            Data=cat(2,app.Datastore_class(app.Data_Selection, 1).eXData.',app.Datastore_class(app.Data_Selection, 1).Aux1.')
+                        end
+                            %                          Data=cat(2,XData.',imgDATA.')
+                            dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
+                            MATLABCallOrigin(Data,dataname,'Raster')
+                        
                     case "SetTLimits"
                         app.Datastore_class(app.Data_Selection,1).Change_TData("ephys");
 
@@ -7075,7 +7083,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     func=@(x) nansum(x,4);
                 end
             end
-            objout=data2crop.Line2_2_Mean(func,type);
+            objout=data2crop.Line2_2_Mean1(func,type);
             app.Datastore_class=cat(1,app.Datastore_class,objout);
             app.Datastore_class.findComment(app.ListBox_2);
         end
