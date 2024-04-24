@@ -44,13 +44,14 @@ function MATLABCallOrigin(x,names,worksheet)
     % Get column collection in the worksheet
     cols = wks.Columns;
     cols = invoke(wks, 'Columns');
-    if isstring(names)
+    if isstring(names) | ischar(names)
         names={names}
     end
     names1=flipud(names).';
     newCellArray = repmat({''}, 1, 2 * length(names1));
-    newCellArray(2:2:end) = names1;
-%     for i=0:2:size(x,2)
+    newCellArray(2:2:end) = names1
+
+    %     for i=0:2:size(x,2)
 %         
 % colx=cols.Item(uint8(i))
 % colx.Type=3
