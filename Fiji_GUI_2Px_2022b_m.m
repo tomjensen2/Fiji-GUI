@@ -6,16 +6,6 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
     properties (Access = public)
         FijiGUIUIFigure                 matlab.ui.Figure
         ImportRawDataMenu               matlab.ui.container.Menu
-        FileSelectionMenu               matlab.ui.container.Menu
-        CentreXYMenu                    matlab.ui.container.Menu
-        fullMESfileMenu                 matlab.ui.container.Menu
-        FGUIfileMenu                    matlab.ui.container.Menu
-        ClipboardImportMenu             matlab.ui.container.Menu
-        ImageFileMenu                   matlab.ui.container.Menu
-        FIMAsMenu                       matlab.ui.container.Menu
-        FIMAsedfMenu                    matlab.ui.container.Menu
-        ASCIIfileMenu                   matlab.ui.container.Menu
-        AsImDataClassMenu               matlab.ui.container.Menu
         EditDataMenu                    matlab.ui.container.Menu
         AddEmptyDataItemsMenu           matlab.ui.container.Menu
         EqualiseTimeDimensionMenu       matlab.ui.container.Menu
@@ -2098,15 +2088,6 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             data=arrayfun(@(x) FixSubtype(x),data,'UniformOutput',true)
             if isobject(data)
                 app.Datastore_class=cat(1,app.Datastore_class,data);
-                app.CentreXYMenu.Checked=0;
-                %             app.MESFileMenu.Checked=0;
-                app.ImageFileMenu.Checked=0;
-                app.FIMAsedfMenu.Checked=0;
-                app.FIMAsMenu.Checked=0;
-                %             app.MEScfileMenu.Checked=0;
-                app.fullMESfileMenu.Checked=0;
-                app.FGUIfileMenu.Checked=0;
-                app.AsImDataClassMenu.Checked=1;
                 app.importtype='Class';
                 app.Datastore_class.findComment(app.ListBox_2);
 
@@ -2192,8 +2173,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             %set secondary peakfind propertys
             app.epeakfindprops.NPeaks='4';app.epeakfindprops.MinInt='40'; app.epeakfindprops.PeakorProm='Peak';
             app.epeakfindprops.Minwidth='Peak'; app.epeakfindprops.plus_or_min='+';
-            %             app.peaksdisplay=tiledlayout(app.FitPanel,1,1,"TileSpacing","none","Padding","none");
-            %             app.peaksAx=nexttile(app.peaksdisplay)
+            
             for i=1:100;
                 if i==1
                     a{i,1}='All Regions';
@@ -2240,7 +2220,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.Data_Selection=1;
             app.importtype='Class';
 
-            app.AsImDataClassMenu.Checked=1;
+           
             %DnD_uifigure(app.ListBox_2, @(o,dat)app.autoloadFGUI(dat.names{1,1}));
             %DnD_uifigure(app.ListBox_2, @(o,dat)app.autoloadFGUI(dat.names));
             app.Refresh_List_of_IJ_Macros
@@ -2466,10 +2446,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             try
                 app.sharedapp.newdata(app.Datastore_class(app.Data_Selection,1));
             catch ME
-                'ImageView might not be open?'
                 assignin('base','message',ME.message);
-
-                %             app.CommentEditField.Value=app.Datastore(app.ListBox_2.Value).comment;
             end
 
 
@@ -4356,18 +4333,18 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
             if isobject(data.data2save)
                 app.Datastore_class=data.data2save;
-                app.CentreXYMenu.Checked=0;
-                %             app.MESFileMenu.Checked=0;
-                app.ImageFileMenu.Checked=0;
-                app.FIMAsedfMenu.Checked=0;
-                app.FIMAsMenu.Checked=0;
-                %             app.MEScfileMenu.Checked=0;
-                app.fullMESfileMenu.Checked=0;
-                app.FGUIfileMenu.Checked=0;
-                app.AsImDataClassMenu.Checked=1
+%                 app.CentreXYMenu.Checked=0;
+%                 %             app.MESFileMenu.Checked=0;
+%                 app.ImageFileMenu.Checked=0;
+%                 app.FIMAsedfMenu.Checked=0;
+%                 app.FIMAsMenu.Checked=0;
+%                 %             app.MEScfileMenu.Checked=0;
+%                 app.fullMESfileMenu.Checked=0;
+%                 app.FGUIfileMenu.Checked=0;
+%                 app.AsImDataClassMenu.Checked=1
                 app.importtype='Class';
                 app.Datastore_class.findComment(app.ListBox_2);
-                app.CurrentDataFilesPanel.Title=filename
+%                 app.CurrentDataFilesPanel.Title=filename
                 for i=1:size(app.Datastore_class,1)
                     if isempty(app.Datastore_class(i,1).Subtype)==1
                         app.Datastore_class(i,1).Subtype="Single"
@@ -4436,17 +4413,17 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 app.Datastore_class.findComment(app.ListBox_2);
             end
 
-            app.CentreXYMenu.Checked=0;
-            %             app.MESFileMenu.Checked=0;
-            app.ImageFileMenu.Checked=0;
-            app.FIMAsedfMenu.Checked=0;
-            app.FIMAsMenu.Checked=0;
-            %             app.MEScfileMenu.Checked=0;
-            app.fullMESfileMenu.Checked=0;
-            app.FGUIfileMenu.Checked=0;
+%             app.CentreXYMenu.Checked=0;
+%             %             app.MESFileMenu.Checked=0;
+%             app.ImageFileMenu.Checked=0;
+%             app.FIMAsedfMenu.Checked=0;
+%             app.FIMAsMenu.Checked=0;
+%             %             app.MEScfileMenu.Checked=0;
+%             app.fullMESfileMenu.Checked=0;
+%             app.FGUIfileMenu.Checked=0;
             app.importtype='Class';
             app.CurrentDataFilesPanel.Title=filename;
-            app.AsImDataClassMenu.Checked=1
+%             app.AsImDataClassMenu.Checked=1
 
 
 
@@ -5941,7 +5918,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         ephysx=ephysx(2:end);
                     case "aaLS Smooth"
                         signal=imgY;
-                        baseline = asLS_smooth(signal) ;
+                        defaults=defaultvars();
+                        baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
                         imgY=signal-baseline.';
                         baselineindex=imgX>=app.Baseline_Min.Value & imgX<=app.Baseline_Max.Value;
                         baseline_val=mean(imgY(1,baselineindex));
@@ -6016,7 +5994,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         imgX=imgX(2:end);
                     case "aaLS Smooth"
                         signal=imgY;
-                        baseline = asLS_smooth(signal) ;
+                        defaults=defaultvars();
+                        baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
                         imgY=signal-baseline.';
                         baselineindex=imgX>=app.Baseline_Min.Value & imgX<=app.Baseline_Max.Value;
                         baseline_val=mean(imgY(1,baselineindex));
@@ -6094,11 +6073,13 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     case "aaLS Smooth"
                         signal=ephysy;
                         try
-                            baseline = asLS_smooth(signal) ;
+                            defaults=defaultvars();
+                            baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
                         catch ME
                             signal=decimate(ephysy,10);
                             ephysx=decimate(ephysx,10);
-                            baseline=asLS_smooth(signal) ;
+                            defaults=defaultvars();
+                            baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
                         end
                         ephysy=signal-baseline.';
                         baselineindex=ephysx>=app.Baseline_Min.Value & ephysx<=app.Baseline_Max.Value;
@@ -7471,57 +7452,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             % Create ImportRawDataMenu
             app.ImportRawDataMenu = uimenu(app.FijiGUIUIFigure);
             app.ImportRawDataMenu.Text = 'Import Raw Data       /   ';
-
-            % Create FileSelectionMenu
-            app.FileSelectionMenu = uimenu(app.ImportRawDataMenu);
-            app.FileSelectionMenu.MenuSelectedFcn = createCallbackFcn(app, @fileselect_ut, true);
-            app.FileSelectionMenu.Text = 'File Selection';
-
-            % Create CentreXYMenu
-            app.CentreXYMenu = uimenu(app.ImportRawDataMenu);
-            app.CentreXYMenu.MenuSelectedFcn = createCallbackFcn(app, @callback_to_centre_XY, true);
-            app.CentreXYMenu.Text = 'Centre XY';
-
-            % Create fullMESfileMenu
-            app.fullMESfileMenu = uimenu(app.ImportRawDataMenu);
-            app.fullMESfileMenu.MenuSelectedFcn = createCallbackFcn(app, @Load_Full_MES_MESc_file, true);
-            app.fullMESfileMenu.Text = 'fullMESfile';
-
-            % Create FGUIfileMenu
-            app.FGUIfileMenu = uimenu(app.ImportRawDataMenu);
-            app.FGUIfileMenu.MenuSelectedFcn = createCallbackFcn(app, @loadFGUI, true);
-            app.FGUIfileMenu.Text = 'FGUI file';
-
-            % Create ClipboardImportMenu
-            app.ClipboardImportMenu = uimenu(app.ImportRawDataMenu);
-            app.ClipboardImportMenu.MenuSelectedFcn = createCallbackFcn(app, @clipboard_XT_import, true);
-            app.ClipboardImportMenu.ForegroundColor = [0.149 0.149 0.149];
-            app.ClipboardImportMenu.Text = 'Clipboard Import';
-
-            % Create ImageFileMenu
-            app.ImageFileMenu = uimenu(app.ImportRawDataMenu);
-            app.ImageFileMenu.Separator = 'on';
-            app.ImageFileMenu.Text = 'Image File';
-
-            % Create FIMAsMenu
-            app.FIMAsMenu = uimenu(app.ImportRawDataMenu);
-            app.FIMAsMenu.Separator = 'on';
-            app.FIMAsMenu.Text = 'FIMAs';
-
-            % Create FIMAsedfMenu
-            app.FIMAsedfMenu = uimenu(app.ImportRawDataMenu);
-            app.FIMAsedfMenu.Separator = 'on';
-            app.FIMAsedfMenu.Text = 'FIMAs .edf';
-
-            % Create ASCIIfileMenu
-            app.ASCIIfileMenu = uimenu(app.ImportRawDataMenu);
-            app.ASCIIfileMenu.ForegroundColor = [0.8 0.8 0.8];
-            app.ASCIIfileMenu.Text = 'ASCII file';
-
-            % Create AsImDataClassMenu
-            app.AsImDataClassMenu = uimenu(app.ImportRawDataMenu);
-            app.AsImDataClassMenu.ForegroundColor = [0.8902 0.4902 0.4902];
-            app.AsImDataClassMenu.Text = 'As ImData Class';
+            app.ImportRawDataMenu.MenuSelectedFcn = createCallbackFcn(app, @LoadMES_as_Objarray, true);
 
             % Create EditDataMenu
             app.EditDataMenu = uimenu(app.FijiGUIUIFigure);

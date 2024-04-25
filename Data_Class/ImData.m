@@ -1556,8 +1556,9 @@ classdef ImData < dynamicprops
                 %assert(rem(nargin-1,2) == 0,'Number of parameter pairs is in error');
 
                 if nargin == 2
-                    smoothness_param = 1e3;
-                    asym_param = 1e-4;
+                    default_vars=defaultvars();
+                    smoothness_param = default_vars.aals_smoothness;
+                    asym_param = default_vars.aals_min_diff;
                 end
 
                 penalty_vector = ones(signal_length, 1);

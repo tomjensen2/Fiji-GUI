@@ -1,9 +1,11 @@
 function data = crop_known_times(Data,times,back,forward,index)
 if nargin==1
+default_vars=defaultvars();
 prompt = {'Times(s):','Time back(s):','Time forward(s):','Keep time index'};
 dlgtitle = 'Helens cropping function';
 dims = 1;
-definput = {'[0.2,0.3,0.4,0.5,0.6,0.7,0.8]','0.1','0.1','keep'};
+definput = {default_vars.times,default_vars.back,default_vars.forward,default_vars.keeptimeidx};
+%definput = {'[0.2,0.3,0.4,0.5,0.6,0.7,0.8]','0.1','0.1','keep'};
 answers=inputdlg(prompt,dlgtitle,dims,definput);
 times=eval(answers{1,1}); back=eval(answers{2,1});forward=eval(answers{3,1});index=string(answers{4,1})
 else
