@@ -30,14 +30,22 @@ function defaultvar=defaultvars()
         
         %default path for mac MATLAB java files
         defaultvar.macpath2add1="javaaddpath '/Applications/MATLAB_R2022b.app/java/MIJ.jar'";
-        defaultvar.macpath2add2="javaaddpath '/Applications/MATLAB_R2022b.app/java/ij-1.53t.jar'";
+        defaultvar.macpath2add2="javaaddpath '/Applications/MATLAB_R2022b.app/java/ij-1.53f.jar'";
 
-        %default paths on install
+        %default PC paths on install
         defaultvar.FGUIpath='C:/Users/Thomas Jensen/Documents/Github/Fiji-GUI/';
         defaultvar.MLpath='C:/Users/Thomas Jensen/Documents/MATLAB/';
         defaultvar.Macrospath='C:/Users/Thomas Jensen/Documents/Github/Fiji-GUI/Scripts/IJ Macros/';
         defaultvar.Documentspath='C:/Users/Thomas Jensen/Documents/';
         defaultvar.IJPath='C:/Users/Thomas Jensen/Documents/Fiji.app/';
+        
+        %default Mac paths on install
+        defaultvar.macFGUIpath='/Users/thomasjensen/Documents/Github/Fiji-GUI/';
+        defaultvar.macMLpath='/Users/thomasjensen/Documents/MATLAB/';
+        defaultvar.macMacrospath='/Users/thomasjensen/Documents/Github/Fiji-GUI/Scripts/IJ Macros/';
+        defaultvar.macDocumentspath='/Users/thomasjensen/Documents/';
+        defaultvar.macIJPath='/Users/thomasjensen/Documents/Fiji.app/';
+        
         
         %defaults for crop by time index
         defaultvar.keeptimeidx='keep'  %must be char for inputdlg

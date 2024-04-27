@@ -2106,11 +2106,19 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         % Code that executes after component creation
         function startupFcn(app)
             app.default_vars=defaultvars;
-            app.MLpath=app.default_vars.MLpath;
-            app.Macrospath=app.default_vars.Macrospath;
-            app.Documentspath=app.default_vars.Documentspath;
-            app.IJPath=app.default_vars.IJPath;
-            app.FGUIpath=app.default_vars.FGUIpath;
+            if ispc==1
+                app.MLpath=app.default_vars.MLpath;
+                app.Macrospath=app.default_vars.Macrospath;
+                app.Documentspath=app.default_vars.Documentspath;
+                app.IJPath=app.default_vars.IJPath;
+                app.FGUIpath=app.default_vars.FGUIpath;
+            else
+                app.MLpath=app.default_vars.macMLpath;
+                app.Macrospath=app.default_vars.macMacrospath;
+                app.Documentspath=app.default_vars.macDocumentspath;
+                app.IJPath=app.default_vars.macIJPath;
+                app.FGUIpath=app.default_vars.macFGUIpath;
+            end
             try
                 app.defaultdir=app.default_vars.Documentspath;
             catch
@@ -2198,8 +2206,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
                 MIJ.start(app.IJPath);
             else
-                javaaddpath '/Applications/MATLAB_R2022b.app/java/MIJ.jar'
-                javaaddpath '/Applications/MATLAB_R2022b.app/java/ij-1.53t.jar'
+                eval(app.default_vars.macpath2add1);
+                eval(app.default_vars.macpath2add2);
                 MIJ.start(app.IJPath);
 
             end
