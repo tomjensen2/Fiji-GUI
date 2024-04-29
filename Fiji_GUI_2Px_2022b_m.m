@@ -5539,6 +5539,10 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         function clipboard_XT_import(app, event)
 
             rawData1 = importdata('-pastespecial');
+            exportloc=questdlg('Is the data in columns?','Clipboard Import','Yes','No', 'cancel');
+            if exportloc=="No"
+                rawData1=rawData1.';
+            end
             exportloc=questdlg('Uniform X data in first column or interleaved?','Clipboard Import','1st Column','Interleaved', 'cancel');
             if exportloc=="1st Column"
                 XData=rawData1(:,1);
@@ -10015,7 +10019,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             % Assign app.ContextMenu3
             app.Arraytable.ContextMenu = app.ContextMenu3;
             app.CopyDataButton.ContextMenu = app.ContextMenu3;
-
+           
             % Create ContextMenu4
             app.ContextMenu4 = uicontextmenu(app.FijiGUIUIFigure);
 
