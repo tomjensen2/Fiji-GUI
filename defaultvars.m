@@ -19,10 +19,14 @@ function defaultvar=defaultvars()
         defaultvar.background=200;
 
         % defaults deconvulution of Exponential decay
-        defaultvar.tau=20;
+        defaultvar.tau=0.02;
 
         % defaults Moving average
         defaultvar.smoothing_window=2;
+
+        % defaults sgolayfilt
+        defaultvar.sgolay_order=1;
+        defaultvar.sgolay_num=3;
 
         %default path for PC MATLAB java files
         defaultvar.PCpath2add1="javaaddpath 'C:\Program Files\MATLAB\R2022b\java\mij.jar'";

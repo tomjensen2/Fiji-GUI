@@ -4762,24 +4762,6 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     data2crop=app.Datastore_class(selected_dataitems,1);
                 end
 
-                %             m=size(data2crop,1);
-                %             progressbar() %set progressbar
-                %             error=[]
-                %             for i=1:size(data2crop,1);
-                %                 UG=double(data2crop(i,1).UG(:,:));
-                %                  UR=double(data2crop(i,1).UR(:,:));
-                %                  if app.UseScXYdataMenu_2.Checked==1
-                %
-                %                 ScX=double(data2crop(i,1).ScX(:,:));
-                %                  ScY=double(data2crop(i,1).ScY(:,:));
-                %                  else
-                %                  ScX=double(data2crop(i,1).predScX(:,:));
-                %                  ScY=double(data2crop(i,1).predScY(:,:));
-                %
-                %              end
-                %
-                %                  scanline=data2crop(i,1).scanline;
-
                 try
                     res=app.sharedapp.ResolutionSpinner.Value;
                     smooth=app.sharedapp.Smooth2DSpinner.Value;
@@ -4789,11 +4771,11 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
 
                 catch
-                    res=0.07;
-                    smooth=2;
-                    I_scaling=0.1;
-                    bglev=200;
-                    psfwd=0.35;
+                    res=app.default_vars.pixel_size;
+                    smooth=app.default_vars.smooth;
+                    I_scaling=app.default_vars.gain;
+                    bglev=app.default_vars.background;
+                    psfwd=app.default_vars.psffwhm;
                 end
 
                 switch cat(2,event.Source.Text,'_',event.Source.Parent.Type);
@@ -4801,7 +4783,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         prompt = {'Pixel Size(um):','Smoothing (pixels):'};
                         dlgtitle = 'Spiral2Img Parameters';
                         dims = 1;
-                        definput = {'0.07','2'};
+                        definput = {num2str(res),num2str(smooth)};
                         answer = cellfun(@str2double,inputdlg(prompt,dlgtitle,dims,definput)) ;
                         res=answer(1,1);
                         smooth=answer(2,1);
@@ -5916,7 +5898,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         %                         quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
                         %                         Q=cell2mat(quantal_amp);
                         %                         [imgX,imgY]=decon_iGluTrace(imgX,imgY,Q)
-                        imgY=deconvexp(imgX,imgY,0.03)
+                        default=defaultvars();
+                        imgY=deconvexp(imgX,imgY,default.tau);
                     case "Diff 1"
                         imgY=diff(imgY);
                         ephysy=diff(ephysy);
@@ -5997,7 +5980,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         %                         quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
                         %                         Q=cell2mat(quantal_amp);
                         %                         [imgX,imgY]=decon_iGluTrace(imgX,imgY,0.02)
-                        imgY=deconvexp(imgX,imgY,0.03)
+                        default=defaultvars();
+                        imgY=deconvexp(imgX,imgY,default.tau);
                     case "Diff 1"
                         imgY=diff(imgY);
                         imgX=imgX(2:end);
@@ -6961,6 +6945,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         % Menu selected function: DiGluSnFRkineticsMenu, FrameScanMenu_2,
         % ...and 4 other components
         function t_filter2_3D(app, event)
+            app.default_vars=defaultvars();
             if event.Source.Text=="Line Scan"
                 bindata = inputdlg('Bin Width (Pixels)');
                 bindata=cell2mat(bindata);
@@ -6970,15 +6955,17 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             end
             obj_in=copyobj2(app.Datastore_class(app.Data_Selection,1));
             if event.Source.Parent.Text=="t-Filtering"
-                obj_out=obj_in.t_Filter(app.filterSpinner.Value,[],bindata,@(x) sgolayfilt(x,1,app.filterSpinner.Value));
+                obj_out=obj_in.t_Filter(bindata,@(x) sgolayfilt(x,app.default_vars.sgolay_order,app.default_vars.sgolay_num));
             elseif event.Source.Parent.Text=="t-ZScore"
-                obj_out=obj_in.t_Filter(app.filterSpinner.Value,[],bindata,@(x) zscore(x,0,2));
+                obj_out=obj_in.t_Filter(bindata,@(x) zscore(x,0,2));
 %             elseif event.Source.Parent.Text=="t-ZScore_Base"
 %                 obj_out=obj_in.t_Filter(app.filterSpinner.Value,[],bindata,@(x) custom_zscore(x,0,2));
             elseif event.Source.Parent.Text=="Deconvolution"
-                obj_out=obj_in.t_Filter(app.filterSpinner.Value,[],bindata,@(x) deconvexp(obj_in.TData,x,0.04));
-
+                obj_out=obj_in.t_Filter(bindata,@(x) deconvexp(obj_in.TData,x,app.default_vars.tau));
+            elseif event.Source.Parent.Text=="Custom Function"
+                obj_out=obj_in;% here insert code for inputdlg and the function to apply
             end
+
             app.Datastore_class=cat(1,app.Datastore_class,obj_out);
             app.Datastore_class.findComment(app.ListBox_2);
         end

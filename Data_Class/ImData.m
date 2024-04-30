@@ -2329,7 +2329,7 @@ classdef ImData < dynamicprops
             objout=obj
         end
         %% Correct photobleaching
-        function objout = t_Filter(obj,window,type,line2_binsize,func)
+        function objout = t_Filter(obj,line2_binsize,func)
             %
             for i=1:size(obj,1)
                 if obj(i,1).Type=="FF"
