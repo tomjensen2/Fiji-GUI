@@ -47,10 +47,3 @@ And many others….
 
 [Plans for addition](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Plans%20for%20addition%20fe493e338fd44e19b389848da83b68c6.md)
 
-**The Problem**
-
-Data analysis in modern cellular neuroscience studies is becoming increasing complex as improvements in both microscopy systems and synthetic/genetically encoded probes continue to resolve cellular processes at finer scales and higher temporal resolution.  
-
-In the multiplexed imaging experiments I carry out I have found myself analysing or re-analysing >100 recordings, with each trial consisting of multiple functionally distinct cellular compartments to separately analyse.  Each of these may then have multiple spectrally distinct channels of data as well as accompanying electrophysiology data which must be compared.  There may be tens of trials for each, and different conditions to separately analyse and compare.  There may also be further division based on analysis of spatial components of the data, or additional channels based of fluorescence lifetime imaging data or timings of photo-stimulation shutters opening.
-
-This can mean weeks spent going through 100’s of files, with different formats and programs for analysis, this can generate a mass of folders often linked by paper notes/text files.   Fiji-GUI works to reduce some of this by consolidating imaging data and electrophysiology data within a MATLAB class structure and providing a GUI leveraging UI elements from both Matlab and ImageJ through the MIJ plugin.
