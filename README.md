@@ -1,12 +1,11 @@
 # Fiji-GUI.
 
-- **TLDR**
+- **Highlights**
     - Opens Femtonics .mes and .mesc files, preserving metadata on equipment states
-    - Opens any other imaging file type ImageJ can handle
-    - Enable easy access to these data via user friendly ImageJ interface
-    - Enables combination of multiple data types, patch clamp ephys and imaging data and reference between data types
-    - Easy extraction of statistics from the image files, peaks timings and statistics can be found automatically or manually for multiple channels without having to reduce the dimensions of the data.
-    - Ideal for working with imaging data from unstructured data such as spontaneous
+    - Opens any imaging file type ImageJ can handle and enables combination with other data types such as patch clamp electrophysiology, FLIM and reference between data types
+    - Enable easy one-click access to ImageJ functions aided by metadata from the image loaded
+    - Easy extraction of statistics from the imaging data, peaks timings and statistics can be found semi-automatically or manually for multiple channels without having to reduce the dimensions of the data.
+    - Ideal for working with episodic imaging data or from unstructured imaging data  that fromv such as spontaneous responses or epileptiform activity.
 
 Fiji-GUI is a MATLAB based neuroscience oriented data analysis program for integrated live cell imaging/electrophysiology data.  It is largely focused on time series (XT/XYT) image processing in the context of additional recording modalities such as patch clamp or field electrophysiology, but can also make some multi-purpose tasks carried out in ImageJ considerably more simple.
 
@@ -30,23 +29,23 @@ In large part this is a wrapper for many inbuilt MATLAB functions and a number o
 
 And many others….
 
-[Installation](https://www.notion.so/Installation-f2a801af57574ccc94d0ea2113cec348?pvs=21)
+[Installation](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Installation%205181e556a21e43a5ba79dfcc7f4a69de.md)
 
-[The Interface](https://www.notion.so/The-Interface-63f572a2e7f041f485c81f94f5d9e22e?pvs=21)
+[The Interface](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/The%20Interface%2063f572a2e7f041f485c81f94f5d9e22e.md)
 
-[Data Import, Combination and Storage](https://www.notion.so/Data-Import-Combination-and-Storage-2d4f884178ea43518ca8ceac2fa16cbd?pvs=21)
+[Data Import, Combination and Storage](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20Import,%20Combination%20and%20Storage%202d4f884178ea43518ca8ceac2fa16cbd.md)
 
-[Data Manipulation/Combination](https://www.notion.so/Data-Manipulation-Combination-4871d60e252642a18c357164950e5909?pvs=21)
+[Data Manipulation/Combination](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20Manipulation%20Combination%204871d60e252642a18c357164950e5909.md)
 
-[Data extraction](https://www.notion.so/Data-extraction-991e946848be42e592bcfd419197732a?pvs=21)
+[Data extraction](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20extraction%20991e946848be42e592bcfd419197732a.md)
 
-[Data Processing](https://www.notion.so/Data-Processing-53cd529b95b04c849639442d1ae2dc53?pvs=21)
+[Data Processing](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20Processing%2053cd529b95b04c849639442d1ae2dc53.md)
 
-[The ImData Class](https://www.notion.so/The-ImData-Class-90a7263f2cd54511adccbc54ab05c8d7?pvs=21)
+[The ImData Class](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/The%20ImData%20Class%2090a7263f2cd54511adccbc54ab05c8d7.md)
 
-[Data Output](https://www.notion.so/Data-Output-577457650144400b9b284e95f4e34f57?pvs=21)
+[Data Output](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20Output%20577457650144400b9b284e95f4e34f57.md)
 
-[Plans for addition](https://www.notion.so/Plans-for-addition-fe493e338fd44e19b389848da83b68c6?pvs=21)
+[Plans for addition](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Plans%20for%20addition%20fe493e338fd44e19b389848da83b68c6.md)
 
 **The Problem**
 
