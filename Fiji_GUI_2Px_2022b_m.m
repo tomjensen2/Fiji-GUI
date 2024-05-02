@@ -1963,14 +1963,21 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
 
         function results = autoloadFGUI(app,filename)
-            if size(filename,1)>1
-                replace=0
-            else
-                replace=1
-            end
             if ~iscell(filename)
                 filename={filename}
             end
+            if size(filename,2)>1
+                replace=0
+                if isfolder(filename{1,1})
+                    fold=filename(1,1);
+                    files=filename(1,[2:end]);
+                    filename=cellfun(@fullfile,repmat(fold,[1,size(files,2)]),files,'UniformOutput',false);
+                 a=0   
+                end
+            else
+                replace=0
+            end
+           
 
             i=1
             if ~isfolder(filename)
@@ -2016,15 +2023,15 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         isG=~isempty(strfind(filename{i,1},'_m1_'))
                         if isG==1
                             channel=1
-                            Import_FLIM_LS2(Data_in(i,1),filename{i,1},channel,3);
+                            Import_FLIM_LS2(Data_in(i,1),filename{1,i},channel,3);
                             channel=2
-                            filename2=strrep(filename{i,1},'_m1_','_m2_');
+                            filename2=strrep(filename{1,i},'_m1_','_m2_');
                             Import_FLIM_LS2(Data_in(i,1),filename2,channel,3);
                         else
                             channel=2
-                            Import_FLIM_LS2(Data_in(i,1),filename{i,1},channel,3);
+                            Import_FLIM_LS2(Data_in(i,1),filename{1,i},channel,3);
                             channel=1
-                            filename2=strrep(filename{i,1},'_m2_','_m1_');
+                            filename2=strrep(filename{1,i},'_m2_','_m1_');
                             Import_FLIM_LS2(Data_in(i,1),filename2,channel,3);
                         end
                     end

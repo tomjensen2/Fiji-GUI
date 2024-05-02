@@ -482,7 +482,7 @@ try
         end
         
         % ------------------------
-        load('fakedata.mat')
+        load('template.mat');
         switch button
             case 'Proceed'
                 if manualload
@@ -885,7 +885,7 @@ clearvars -except dataout filename filenumber channel newrawdata currentobj impo
 %%% t/T plot=3
 %%%%%
 newrawdata=newrawdata(:,2:end-1,:);
-rois=unique(currentobj.scanline.roi).'
+rois=unique(currentobj.scanline.roi).';
 switch importtype
     case 3
         if size(currentobj.scanline.roi,2)==1
