@@ -2016,11 +2016,11 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             elseif filename{i,1}(1,[end-3:end])==".spc" | filename{i,1}(1,[end-3:end])==".SPC"
 
                 if replace==0
-                    progressbar(size(filename,1))
-                    for i=1:size(filename)
-                        progressbar(i/size(filename,1))
+                    progressbar(size(filename,2))
+                    for i=1:size(filename,2)
+                        progressbar(i/size(filename,2))
                         Data_in(i,1)=ImData
-                        isG=~isempty(strfind(filename{i,1},'_m1_'))
+                        isG=~isempty(strfind(filename{1,i},'_m1_'))
                         if isG==1
                             channel=1
                             Import_FLIM_LS2(Data_in(i,1),filename{1,i},channel,3);
@@ -7298,8 +7298,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 selected_dataitems=app.ListBox_2.Value;
             end
             data2crop=copyobj2(app.Datastore_class(selected_dataitems,1));
-            UGval= MapFunc(data2crop.UG)
-            URval= MapFunc(data2crop.UR)
+            UGval= MapFunc(data2crop.UG,app.Cal590Menu.Checked)
+            URval= MapFunc(data2crop.UR,app.Cal590Menu.Checked)
             data2crop.UG=UGval;
             data2crop.UR=URval;
             data2crop.Type="Scatter"
@@ -7370,8 +7370,13 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 selected_dataitems=app.ListBox_2.Value;
             end
             data2crop=copyobj2(app.Datastore_class(selected_dataitems,1));
-            [a,UGNTC]=normtotalcount(data2crop,1,1);
-            [b,URNTC]=normtotalcount(data2crop,2,1);
+            if app.OGB1Menu.Checked==1
+            [a,UGNTC]=normtotalcount(data2crop,1,1,1);
+            [b,URNTC]=normtotalcount(data2crop,2,1,1);
+            else
+            [a,UGNTC]=normtotalcount(data2crop,1,1,0);
+            [b,URNTC]=normtotalcount(data2crop,2,1,0);
+            end
             UGNTC=UGNTC(1,:);
             URNTC=URNTC(1,:);
             data2crop.UG=UGNTC;

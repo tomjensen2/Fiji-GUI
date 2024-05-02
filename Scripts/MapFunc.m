@@ -1,4 +1,4 @@
-function val= MapFunc(data)
+function val= MapFunc(data,cal590)
 %OP_MAPFUNC converts input scalar value to output scalar value according to
 %the function specified
 %   1. calibration function in the fucntion libarary is inverse logistic x=x0*((a1-y)/(y-a2))^(1/p))
@@ -68,8 +68,11 @@ status=false;
 % successful calculation
 message='';
 askforparam=true;
-
-calib_func=str2func(parameters.calib_func);
+if cal590==1
+    calib_func=str2func(parameters.calib_func);
+elseif cal590==0
+    calib_func=str2func('@(x)139.06885*((0.08921-x)./(x-0.37016)).^(1/0.99636)');
+end
 val=calib_func(data);
 val(imag(val)~=0)=nan;%rid of imaginary
 val(isinf(val))=nan;%rid of infinity
