@@ -29,28 +29,20 @@ In large part this is a wrapper for many inbuilt MATLAB functions and a number o
 
 And many others….
 
-[Installation](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Installation%205181e556a21e43a5ba79dfcc7f4a69de.md)
+[Installation](Readme_folder/Installation%205181e556a21e43a5ba79dfcc7f4a69de.md)
 
-[The Interface](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/The%20Interface%2063f572a2e7f041f485c81f94f5d9e22e.md)
+[The Interface](Readme_folder/The%20Interface%2063f572a2e7f041f485c81f94f5d9e22e.md)
 
-[Data Import, Combination and Storage](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20Import,%20Combination%20and%20Storage%202d4f884178ea43518ca8ceac2fa16cbd.md)
+[Data Import, Combination and Storage](Readme_folder/Data%20Import,%20Combination%20and%20Storage%202d4f884178ea43518ca8ceac2fa16cbd.md)
 
-[Data Manipulation/Combination](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20Manipulation%20Combination%204871d60e252642a18c357164950e5909.md)
+[Data Manipulation/Combination](Readme_folder/Data%20Manipulation%20Combination%204871d60e252642a18c357164950e5909.md)
 
-[Data extraction](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20extraction%20991e946848be42e592bcfd419197732a.md)
+[Data extraction](Readme_folder/Data%20extraction%20991e946848be42e592bcfd419197732a.md)
 
-[Data Processing](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20Processing%2053cd529b95b04c849639442d1ae2dc53.md)
+[Data Processing](Readme_folder/Data%20Processing%2053cd529b95b04c849639442d1ae2dc53.md)
 
-[The ImData Class](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/The%20ImData%20Class%2090a7263f2cd54511adccbc54ab05c8d7.md)
+[The ImData Class](Readme_folder/The%20ImData%20Class%2090a7263f2cd54511adccbc54ab05c8d7.md)
 
-[Data Output](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Data%20Output%20577457650144400b9b284e95f4e34f57.md)
+[Data Output](Readme_folder/Data%20Output%20577457650144400b9b284e95f4e34f57.md)
 
-[Plans for addition](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Plans%20for%20addition%20fe493e338fd44e19b389848da83b68c6.md)
-
-**The Problem**
-
-Data analysis in modern cellular neuroscience studies is becoming increasing complex as improvements in both microscopy systems and synthetic/genetically encoded probes continue to resolve cellular processes at finer scales and higher temporal resolution.  
-
-In the multiplexed imaging experiments I carry out I have found myself analysing or re-analysing >100 recordings, with each trial consisting of multiple functionally distinct cellular compartments to separately analyse.  Each of these may then have multiple spectrally distinct channels of data as well as accompanying electrophysiology data which must be compared.  There may be tens of trials for each, and different conditions to separately analyse and compare.  There may also be further division based on analysis of spatial components of the data, or additional channels based of fluorescence lifetime imaging data or timings of photo-stimulation shutters opening.
-
-This can mean weeks spent going through 100’s of files, with different formats and programs for analysis, this can generate a mass of folders often linked by paper notes/text files.   Fiji-GUI works to reduce some of this by consolidating imaging data and electrophysiology data within a MATLAB class structure and providing a GUI leveraging UI elements from both Matlab and ImageJ through the MIJ plugin.
+[Plans for addition](Readme_folder/Plans%20for%20addition%20fe493e338fd44e19b389848da83b68c6.md)

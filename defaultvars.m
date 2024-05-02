@@ -56,4 +56,7 @@ function defaultvar=defaultvars()
         defaultvar.back='0.05';  %must be char for inputdlg
         defaultvar.forward='0.02';  %must be char for inputdlg
 %
+        defaultvar.Custom_Functions(1,1)="@(x) diff(x)";
+        defaultvar.Custom_Functions(1,2)="test";
+
 end
