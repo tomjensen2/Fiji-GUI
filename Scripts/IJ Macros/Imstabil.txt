@@ -1,6 +1,0 @@
-run("Image Stabilizer", "transformation=Translation maximum_pyramid_levels=1 template_update_coefficient=1 maximum_iterations=200 error_tolerance=0.0000001 log_transformation_coefficients output_to_a_new_stack");
-selectWindow("allBKGs.log");
-saveAs("Text", "C:/Users/Tom PC/Documents/MATLAB/Fiji-GUI-2P/Main/Translation.log");
-run("Close");
-
-
