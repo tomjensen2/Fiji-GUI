@@ -29,6 +29,8 @@ In large part this is a wrapper for many inbuilt MATLAB functions and a number o
 
 And many others….
 
+It is a work in progress and I largely make updates only when a new analysis is required
+
 [Installation](Readme_folder/Installation%205181e556a21e43a5ba79dfcc7f4a69de.md)
 
 [The Interface](Readme_folder/The%20Interface%2063f572a2e7f041f485c81f94f5d9e22e.md)
