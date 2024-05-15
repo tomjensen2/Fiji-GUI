@@ -3602,21 +3602,21 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             %%Imaging Peak Detection
 
             %set imaging peak parameters
-            Interval=app.MinIntervalsEditField.Value/1000
-            linetime=imgX(2)-imgX(1)
-            Prom=app.MinPromEditField.Value
-            width_min=app.MinWidthEditField.Value/1000
+            Interval=app.MinIntervalsEditField.Value/1000;
+            linetime=imgX(2)-imgX(1);
+            Prom=app.MinPromEditField.Value;
+            width_min=app.MinWidthEditField.Value/1000;
 
             %determine startpoint for electrophysiology
             if app.EphystimingCheckBox.Value==1
-                APstart=elocs(1)
-                xelocs=elocs
+                APstart=elocs(1);
+                xelocs=elocs;
                 %set start to end of trace to analyse
-                ROI_min=APstart-0.020   %Sets minimum time
-                ROI_max=ROI_min+app.ROImaxEditField.Value
+                ROI_min=APstart-0.020; %Sets minimum time
+                ROI_max=ROI_min+app.ROImaxEditField.Value;
             else
-                ROI_min=app.ROIminEditField.Value     %Sets minimum time
-                ROI_max=app.ROImaxEditField.Value
+                ROI_min=app.ROIminEditField.Value ;    %Sets minimum time
+                ROI_max=app.ROImaxEditField.Value;
                 Img_T_Indices=imgX>=ROI_min-0.020 & imgX<=ROI_max;
                 EP_T_Indices=ephysx>=ROI_min & ephysx<=ROI_max;
             end
@@ -3840,26 +3840,6 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 try
                     app.inputvars(1,7)=responselocs(5)
                 end
-
-                %  exportloc=questdlg('Send to Sp2Img?','Yes','Yes', 'No','No');
-                %  exportloc=convertCharsToStrings(exportloc);
-                %  if exportloc=="Yes";
-                %  oneDim_sucs=cell2mat(app.UITable_2.Data(5,:))
-                %  if app.PromButton.Value==1
-                %  oneDim_amp=cell2mat(app.UITable_2.Data(4,:))
-                %  else
-                %  oneDim_amp=cell2mat(app.UITable_2.Data(1,:))
-                %  end
-                % app.sharedapp.triggerspiral(inputvars,oneDim_sucs,oneDim_amp)
-                %  end
-                % if app.DFFButton.Value==1
-                %    app.sharedapp.DFFButton.Value==1
-                %    app.sharedapp.setDFF
-                % end
-                % if app.Switch.Value=='2'
-                %     app.sharedapp.ButtonGroup.SelectedObject.Text='UR'
-                %     app.sharedapp.ChangeImage
-                % end
             end
             try
                 if app.FFButton.Value==1
@@ -3974,68 +3954,18 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.locstable=[]
             app.Widthstable=[]
             app.Promstable=[]
-
-
-
-
             app.DatafileListBox_2.Items={}
-            % currentdir=pwd
-            %             path=uigetdir   %get directory to save excel file
-            %             cd(path)
-            %             app.OUTPUT.iGlu_Resp=logical(app.OUTPUT.iGlu_Resp)%make iGlu resp logical
-            %             %%extract amplitudes for all
-            %             allfail=app.OUTPUT.iGlu_amp(app.OUTPUT.iGlu_Resp==0)
-            %             allsucs=app.OUTPUT.iGlu_amp(app.OUTPUT.iGlu_Resp)
-            %             alltrials=reshape(app.OUTPUT.iGlu_amp,[size(app.OUTPUT.iGlu_amp,1)*size(app.OUTPUT.iGlu_amp,2),1])
-            %
-            %             %1AP
-            %             for i=1:size(app.OUTPUT.iGlu_Resp,2)
-            %                 eval(sprintf('AP%dfail=app.OUTPUT.iGlu_amp(app.OUTPUT.iGlu_Resp(:,%d)==0,%d)',i,i,i))
-            %                 eval(sprintf('AP%dsucs=app.OUTPUT.iGlu_amp(app.OUTPUT.iGlu_Resp(:,%d),%d)',i,i,i))
-            %                 eval(sprintf('writematrix(AP%dfail,''AP%dfail.txt'',''Delimiter'',''tab'')',i,i))
-            %                 eval(sprintf('writematrix(AP%dsucs,''AP%dsucs.txt'',''Delimiter'',''tab'')',i,i))
-            %             end
-            %             writematrix(allsucs,'APallsucs.txt','Delimiter','tab')
-            %             writematrix(allfail,'APallfail.txt','Delimiter','tab')
-            %             writematrix(alltrials,'APalltrials.txt','Delimiter','tab')
-            %             cd(currentdir)
-        end
-
-        % Callback function
-        function getbasicstats(app, event)
-            ind = find(get(app.Prim_Chan_Ax.Children, 'BrushData'));
-            app.selectedXValues=app.Datastore_class(app.Data_Selection,1).XData(:,ind);
-            app.selectedXIndices = logical(get(app.Prim_Chan_Ax.Children, 'BrushData'));
-
-            %             selected_mean=mean(app.roi_2_plot(:,[uint16(app.MinSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime):uint16(app.MaxSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime)]),2);
-            %             selected_min=min(app.roi_2_plot(:,[uint16(app.MinSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime):uint16(app.MaxSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime)]),[],2);
-            %             selected_max=max(app.roi_2_plot(:,[uint16(app.MinSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime):uint16(app.MaxSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime)]),[],2);
-            %             selected_std=std(app.roi_2_plot(:,[uint16(app.MinSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime):uint16(app.MaxSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime)]),[],2);
-            %             selected_sum=sum(app.roi_2_plot(:,[uint16(app.MinSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime):uint16(app.MaxSpinner.Value/app.Datastore_class(app.Data_Selection,1).linetime)]),2);
-            selected_mean=mean(app.roi_2_plot(:,app.selectedXIndices),2);
-            selected_min=min(app.roi_2_plot(:,app.selectedXIndices),[],2);
-            selected_max=max(app.roi_2_plot(:,app.selectedXIndices),[],2);
-            selected_std=std(app.roi_2_plot(:,app.selectedXIndices),[],2);
-            selected_sum=sum(app.roi_2_plot(:,app.selectedXIndices),2);
-            copydata(1,1)=selected_mean
-            copydata(1,2)=selected_min
-            copydata(1,3)=selected_max
-            copydata(1,4)=selected_std
-            copydata(1,5)=selected_sum
-            num2clip(copydata)
-
-
-
+    
         end
 
         % Callback function: MaxSpinner, MinSpinner, SetCursorButton
         function setcursor(app, event)
             %             assignin('base','event',event);
-            a=findall(app.Prim_Chan_Ax,'Type','ConstantLine')
-            delete(a)
+            a=findall(app.Prim_Chan_Ax,'Type','ConstantLine');
+            delete(a);
 
             if event.Source.Type == "uibutton" %if brush is used to define region
-                ind=[]
+                ind=[];
                 try; ind = find(get(app.Prim_Chan_Ax.Children, 'BrushData')); end
                 datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
 
@@ -4053,22 +3983,22 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 app.cursorstruct(selectedcursor).Minimum=app.MinSpinner.Value;
                 app.cursorstruct(selectedcursor).Maximum=app.MaxSpinner.Value;
                 app.cursorstruct(selectedcursor).selectedC1XIndices=datax >= app.cursorstruct(selectedcursor).Minimum & datax<=app.cursorstruct(selectedcursor).Maximum;
-                app.cursorstruct(selectedcursor).selectedC1Values=datax(app.cursorstruct(selectedcursor).selectedC1XIndices)
+                app.cursorstruct(selectedcursor).selectedC1Values=datax(app.cursorstruct(selectedcursor).selectedC1XIndices);
 
 
 
             end
             if app.ShowCursorsButton.Value==1
-                a=findall(app.Prim_Chan_Ax,'Type','ConstantLine')
-                delete(a)
-                app.Draw_Cursors
+                a=findall(app.Prim_Chan_Ax,'Type','ConstantLine');
+                delete(a);
+                app.Draw_Cursors;
             else
-                a=findall(app.Prim_Chan_Ax,'Type','ConstantLine')
-                delete(a)
-                app.Draw_Cursors
-                pause(1)
-                a=findall(app.Prim_Chan_Ax,'Type','ConstantLine')
-                delete(a)
+                a=findall(app.Prim_Chan_Ax,'Type','ConstantLine');
+                delete(a);
+                app.Draw_Cursors;
+                pause(1);
+                a=findall(app.Prim_Chan_Ax,'Type','ConstantLine');
+                delete(a);
             end
             app.Prim_ax_brush.Enable='off'  %disable brush
         end
@@ -4110,21 +4040,16 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         end
 
         % Callback function
-        function removefromarray(app, event)
-
-        end
-
-        % Callback function
         function copydataplot(app, event)
-            a=findall(app.ArrayDataplot,'Type','ConstantLine')
-            delete(a)
+            a=findall(app.ArrayDataplot,'Type','ConstantLine');
+            delete(a);
 
             datax=get(app.ArrayDataplot.Children,'XData');% get xdata
             datay=get(app.ArrayDataplot.Children,'YData');% get ydata
 
-            XYtraces(:,1)=datax
-            XYtraces(:,2)=datay
-            data2clip(cat(1,app.Arraytable.ColumnName.',num2cell(table2array(app.Arraytable.Data))))
+            XYtraces(:,1)=datax;
+            XYtraces(:,2)=datay;
+            data2clip(cat(1,app.Arraytable.ColumnName.',num2cell(table2array(app.Arraytable.Data))));
             % num2clip(XYtraces);%copy to clipboard
         end
 
@@ -4144,43 +4069,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.Arraytable.Data={}
         end
 
-        % Value changed function: NumberDropDown_2
-        function change_array_plotted(app, event)
 
-        end
-
-        % Callback function
-        function getmapsfrompoints(app, event)
-            baseline1= app.Prim_Chan_Ax.Children.Children(1).X
-            baseline2= app.Prim_Chan_Ax.Children.Children(2).X
-            AP1=app.Prim_Chan_Ax.Children.Children(3).X
-            AP2=app.Prim_Chan_Ax.Children.Children(4).X
-            AP3=app.Prim_Chan_Ax.Children.Children(5).X
-            AP4=app.Prim_Chan_Ax.Children.Children(6).X
-            try
-                AP5=app.Prim_Chan_Ax.Children.Children(7).X
-            end
-            inputvars=[baseline1,baseline2,AP1,AP2,AP3,AP4]
-            try
-                inputvars(7)=AP5
-            end
-            app.sharedapp.sp2imgpeaks(inputvars)
-        end
-
-        % Menu selected function: fullMESfileMenu
-        function Load_Full_MES_MESc_file(app, event)
-            if iscell(app.ListBox_2.Value)==1
-                selected_dataitems=cell2mat(app.ListBox_2.Value);
-            else
-                selected_dataitems=app.ListBox_2.Value;
-            end
-            data2crop=copyobj2(app.Datastore_class(selected_dataitems,1));
-
-            normtotalcount(data2crop)
-            a=0
-        end
-
-        % Value changed function: Baseline_Min
+         % Value changed function: Baseline_Min
         function setminyline(app, event)
             %this maybe redundant, probably added when I wanted to display
             %the maxX location on the plot
@@ -4195,10 +4085,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     plot(app.Prim_Chan_Ax,app.profile(:,2),'XData',app.profile(:,1))
                 end
             end
-            %             app.x1line=xline(app.Prim_Chan_Ax, 0, 'b', 'LineWidth', 0.25)
-            %             app.x1line.Value=app.Baseline_Min.Value;
-            %             app.x2line=xline(app.Prim_Chan_Ax, 0, 'b', 'LineWidth', 0.25)
-            %             app.x2line.Value=app.Baseline_Max.Value;
+           
         end
 
         % Callback function
@@ -4324,7 +4211,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             eThreshold2=nanmean(ephysy(:,Ep_F0_Indices),2)-std(ephysy(:,Ep_F0_Indices),[],2)*eProm;
             a=yline(app.Aux_Chan_Ax,eThreshold);
             b=yline(app.Aux_Chan_Ax,eThreshold2);
-            pause(2);
+            pause(0.5);
             delete(a);
             delete(b);
 
@@ -4560,20 +4447,6 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 data2crop(i,1).comment=sprintf('%s_Tr%d',comment,dataitems_index(i))
             end
             app.Datastore_class.findComment(app.ListBox_2);
-
-
-            %             for i=1:size(app.Datastore,1)
-            %                 numberi=sprintf('F%d',i)
-            %                 %             app.ListBox_2.ItemsData{1,i}=get(mestaghandle(numberi),1,'Comment');
-            %                 app.ListBox_2.Items{1,i}=sprintf('%s- %s---%s',numberi,app.Datastore(i).Type,app.Datastore(i).comment);
-            %                 %             app.VariablesTable.Data{i,1}=sprintf('%d',i);
-            %                 %             app.VariablesTable.Data{i,2}=get(mestaghandle(numberi),1,'Comment');
-            %                 %             app.VariablesTable.Data{i,3}=false;
-            %                 app.ListBox_2.ItemsData{1,i}=i;
-            %             end
-
-
-
 
         end
 
