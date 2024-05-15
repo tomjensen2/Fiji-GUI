@@ -1111,7 +1111,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 if event.Button==1
 
                     TData=app.Prim_Chan_Ax.Children.XData;
-                    x=app.Aux_Chan_Ax.CurrentPoint(1,1);y=app.Aux_Chan_Ax.CurrentPoint(1,2);
+                    x=app.Aux_Chan_Ax.CurrentPoint(1,1);y=app.Aux_Chan_Ax.CurrentPoint(1,2);%looks like this should be refreshed using the intersectionpoint value from Hit, might not be backward compatible though
                     xmin=x-0.05*app.Datastore_class(app.Data_Selection,1).linetime;
                     xmax=x+0.05*app.Datastore_class(app.Data_Selection,1).linetime;
                     Clickref=TData>=xmin&TData<=xmax;
@@ -2247,6 +2247,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.VariablesTable.ColumnEditable=[true true true true true false];
             app.VariablesTable.RowName={"1","2","3","4","5","6"};
             banner.close();
+            app.Maindisplay.Children(1).Tag='Prim';
+            app.Maindisplay.Children(2).Tag='Aux';
         end
 
         % Button pushed function: AdjustBCButton, AutocontrastButton,
