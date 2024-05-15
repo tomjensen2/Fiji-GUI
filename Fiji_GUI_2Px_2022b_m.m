@@ -2247,8 +2247,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.VariablesTable.ColumnEditable=[true true true true true false];
             app.VariablesTable.RowName={"1","2","3","4","5","6"};
             banner.close();
-            app.Maindisplay.Children(1).Tag='Prim';
-            app.Maindisplay.Children(2).Tag='Aux';
+            app.Prim_Chan_Ax.Tag='Prim';
+            app.Aux_Chan_Ax.Tag='Aux';
         end
 
         % Button pushed function: AdjustBCButton, AutocontrastButton,
@@ -4708,7 +4708,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     [~,dUG,~,~,~]=data2crop(i,1).FF_Data_2D(1,1,[],1,app.Baseline_Min.Value,app.Baseline_Max.Value,[]);
                     %                      dUG(:,:,framenum)=UG;
                     try
-                        [~,dUR,~,~,~]=data2crop(i,1).FF_Data_2D(1,2,[],1,app.Baseline_Min.Value,app.Baseline_Max.Value,[]);
+                    [~,dUR,~,~,~]=data2crop(i,1).FF_Data_2D(1,2,[],1,app.Baseline_Min.Value,app.Baseline_Max.Value,[]);
                         %                      dUR(:,:,framenum)=UR;
                     end
 
@@ -5202,117 +5202,6 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             end
         end
 
-        % Callback function
-        function Decon_linescan(app, event)
-            %get list of DataItems to operate on
-            if iscell(app.ListBox_2.Value)==1
-                selected_dataitems=cell2mat(app.ListBox_2.Value);
-            else
-                selected_dataitems=app.ListBox_2.Value;
-            end
-            %duplicate data to operate on
-            data2crop=copyobj2(app.Datastore_class(selected_dataitems,1))
-
-            %Enter Amplitude of Exponential Function
-            source=  cat(2,event.Source.Text,'_',event.Source.Parent.Type)
-            if source=="1D iGluSnFR kinetics_uimenu"
-                quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
-                quantal_amp=cell2mat(quantal_amp);
-                dataitem = inputdlg('Enter dataitem Y profile for spiral deconvolution (0 if not wanted)');
-                dataitem=cell2mat(dataitem);
-            else
-            end
-            m=size(data2crop,1);
-            progressbar %set progressbar
-
-            for i=1:size(data2crop,1) %loop through data
-
-                %get channels
-                [~,~,trace,PrimCh_X,~,~]=data2crop(i,1).Plot_TData_1D(1,app.ROIsListBox.Value,app.Prim_Chan_Ax,app.Normalisation.Value,app.Baseline_Min.Value,app.Baseline_Max.Value,1,[],[],[]);
-                try
-                    [~,UG,~,~]=data2crop(i,1).Image_LSData_2D(1,[],app.DFFButton.Value,app.Baseline_Min.Value,app.Baseline_Max.Value);
-                catch
-                    [~,UG,~,~]=data2crop(i,1).Image_LSData_2D(1,[],str2double(app.DFFButton.Value),app.Baseline_Min.Value,app.Baseline_Max.Value);
-                end
-                %                 UG=data2crop(i).UG;
-                %                 trace=data2crop(i).roi1plotG;
-
-                %run deconvolution function
-                if source=="1D iGluSnFR kinetics_uimenu"
-                    [dUG,dUG_trace,exp_function,Kernel] =app.Deconvolution_Func(UG,trace,data2crop(i,1).linetime,quantal_amp,dataitem) %send data for processing
-                else
-                    quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
-                    quantal_amp=str2double(cell2mat(quantal_amp));
-                    [decon_data,k] = Decon3D(data2crop(i,1),quantal_amp)
-                    data2crop(i,1)=decon_data
-                end
-
-
-                %Assign new data to dataitems in loop
-                if source=="1D iGluSnFR kinetics_uimenu"
-                    type='iGlu_Decon';
-                    data2crop(i,1).UG=dUG;
-                    %                 data2crop(i,1).roi1plotG=dUG_trace;
-                    UR=data2crop(i,1).UR;
-                    ScX=data2crop(i,1).ScX;
-                    ScY=data2crop(i,1).ScY;
-                    predScY=data2crop(i,1).predScY;
-                    predScX=data2crop(i,1).predScX;
-                    TiR=data2crop(i,1).TiR;
-                    %                 roi1plotR=data2crop(i,1).roi1plotR;
-                    fs=1/data2crop(i,1).linetime;
-                    for i2=1:size(UR,1);
-                        [x,y]=resample(double(UR(i2,:)),1000,round(fs));
-                        UR1K(i2,:)=x;
-                        [x,y]=resample(double(ScY(i2,:)),1000,round(fs));
-                        ScY1K(i2,:)=x;
-                        [x,y]=resample(double(ScX(i2,:)),1000,round(fs));
-                        ScX1K(i2,:)=x;
-                        [x,y]=resample(double(predScX(i2,:)),1000,round(fs));
-                        predScX1K(i2,:)=x;
-                        [x,y]=resample(double(predScY(i2,:)),1000,round(fs));
-                        predScY1K(i2,:)=x;
-                        %                 [x,y]=resample(double(TiR(i2,:)),1000,round(fs));
-                        %                 TiR1K(i2,:)=x;
-
-                    end
-                    data2crop(i,1).UR=UR1K;
-                    %                 data2crop(i,1).roi1plotR=nanmean(UR1K,1);
-                    data2crop(i,1).ScX=ScX1K;
-                    data2crop(i,1).ScY=ScY1K;
-                    data2crop(i,1).predScX=predScX1K;
-                    data2crop(i,1).predScY=predScY1K;
-                    %                 data2crop(i,1).TiR=TiR1K;
-                    %                 data2crop(i,1).roi1imgG=dUG;
-                    %                 data2crop(i,1).roi1plotG=dUG_trace;
-                    data2crop(i,1).x_pixel_size=0.001;
-                    data2crop(i,1).x_pixel_num=size(dUG,2);
-                    data2crop(i,1).XData=linspace(0,size(dUG,2)*0.001,size(dUG,2));
-                    data2crop(i,1).TData=linspace(0,size(dUG,2)*0.001,size(dUG,2));
-
-                else
-                    type='iGlu_Decon'
-
-                    data2crop(i,1).ParentIdx=data2crop(i,1).Index;
-                    data2crop(i,1).Index=data2crop(i,1).Index+i;
-                    data2crop(i,1).comment=sprintf('%s| %s',type,data2crop(i,1).comment);
-                    data2crop(i,1).scanline.roi=[1,size(data2crop(i,1).UG,1)];
-                end
-
-                %                 for i1=2:8
-                %                     eval(sprintf('data2crop(i,1).roi%dimgG=[];',i1));
-                %                     eval(sprintf('data2crop(i,1).roi%dimgR=[];',i1));
-                %                     eval(sprintf('data2crop(i,1).roi%dplotG=[];',i1));
-                %                     eval(sprintf('data2crop(i,1).roi%dplotR=[];',i1));
-                %                 end
-
-                progressbar(i/m) %update progressbar
-            end
-            %concatenate New Data to Datastore
-            app.Datastore_class=cat(1,app.Datastore_class,data2crop);
-
-            app.Datastore_class.findComment(app.ListBox_2)
-        end
 
         % Button pushed function: ZoomInY
         function zoominY(app, event)
@@ -5590,18 +5479,6 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             end
             app.Datastore_class=cat(1,app.Datastore_class,data2crop);
             app.Datastore_class.findComment(app.ListBox_2)
-        end
-
-        % Cell edit callback: UITable_2
-        function transfer_sucs(app, event)
-            %             indices = event.Indices;
-            %             newData = event.NewData;
-            %
-            %       oneDim_sucs=cell2mat(app.UITable_2.Data(5,:))
-            %
-            %  oneDim_amp=cell2mat(app.UITable_2.Data(1,:))
-            %
-            % app.sharedapp.triggerspiral(0,oneDim_sucs,oneDim_amp)
         end
 
         % Menu selected function: AllMenu
