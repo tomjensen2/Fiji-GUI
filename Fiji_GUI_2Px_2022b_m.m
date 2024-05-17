@@ -7071,7 +7071,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             data2crop=copyobj2(app.Datastore_class(selected_dataitems,1));
             answer = questdlg('Get Decay Traces','Method','From Cursors','From Brush Selction','From Brush Selction');
             if answer=="From Cursors"
-                data2crop=arrayfun(@(x) x.crop_data(2,app.MinSpinner.Value,app.MaxSpinner.Value,"just do"),data2crop,UniformOutput=true);
+                data2crop=arrayfun(@(x) x.crop_data(2,app.MinSpinner.Value,app.MaxSpinner.Value,"just do","-"),data2crop,UniformOutput=true);
             elseif answer=="From Brush Selction"
                 a=findall(app.Prim_Chan_Ax,'Type','ConstantLine');
                 delete(a);
@@ -7098,7 +7098,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             newdata.YData=newdata.tauData;
             newdata.UG=DataUG;
             newdata.UR=DataUR;
-            newdata.Type="FLIM_tau_T"
+            newdata.Type="Line2"
             newdata.comment='Selected FLIM Decays';
             app.Datastore_class=cat(1,app.Datastore_class,newdata);
             app.Datastore_class.findComment(app.ListBox_2);
