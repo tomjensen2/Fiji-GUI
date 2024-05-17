@@ -3636,7 +3636,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
             [~,~,redpeaksplot,redXData,~,~,~,~]=app.Datastore_class(app.Data_Selection,1).Plot_TData_1D(2,app.ROIsListBox.Value,[],app.Normalisation.Value,app.Baseline_Min.Value,app.Baseline_Max.Value,1,[],[],[],[]);
             %              Img_T_Indices=redXData>=app.ROIminEditField.Value & redXData<=app.ROImaxEditField.Value;
-            %             redpeaksplot=redpeaksplot(:,Img_T_Indices);
+            redpeaksplot=redpeaksplot(:,Img_T_Indices);
+             
             if size(redpeaksplot,2)~=numel(imgX)
                 redpeaksplot=interp1(redXData,redpeaksplot,imgX);
             end
