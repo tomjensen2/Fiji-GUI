@@ -896,7 +896,11 @@ classdef ImData < dynamicprops
                             colDist = [repelem(elements_2_bin, floor(size(data2bin,bin_dimension)/elements_2_bin)) rem(size(data2bin,bin_dimension),elements_2_bin)];
                             % probably need to permute here
                             binned_data_as_cell=mat2cell(data2bin,size(data2bin,1),a);
-                            mean_of_binned_cells=cellfun(@nanmean,binned_data_as_cell,repmat({bin_dimension},1,size(a,bin_dimension)),'UniformOutput',0);
+                            if obj(i,1).source=="SPC"
+                                mean_of_binned_cells=cellfun(@nansum,binned_data_as_cell,repmat({bin_dimension},1,size(a,bin_dimension)),'UniformOutput',0);
+                            else
+                                mean_of_binned_cells=cellfun(@nanmean,binned_data_as_cell,repmat({bin_dimension},1,size(a,bin_dimension)),'UniformOutput',0);
+                            end
                             % and then permute again
                             binned_data=cell2mat(mean_of_binned_cells);
                             eval(sprintf('%s=binned_data;',datanames(1,i1)));

@@ -907,9 +907,10 @@ switch importtype
             currentobj.ScY=ones(size(currentobj.UG));
             currentobj.predScX=ones(size(currentobj.UG));
             currentobj.predScY=ones(size(currentobj.UG));
-           currentobj.Type='FLIM_tau_T'
-           currentobj.file='FLIM_tau_T'
-           currentobj.Subtype=sprintf('Single')
+           currentobj.Type='Line2';
+           currentobj.file='Line2';
+           currentobj.Subtype=sprintf('Single');
+           currentobj.source='SPC';
            
            elseif channel==2
            currentobj.UR=squeeze(nansum(newrawdata,2))
@@ -929,9 +930,11 @@ switch importtype
             currentobj.ScY=ones(size(currentobj.UG));
             currentobj.predScX=ones(size(currentobj.UG));
             currentobj.predScY=ones(size(currentobj.UG));
-           currentobj.Type='Line2'
-           currentobj.file='Line2'
-           currentobj.Subtype=sprintf('Single')
+           currentobj.Type='Line2';
+           currentobj.file='Line2';
+           currentobj.Subtype=sprintf('Single');
+           currentobj.scanline.roi=[1;size(currentobj.UG,1)];
+           currentobj.source='SPC';
            end
 
         else

@@ -7257,7 +7257,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
             % Create AverageLine2DataitemsMenu
             app.AverageLine2DataitemsMenu = uimenu(app.EditDataMenu);
-            app.AverageLine2DataitemsMenu.Text = 'Average Line2 Dataitems';
+            app.AverageLine2DataitemsMenu.Text = 'Combine Dataitems';
 
             % Create MeanMenu
             app.MeanMenu = uimenu(app.AverageLine2DataitemsMenu);
