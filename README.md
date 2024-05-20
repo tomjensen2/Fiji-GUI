@@ -5,7 +5,7 @@
     - Opens any imaging file type ImageJ can handle and enables combination with other data types such as patch clamp electrophysiology, FLIM and reference between data types
     - Enable easy one-click access to ImageJ functions aided by metadata from the image loaded
     - Easy extraction of statistics from the imaging data, peaks timings and statistics can be found semi-automatically or manually for multiple channels without having to reduce the dimensions of the data.
-    - Ideal for working with episodic imaging data or from unstructured imaging data  that fromv such as spontaneous responses or epileptiform activity.
+    - Ideal for working with episodic imaging data or unstructured imaging data such as spontaneous responses or epileptiform activity.
 
 Fiji-GUI is a MATLAB based neuroscience oriented data analysis program for integrated live cell imaging/electrophysiology data.  It is largely focused on time series (XT/XYT) image processing in the context of additional recording modalities such as patch clamp or field electrophysiology, but can also make some multi-purpose tasks carried out in ImageJ considerably more simple.
 
