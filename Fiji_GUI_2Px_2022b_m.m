@@ -691,7 +691,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         function results = XLim_shift_listener(app)
             %Action for Primary Data plot X Limit change
             %app.XList=addlistener(app.Prim_Chan_Ax, 'XLim', 'PostSet', @(src, evnt)app.XLim_shift_listener)
-            if app.Prim_Chan_Ax.XLim ~= app.Aux_Chan_Ax.XLim;
+            if app.Prim_Chan_Ax.XLim ~= app.Aux_Chan_Ax.XLim
                 app.Aux_Chan_Ax.XLim = app.Prim_Chan_Ax.XLim;
             elseif app.Aux_Chan_Ax.XLim ~=app.Prim_Chan_Ax.XLim;
                 app.Prim_Chan_Ax.XLim = app.Aux_Chan_Ax.XLim;
@@ -3875,7 +3875,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 selectedXValues=app.Prim_Chan_Ax.Children.XData(1,selectedXIndices);
                 app.ROIminEditField.Value=round(min(selectedXValues),2);
                 app.ROImaxEditField.Value=round(max(selectedXValues),2);
-                app.Prim_ax_brush.Enable='off'  %disable brush
+                app.Prim_ax_brush.Enable='off';  %disable brush
                 return
             end
             app.selectedXIndices = logical(get(app.Prim_Chan_Ax.Children, 'BrushData'));
@@ -3956,7 +3956,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.locstable=[]
             app.Widthstable=[]
             app.Promstable=[]
-            app.DatafileListBox_2.Items={}
+            app.DatafileListBox_2.Items={};
     
         end
 
@@ -4899,7 +4899,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 end
             else
             if app.UseScXYdataMenu_2.Checked==0
-                app.UseScXYdataMenu_2.Checked=1
+                app.UseScXYdataMenu_2.Checked=1;
                 app.UseScXYdataMenu_2.Checked=1
             else
                 app.UseScXYdataMenu_2.Checked=0
