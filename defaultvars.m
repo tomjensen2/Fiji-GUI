@@ -1,12 +1,16 @@
 function defaultvar=defaultvars()
 %% Function to initialise the default parameters for various functions
+        
+        %defaults for Rho binning
+        defaultvar.Rho_binsize=0.075
+
         %Defaults for Kalman filter
         defaultvar.Kalman_gain=0.7;
         defaultvar.Kalman_Percentvar=0.5;
 
         % defaults for Asymmetric least square (asLS) baseline removal
-        defaultvar.aals_smoothness=1e6;
-        defaultvar.aals_min_diff=1e-6;
+        defaultvar.aals_smoothness=1e4;
+        defaultvar.aals_min_diff=1e-4;
 
         % defaults for Spiral Imterpolation
         defaultvar.pixel_size=0.11;

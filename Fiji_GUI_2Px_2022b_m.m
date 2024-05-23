@@ -707,6 +707,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
 
         function [amp,locs,widths,proms,suc_fail,DFFUR_Accum,error,Dataout] = Get_Response_Data(app,APstarts,DATA,event)
+            app.default_vars=defaultvars()
             DATA=copyobj2(DATA);
             error=0
             baseline1=app.Baseline_Min.Value;
@@ -1010,7 +1011,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     'FMapsG',FintimageUG,'FMapsR',FintimageUR,'BKGG',BKGimageUG,'BKGR',BKGimageUR,'SurffitG',[],'SurffitR',[],'PeakData',[]);
 
                 for i=1:size(intimageUG,3)
-                    [obj,theta,rho,Int_Profile,XData_4_plot,Cal_Row,Cal_Col,UGvT]=DATA.twoD_intensity_Profile(intimageUG(:,:,i),DATA.XData,DATA.YData,DATA.XData(2)-DATA.XData(1),0.05);
+                    [obj,theta,rho,Int_Profile,XData_4_plot,Cal_Row,Cal_Col,UGvT]=DATA.twoD_intensity_Profile(intimageUG(:,:,i),DATA.XData,DATA.YData,DATA.XData(2)-DATA.XData(1),app.default_vars.Rho_binsize);
 
                     if i==1
                         peakdata(i).Success=0 ;
@@ -3636,7 +3637,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
             [~,~,redpeaksplot,redXData,~,~,~,~]=app.Datastore_class(app.Data_Selection,1).Plot_TData_1D(2,app.ROIsListBox.Value,[],app.Normalisation.Value,app.Baseline_Min.Value,app.Baseline_Max.Value,1,[],[],[],[]);
             %              Img_T_Indices=redXData>=app.ROIminEditField.Value & redXData<=app.ROImaxEditField.Value;
-            redpeaksplot=redpeaksplot(:,Img_T_Indices);
+%             redpeaksplot=redpeaksplot(:,Img_T_Indices);
              
             if size(redpeaksplot,2)~=numel(imgX)
                 redpeaksplot=interp1(redXData,redpeaksplot,imgX);
@@ -5328,6 +5329,10 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
                 data2crop(i,1).UG=Ytrace;
                 data2crop(i,1).UR=Ytrace;
+                data2crop(i,1).ScX=Ytrace;
+                data2crop(i,1).ScY=Ytrace;
+                data2crop(i,1).predScY=Ytrace;
+                data2crop(i,1).predScX=Ytrace;
                 data2crop(i,1).Aux1=zeros(1,numel(Ytrace));
                 data2crop(i,1).eXData=Xtrace;
                 data2crop(i,1).TData=Xtrace;
@@ -5378,8 +5383,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         app.Datastore_class(selected_dataitems(i),1).Aux1=ephysdata(:,1,dataitem_idx(i));
                         app.Datastore_class(selected_dataitems(i),1).Aux2=ephysdata(:,2,dataitem_idx(i));
                     end
-                    time_start=app.Datastore_class(i,1).TData(1);
-                    app.Datastore_class(selected_dataitems(i),1).eXData=linspace(time_start,time_start+ephysmetadata.sweepLengthInPts/10000,length(app.Datastore_class(selected_dataitems(i),1).Aux1));
+                    time_start=app.Datastore_class(selected_dataitems(i),1).TData(1);
+                    app.Datastore_class(selected_dataitems(i),1).eXData=linspace(time_start,time_start+(ephysmetadata.sweepLengthInPts/10000)/size(ephysdata,3),length(app.Datastore_class(selected_dataitems(i),1).Aux1));
                 end
             else
                 errordlg('Selected Data are not equal length');

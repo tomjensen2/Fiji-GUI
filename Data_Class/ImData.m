@@ -2364,7 +2364,7 @@ classdef ImData < dynamicprops
                         objout(i,1).UR=URData_as_3D;
                     end
                     objout(i,1).comment=sprintf('%s| %s',func2str(func),obj(i,1).comment);
-                elseif obj(i,1).Type=="Line2"
+                elseif obj(i,1).Type=="Line2" | obj(i,1).Type=="Line1"
                     data2bin=double(obj(i,1).UG);
                     try
                         URdata2bin=double(obj(i,1).UR);
