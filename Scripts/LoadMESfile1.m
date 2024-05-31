@@ -390,6 +390,9 @@ for i=1:size(struct_data,1)
                 Line2Data.protocol(k).XData=x;
                 Line2Data.protocol(k).data=y;
             end
+            try
+            Line2Data.FoldedFrameInfo=current_datafile(1).FoldedFrameInfo;
+            end
             p=1;
             if i==1
                 Datastore_class=Line2Data;
