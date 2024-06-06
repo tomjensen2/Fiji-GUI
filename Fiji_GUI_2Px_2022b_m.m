@@ -2298,6 +2298,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     MIJ.run('mpl-magma');
                 case "Green"
                     MIJ.run('Green');
+                    
                 case "Red"
                     MIJ.run('Red');
                 case "Red Hot"
@@ -2353,6 +2354,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 case "Auto Contrast"
                     MIJ.run('Enhance Contrast', 'saturated=0.35');
             end
+            %app.IJM.selectWindow(1)
         end
 
         % Callback function

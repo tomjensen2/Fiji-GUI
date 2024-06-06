@@ -516,7 +516,9 @@ for i=1:size(struct_data,1)
             FFData.Height=current_datafile(1).Height;
             FFData.linetime=ffinfo.frameTimeLength/1000;
             FFData.comment=current_datafile(1).Comment;
+            try
             FFData.posinfo=current_datafile(1).info_Posinfo;
+            end
             FFData.protocol=current_datafile.info_Protocol;
             FFData.points=current_datafile(1).info_PointsEx;
             FFData.scanline=current_datafile(1).ScanLine;
