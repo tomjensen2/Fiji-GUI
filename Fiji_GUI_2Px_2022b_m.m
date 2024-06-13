@@ -4022,7 +4022,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             %Get data from axes,stored as cell array of structures
             for cursor=1:5  %each of the arrays
                 app.cursordata{1,cursor}=struct("Mean",[],"Minimum",[],"Maximum",[],"StDev",[],"Sum",[]);
-                for numplots=1:size(a) %each of the plots in the axes
+                for numplots=1:size(a,1) %each of the plots in the axes
                     roi_2_plot=a(numplots).YData;
                     linetime=a(numplots).XData(2)-a(numplots).XData(1);
                     xdata=a(numplots).XData;
