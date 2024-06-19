@@ -1480,8 +1480,16 @@ classdef ImData < dynamicprops
                             obj(i).UG=obj(i).UG(:,:,index,:); obj(i).UR=obj(i).UR(:,:,index,:);
                     end
 
-                    obj(i).ScX=obj(i).ScX(:,:,index,:);obj(i).Aux1=obj(i).Aux1(ep_index);try;obj(i).Aux2=obj(i).Aux2(ep_index);end;
-                    obj(i).ScY=obj(i).ScY(:,:,index,:);obj(i).predScX=obj(i).predScX(:,:,index,:);obj(i).predScY=obj(i).predScY(:,:,index,:);obj(i).eXData=obj(i).eXData(ep_index);obj(i).eXData=obj(i).eXData-obj(i).eXData(1);
+                    obj(i).ScX=obj(i).ScX(:,:,index,:);
+                    obj(i).Aux1=obj(i).Aux1(ep_index);
+                    try;obj(i).Aux2=obj(i).Aux2(ep_index);end;
+                    obj(i).ScY=obj(i).ScY(:,:,index,:);
+                    obj(i).predScX=obj(i).predScX(:,:,index,:);
+                    obj(i).predScY=obj(i).predScY(:,:,index,:);
+                    try
+                    obj(i).eXData=obj(i).eXData(ep_index);                    
+                    obj(i).eXData=obj(i).eXData-obj(i).eXData(1);
+                    end
 %                     obj(i).ZData=[];
                     if obj(i).TimeDim==3;
                         obj(i).TData=obj(i).TData(index);
@@ -2906,7 +2914,7 @@ classdef ImData < dynamicprops
             % Predefine cells for data aggregation
             dataTypes = {'UG', 'UR', 'ScX', 'ScY', 'predScX', 'predScY', 'Aux1', 'Aux2'};
             arrays = cell(1, numel(dataTypes));
-
+            sizeind=zeros(1,numel(dataTypes));
             % Handle different data dimensions and prepare for aggregation
             for i = 1:numel(dataTypes)
                 type = dataTypes{i};
@@ -2914,16 +2922,28 @@ classdef ImData < dynamicprops
 
                 try
                     arrays{i} = cell2mat(permute(dataCell, dimOrder));
-                catch
+                catch ME
                     % Handle dimension mismatch by resizing, using maximum dimensions
-                    maxDims = max(cell2mat(cellfun(@size, dataCell, 'UniformOutput', false)), [], 1);
-                    dataCell = cellfun(@(x) imresize(x, maxDims(1:ndims(x))), dataCell, 'UniformOutput', false);
+                    [maxDims,ind] = max(cell2mat(cellfun(@size, dataCell, 'UniformOutput', false)), [], 1);
+                    if size(squeeze(maxDims),2)==2
+                        dataCell = cellfun(@(x) imresize(x, maxDims(1:ndims(x))), dataCell, 'UniformOutput', false);
+                    elseif size(squeeze(maxDims),2)==3
+                        dataCell = cellfun(@(x) imresize3(x, maxDims(1:ndims(x))), dataCell, 'UniformOutput', false);
+                    elseif size(squeeze(maxDims),2)==1
+                        dataCell = cellfun(@(x) imresize(x, maxDims(1:ndims(x))), dataCell, 'UniformOutput', false);
+                    end
                     arrays{i} = cell2mat(permute(dataCell, dimOrder));
+                    try
+                    sizeind(i) = max(ind);
+                    end
+
                 end
             end
-
-            % Create output object from the first object as a template
-            objout = copyobj2(objarray(1,1));
+            if ME.identifier == 'MATLAB:catenate:dimensionMismatch'
+                warndlg('Dimension mismatch, ensure the dataitems represent the structure imaged and XYT dimensions if not, the output may be incorrect');
+            end
+            % Create output object from the largest imaging object as a template
+            objout = copyobj2(objarray(sizeind(1),1));
 
             % Apply the specified function if provided, otherwise just assign the array
             if isempty(func)

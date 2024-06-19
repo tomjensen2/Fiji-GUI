@@ -2390,6 +2390,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             elseif event.Source.Text=="Profile Z"
                 MIJ.run('Plot Z-axis Profile');
             end
+            img=app.IJM.getImage;
             app.IJM.runMacroFile(cat(2,app.Macrospath,'MATlogprofile.txt'));
             app.profile=str2num(MIJ.getLog);
             app.roi_2_plot=app.profile(:,2);
