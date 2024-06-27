@@ -2415,7 +2415,9 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 %             app.Prim_Chan_Ax.XLimMode='auto'
             end
             if app.NButton.Value==1
+                
                 app.Set_new_data(event);
+
             end
         end
 
@@ -5147,6 +5149,18 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 try
                     data2crop.TiR=data2crop.TiR([ROISize(2,1):ROISize(2,3)],[ROISize(1,1):ROISize(1,2)],:);
                 end
+
+            elseif data2crop.file=="XY"
+                data2crop.UG=data2crop.UG(ycrop,xcrop,:);
+                data2crop.UR=data2crop.UR(ycrop,xcrop,:);
+                data2crop.ScX=data2crop.ScX(ycrop,xcrop,:);
+                data2crop.ScY=data2crop.ScY(ycrop,xcrop,:);
+                data2crop.XData=data2crop.XData(xcrop);
+                data2crop.YData=data2crop.YData(ycrop);
+                data2crop.comment=sprintf('CropXY | %s',data2crop.comment);
+                try
+                    data2crop.TiR=data2crop.TiR([ROISize(2,1):ROISize(2,3)],[ROISize(1,1):ROISize(1,2)],:);
+                end
             elseif data2crop.file=="Line2"
                 data2crop.UG=data2crop.UG(ycrop,xcrop,:);
                 data2crop.UR=data2crop.UR(ycrop,xcrop,:);
@@ -5624,7 +5638,15 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     a=findall(app.Plot_Panel,'Tag','Display');
                     delete(a);
                 end
+                elseif app.OperationDropDown.Value== "CropX/T"
+                        app.Crop_Time_DImension
+                        return
+                elseif app.OperationDropDown.Value== "CropX/T-Peak"
+                        app.crop_from_EP_tidx
+                        return  
             end
+
+            
 
             PrimCh=get(app.Prim_Chan_Ax,'Children');
             imgX=PrimCh.XData;
@@ -5639,7 +5661,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 app.last_op_ephysx=SecCh.XData;
                 app.last_op_ephysy=SecCh.YData;
             end
-
+            
+            %trace_operations(app.Prim_Chan_Ax,app.Aux_Chan_Ax,app.Prim_Select.Value,app.Aux_select.Value,app.OperationDropDown.Value);
 
 
             if app.Prim_Select.Value==1 & app.Aux_select.Value==1
@@ -5710,6 +5733,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         return
                 end
             elseif app.Prim_Select.Value==1 & app.Aux_select.Value==0
+                
                 switch app.OperationDropDown.Value
                     case "CropX/T"
                         app.Crop_Time_DImension
@@ -5937,6 +5961,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                         assignin('base','plot_Gramm',g);
                 end
             end
+            cla(app.Prim_Chan_Ax);
+            cla(app.Aux_Chan_Ax);
             ImgLims=app.Prim_Chan_Ax.XLim;
             plot(app.Prim_Chan_Ax,imgY,'XData',imgX);
             plot(app.Aux_Chan_Ax,ephysy,'XData',ephysx);

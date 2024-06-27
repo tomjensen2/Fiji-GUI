@@ -842,13 +842,15 @@ classdef ImData < dynamicprops
             %%%
             %%%     Input Arguements:
             %%%                 handle: handle to Listbox,UIListbo
-            %%%                 array
+            %%%                 array, alternately with the string 'clip' sends the
+            %%%                 comments to the system clipboard
             %%%                %%%
             %%%     Output Variable
             %%%                 Logical_Index, binary index of objects matching
             %%%                 Numerical index: row numbers of matching objects
             %%%                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
             comments = convertCharsToStrings(arrayfun(@(o) cell2mat(convertCharsToStrings(o.comment)), objarr, 'UniformOutput', false));
             types = convertCharsToStrings(arrayfun(@(o) cell2mat(convertCharsToStrings(o.Type)), objarr, 'UniformOutput', false));
             Index=1:1:size(objarr,1).';
@@ -860,9 +862,12 @@ classdef ImData < dynamicprops
                 end
             end
             Items=join(cat(2,Indexstr,spacer,types,spacer,comments));
-            handle.Items=Items;
-            handle.ItemsData=Index;
-
+            if handle=='clip'
+                fancyClipboard(mat2cell2(comments,'eframe'));
+            else
+                handle.Items=Items;
+                handle.ItemsData=Index;
+            end
         end
         %% Bins data by pixel number in 1-3 dimensions
         function obj=BinData(obj,x_y_z,num)

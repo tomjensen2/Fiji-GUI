@@ -474,7 +474,7 @@ for i=1:size(struct_data,1)
             
             
             
-            
+            try
             if size(FFData.ScY(:,:,1))== [2 101]
                 [gridx,gridy]=ndgrid(0:FFData.x_pixel_size:FFData.x_pixel_size*FFData.x_pixel_num,0:FFData.y_pixel_size:FFData.y_pixel_size*FFData.y_pixel_num);
                 FFData.ScX=repmat(gridx([1:size(FFData.UG,1)],[1:size(FFData.UG,2)]),1,1,size(FFData.UG,3));
@@ -486,6 +486,9 @@ for i=1:size(struct_data,1)
                  FFData.predScX=repmat(gridx([1:size(FFData.UG,1)],[1:size(FFData.UG,2)]),1,1,size(FFData.UG,3));
                 FFData.predScY=repmat(gridy([1:size(FFData.UG,1)],[1:size(FFData.UG,2)]),1,1,size(FFData.UG,3));
             
+            end
+            catch ME
+                assignin("base",'ME','error')
             end
             try
                 if isfield(current_datafile(1),'AUXi1')==1
