@@ -2415,7 +2415,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 %             app.Prim_Chan_Ax.XLimMode='auto'
             end
             if app.NButton.Value==1
-                
+                %app.IJM.run('Properties... ', 'list');
+                   
                 app.Set_new_data(event);
 
             end
@@ -2509,24 +2510,17 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 %             if app.Datastore_class(app.Data_Selection,1).file=="Line2"
                 %                 try
                 if event.Source.Text=="Chan G"
-                    %app.Datastore=app.Datastore_class(app.Data_Selection,1).IJsave2tif('c:/',"UG",0)
                     Datastore=arrayfun(@(x) x.IJsave2tif('c:/',"UG",0,str2double(app.Normalisation.Value),app.Baseline_Min.Value,app.Baseline_Max.Value),app.Datastore_class(app.Data_Selection,1),"UniformOutput",false);
-                    %                         [~,img,~,~,~]=app.Datastore_class(app.Data_Selection,1).Image_LSData_2D(1,[],app.DFFButton.Value,app.Baseline_Min.Value,app.Baseline_Max.Value,viridis,0,0,0);
-                    %                  img=app.Datastore_class(app.Data_Selection,1).UG;
                 elseif event.Source.Text=="Chan R"
-                    %app.Datastore=app.Datastore_class(app.Data_Selection,1).IJsave2tif('c:/',"UR",0)
                     Datastore=arrayfun(@(x) x.IJsave2tif('c:/',"UR",0,str2double(app.Normalisation.Value),app.Baseline_Min.Value,app.Baseline_Max.Value),app.Datastore_class(app.Data_Selection,1),"UniformOutput",false);
-                    %                         [~,img,~,~,~]=app.Datastore_class(app.Data_Selection,1).Image_LSData_2D(2,[],app.DFFButton.Value,app.Baseline_Min.Value,app.Baseline_Max.Value,viridis,0,0,0);
-                    %                  img=app.Datastore_class(app.Data_Selection,1).UR  ;
                 elseif event.Source.Text=="ScX"
-                    app.Datastore=app.Datastore_class(app.Data_Selection,1).IJsave2tif('c:/',"ScX",0)
-                    Datastore=arrayfun(@(x) x.IJsave2tif('c:/',"ScX",0),app.Datastore_class(app.Data_Selection,1),"UniformOutput",false);
+                    Datastore=arrayfun(@(x) x.IJsave2tif('c:/',"ScX",0,str2double(app.Normalisation.Value),app.Baseline_Min.Value,app.Baseline_Max.Value),app.Datastore_class(app.Data_Selection,1),"UniformOutput",false);
                 elseif event.Source.Text=="ScY"
-                    app.Datastore=app.Datastore_class(app.Data_Selection,1).IJsave2tif('c:/',"ScY",0)
+                    Datastore=arrayfun(@(x) x.IJsave2tif('c:/',"ScY",0,str2double(app.Normalisation.Value),app.Baseline_Min.Value,app.Baseline_Max.Value),app.Datastore_class(app.Data_Selection,1),"UniformOutput",false);
                 elseif event.Source.Text=="TiR"
-                    app.Datastore=app.Datastore_class(app.Data_Selection,1).IJsave2tif('c:/',"TiR",0)
+                    Datastore=arrayfun(@(x) x.IJsave2tif('c:/',"TiR",0,str2double(app.Normalisation.Value),app.Baseline_Min.Value,app.Baseline_Max.Value),app.Datastore_class(app.Data_Selection,1),"UniformOutput",false);
                 elseif event.Source.Text=="All M's"
-                    app.Datastore=app.Datastore_class(app.Data_Selection,1).IJsave2tif('c:/',"Combined",0,str2double(app.Normalisation.Value),app.Baseline_Min.Value,app.Baseline_Max.Value)
+                    Datastore=arrayfun(@(x) x.IJsave2tif('c:/',"Combined",0,str2double(app.Normalisation.Value),app.Baseline_Min.Value,app.Baseline_Max.Value),app.Datastore_class(app.Data_Selection,1),"UniformOutput",false);
                 end
             catch ME
                 if ME.message=="Not enough input arguments."
@@ -5649,8 +5643,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             
 
             PrimCh=get(app.Prim_Chan_Ax,'Children');
-            imgX=PrimCh.XData;
-            imgY=PrimCh.YData;
+            imgx=PrimCh.XData;
+            imgy=PrimCh.YData;
             app.last_op_imgX= PrimCh.XData;
             app.last_op_imgY= PrimCh.YData;
             try
@@ -5663,309 +5657,342 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             end
             
             %trace_operations(app.Prim_Chan_Ax,app.Aux_Chan_Ax,app.Prim_Select.Value,app.Aux_select.Value,app.OperationDropDown.Value);
+            [imgX,imgY,ephysX,ephysY]=arrayfun(@(x,y) trace_operations(x,y,app.Prim_Select.Value,app.Aux_select.Value,app.OperationDropDown.Value),PrimCh,SecCh,"UniformOutput",false);
 
-
-            if app.Prim_Select.Value==1 & app.Aux_select.Value==1
-                switch app.OperationDropDown.Value
-                    case "CropX/T"
-                        app.Crop_Time_DImension
-                        return
-                    case "CropX/T-Peak"
-                        app.crop_from_EP_tidx
-                        return
-
-                    case "Normalise"
-                        max_val=1;baseline=0;
-                        y_scaled=imgY-min(imgY);
-                        y_scaled=y_scaled/max(y_scaled);
-                        imgY=y_scaled*(max_val-baseline)+baseline;
-
-                    case "Filter"
-                        ephysy=sgolayfilt(ephysy,2,app.filterSpinner.Value);
-                        imgY=sgolayfilt(imgY,2,app.filterSpinner.Value);
-                        imgX=imgX;
-                        ephysx=ephysx;
-                    case "Deconv iGlu"
-                        %                         quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
-                        %                         Q=cell2mat(quantal_amp);
-                        %                         [imgX,imgY]=decon_iGluTrace(imgX,imgY,Q)
-                        default=defaultvars();
-                        imgY=deconvexp(imgX,imgY,default.tau);
-                    case "Diff 1"
-                        imgY=diff(imgY);
-                        ephysy=diff(ephysy);
-                        imgX=imgX(2:end);
-                        ephysx=ephysx(2:end);
-
-                    case "Diff 2"
-                        imgY=diff(imgY,2);
-                        ephysy=diff(ephysy,2);
-                        imgX=imgX(2:end);
-                        ephysx=ephysx(2:end);
-                    case "aaLS Smooth"
-                        signal=imgY;
-                        defaults=defaultvars();
-                        baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
-                        imgY=signal-baseline.';
-                        baselineindex=imgX>=app.Baseline_Min.Value & imgX<=app.Baseline_Max.Value;
-                        baseline_val=mean(imgY(1,baselineindex));
-                        imgY=imgY-baseline_val;
-                    case "DF/F"
-
-                    case "DF"
-                    case "Undo"
-                        imgX=app.last_op_imgX;
-                        imgY=app.last_op_imgY;
-                        ephysx=app.last_op_ephysx;
-                        ephysy=app.last_op_ephysy  ;
-                    case "Export Graphics"
-                        copygraphics(app.Plot_Panel,'BackgroundColor', 'none','Resolution',300);
-                    case "SetTLimits"
-                        prompt = {'Min Time (s):','Max Time(s):'};
-                        dlgtitle = 'Change Time Dimension';
-                        dims = 1;
-                        definput = {'0','1'};
-                        answer = cellfun(@str2double,inputdlg(prompt,dlgtitle,dims,definput));
-                        data=app.Datastore_class(app.Data_Selection,1)
-                        for file=1:size(data,1)
-                            data(file,1).Change_TData("both",answer(1,1),answer(2,1));
-                        end
-                        return
+%             if app.Prim_Select.Value==1 & app.Aux_select.Value==1
+%                 switch app.OperationDropDown.Value
+%                     case "CropX/T"
+%                         app.Crop_Time_DImension
+%                         return
+%                     case "CropX/T-Peak"
+%                         app.crop_from_EP_tidx
+%                         return
+% 
+%                     case "Normalise"
+%                         max_val=1;baseline=0;
+%                         y_scaled=imgY-min(imgY);
+%                         y_scaled=y_scaled/max(y_scaled);
+%                         imgY=y_scaled*(max_val-baseline)+baseline;
+% 
+%                     case "Filter"
+%                         ephysy=sgolayfilt(ephysy,2,app.filterSpinner.Value);
+%                         imgY=sgolayfilt(imgY,2,app.filterSpinner.Value);
+%                         imgX=imgX;
+%                         ephysx=ephysx;
+%                     case "Deconv iGlu"
+%                         %                         quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
+%                         %                         Q=cell2mat(quantal_amp);
+%                         %                         [imgX,imgY]=decon_iGluTrace(imgX,imgY,Q)
+%                         default=defaultvars();
+%                         imgY=deconvexp(imgX,imgY,default.tau);
+%                     case "Diff 1"
+%                         imgY=diff(imgY);
+%                         ephysy=diff(ephysy);
+%                         imgX=imgX(2:end);
+%                         ephysx=ephysx(2:end);
+% 
+%                     case "Diff 2"
+%                         imgY=diff(imgY,2);
+%                         ephysy=diff(ephysy,2);
+%                         imgX=imgX(2:end);
+%                         ephysx=ephysx(2:end);
+%                     case "aaLS Smooth"
+%                         signal=imgY;
+%                         defaults=defaultvars();
+%                         baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
+%                         imgY=signal-baseline.';
+%                         baselineindex=imgX>=app.Baseline_Min.Value & imgX<=app.Baseline_Max.Value;
+%                         baseline_val=mean(imgY(1,baselineindex));
+%                         imgY=imgY-baseline_val;
+%                     case "DF/F"
+% 
+%                     case "DF"
+%                     case "Undo"
+%                         imgX=app.last_op_imgX;
+%                         imgY=app.last_op_imgY;
+%                         ephysx=app.last_op_ephysx;
+%                         ephysy=app.last_op_ephysy  ;
+%                     case "Export Graphics"
+%                         copygraphics(app.Plot_Panel,'BackgroundColor', 'none','Resolution',300);
+%                     case "SetTLimits"
+%                         prompt = {'Min Time (s):','Max Time(s):'};
+%                         dlgtitle = 'Change Time Dimension';
+%                         dims = 1;
+%                         definput = {'0','1'};
+%                         answer = cellfun(@str2double,inputdlg(prompt,dlgtitle,dims,definput));
+%                         data=app.Datastore_class(app.Data_Selection,1)
+%                         for file=1:size(data,1)
+%                             data(file,1).Change_TData("both",answer(1,1),answer(2,1));
+%                         end
+%                         return
+%                 end
+%             elseif app.Prim_Select.Value==1 & app.Aux_select.Value==0
+%                 
+%                 switch app.OperationDropDown.Value
+%                     case "CropX/T"
+%                         app.Crop_Time_DImension
+%                         return
+%                     case "CropX/T-Peak"
+%                         app.crop_from_EP_tidx
+%                         return
+%                     case "Copy2Clip"
+%                         datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
+%                         datay=get(app.Prim_Chan_Ax.Children,'YData');% get ydata
+%                         dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
+%                         [XYTrace]=app.CopyTraces2Clipboard(datax,datay,dataname)
+%                         %                         [XYTraces]=app.CopyTraces2Clipboard(imgX,imgY)
+%                     case "Histogram"
+%                         prompt = {'Number of Bins:','Normalisation (count,pdf,probability):'};
+%                         dlgtitle = 'Histogram Options';
+%                         dims = [1 35];
+%                         definput = {'30','count'};
+%                         answer = inputdlg(prompt,dlgtitle,dims,definput)
+%                         [N,edges,bin] = histcounts(imgY,str2double(answer(1,1)),'Normalization',answer{2,1})
+%                         centres=diff(edges)+edges(1:end-1);
+%                         centres=centres(:);
+%                         imgX=centres;
+%                         imgY=N
+%                         cftool(imgX,imgY);
+%                         a=0
+%                     case "Normalise"
+%                         max_val=1;baseline=0;
+%                         y_scaled=imgY-min(imgY);
+%                         y_scaled=y_scaled/max(y_scaled);
+%                         imgY=y_scaled*(max_val-baseline)+baseline;
+%                     case "Filter"
+%                         imgY=sgolayfilt(imgY,2,app.filterSpinner.Value);
+%                         imgX=imgX;
+%                     case "Deconv iGlu"
+%                         %                         quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
+%                         %                         Q=cell2mat(quantal_amp);
+%                         %                         [imgX,imgY]=decon_iGluTrace(imgX,imgY,0.02)
+%                         default=defaultvars();
+%                         imgY=deconvexp(imgX,imgY,default.tau);
+%                     case "Diff 1"
+%                         imgY=diff(imgY);
+%                         imgX=imgX(2:end);
+%                     case "Diff 2"
+%                         imgY=diff(imgY,2);
+%                         imgX=imgX(2:end);
+%                     case "aaLS Smooth"
+%                         signal=imgY;
+%                         defaults=defaultvars();
+%                         baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
+%                         imgY=signal-baseline.';
+%                         baselineindex=imgX>=app.Baseline_Min.Value & imgX<=app.Baseline_Max.Value;
+%                         baseline_val=mean(imgY(1,baselineindex));
+%                         imgY=imgY-baseline_val;
+%                     case "50Hz"
+%                         Fs=1/imgX(2)-imgX(1);
+%                         imgY = notch50Hz(imgY,Fs,50,10); 
+%                     case "DF/F"
+% 
+%                     case "-Baseline"
+%                     case 'Undo'
+%                         imgX=app.last_op_imgX;
+%                         imgY=app.last_op_imgY;
+%                     case "Export Graphics"
+%                         copygraphics(app.Prim_Chan_Ax,'BackgroundColor', 'none','Resolution',300);
+%                     case "Maths"
+%                         spaceList = { '+','-','*','/'};
+%                         [idx, tf] = listdlg('ListString', spaceList,...
+%                             'SelectionMode', 'Single', 'PromptString', 'Select Peak AP', 'Initialvalue', 1,'Name', 'Make choice', 'ListSize',[75,75]);
+%                         value = inputdlg('Enter Value','Value',[1 55]);
+%                         value=str2double(cell2mat(value));
+%                         eval(sprintf('imgY=imgY%s%d',spaceList{1,idx},value));
+%                     case "Traces2Origin"
+%                         datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
+%                         datay=get(app.Prim_Chan_Ax.Children,'YData');% get ydata
+%                         dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
+%                         [XYTrace]=app.CopyTraces2Clipboard(datax,datay,dataname)
+%                         MATLABCallOrigin(XYTrace,dataname,'Traces')
+%                         return
+%                     case "Mat2Origin"
+%                         if app.Datastore_class(app.Data_Selection, 1).Subtype=='Raster' & numel(app.Data_Selection)==1
+%                             if str2double(app.Switch.Value)==1
+%                                 Data=cat(2,app.Datastore_class(app.Data_Selection, 1).XData.',app.Datastore_class(app.Data_Selection, 1).UG.')
+%                             elseif str2double(app.Switch.Value)==2
+%                                 Data=cat(2,app.Datastore_class(app.Data_Selection, 1).XData.',app.Datastore_class(app.Data_Selection, 1).UR.')
+%                             end
+%                             %                          Data=cat(2,XData.',imgDATA.')
+%                             dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
+%                             MATLABCallOrigin(Data,dataname,'Raster')
+%                         end
+%                     case "SetTLimits"
+%                         app.Datastore_class(app.Data_Selection,1).Change_TData("img");
+%                 end
+%             elseif app.Prim_Select.Value==0 & app.Aux_select.Value==1
+%                 switch app.OperationDropDown.Value
+%                     case "CropX/T"
+%                         app.Crop_Time_DImension
+%                         return
+%                     case "CropX/T-Peak"
+%                         app.crop_from_EP_tidx
+%                         return
+%                     case "Copy2Clip"
+%                         datax=get(app.Aux_Chan_Ax.Children,'XData');% get xdata
+%                         datay=get(app.Aux_Chan_Ax.Children,'YData');% get ydata
+%                         dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
+%                         [XYTrace]=app.CopyTraces2Clipboard(datax,datay,dataname)
+%                         return
+%                     case "Normalise"
+%                         max_val=1;baseline=0;
+%                         y_scaled=imgY-min(imgY);
+%                         y_scaled=y_scaled/max(y_scaled);
+%                         imgY=y_scaled*(max_val-baseline)+baseline;
+%                     case "Filter"
+%                         ephysy=sgolayfilt(ephysy,2,app.filterSpinner.Value);
+%                         ephysx=ephysx;
+%                     case "Diff 1"
+%                         ephysy=diff(ephysy);
+%                         ephysx=ephysx(2:end);
+%                     case "Diff 2"
+%                         ephysy=diff(ephysy,2);
+%                         ephysx=ephysx(2:end);
+%                     case "50Hz"
+%                         Fs=1/ephysx(2)-ephysx(1);
+%                         ephysy = notch50Hz(ephysy,Fs,50,10); 
+%                     case "aaLS Smooth"
+%                         signal=ephysy;
+%                         try
+%                             defaults=defaultvars();
+%                             baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
+%                         catch ME
+%                             signal=decimate(ephysy,10);
+%                             ephysx=decimate(ephysx,10);
+%                             defaults=defaultvars();
+%                             baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
+%                         end
+%                         ephysy=signal-baseline.';
+%                         baselineindex=ephysx>=app.Baseline_Min.Value & ephysx<=app.Baseline_Max.Value;
+%                         baseline_val=mean(ephysy(1,baselineindex));
+%                         ephysy=ephysy-baseline_val;
+% 
+%                     case "DF/F"
+%                     case "-Baseline"
+%                         baselineindex=ephysx>=app.Baseline_Min.Value & ephysx<=app.Baseline_Max.Value;
+%                         baseline_val=mean(ephysy(1,baselineindex));
+%                         ephysy=ephysy-baseline_val;
+%                     case "Undo"
+%                         ephysx=app.last_op_ephysx;
+%                         ephysy=app.last_op_ephysy ;
+%                     case "Export Graphics"
+%                         copygraphics(app.Aux_Chan_Ax,'BackgroundColor', 'none','Resolution',300);
+%                     case "Maths"
+%                         spaceList = { '+','-','*','/'};
+%                         [idx, tf] = listdlg('ListString', spaceList,...
+%                             'SelectionMode', 'Single', 'PromptString', 'Select Peak AP', 'Initialvalue', 1,'Name', 'Make choice', 'ListSize',[75,75]);
+%                         value = inputdlg('Enter Value','Value',[1 55]);
+%                         value=str2double(cell2mat(value));
+%                         eval(sprintf('ephysy=ephysy%s%d',spaceList{1,idx},value));
+%                     case "Traces2Origin"
+% 
+%                         datax=get(app.Aux_Chan_Ax.Children,'XData');% get xdata
+%                         datay=get(app.Aux_Chan_Ax.Children,'YData');% get ydata
+%                         dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
+%                         [XYTrace]=app.CopyTraces2Clipboard(datax,datay,dataname)
+%                         MATLABCallOrigin(XYTrace,dataname,'Traces')
+%                         return
+%                      case "Mat2Origin"
+%                         if app.Datastore_class(app.Data_Selection, 1).Subtype=='Raster' & numel(app.Data_Selection)==1
+%                             Data=cat(2,app.Datastore_class(app.Data_Selection, 1).eXData.',app.Datastore_class(app.Data_Selection, 1).Aux1.')
+%                         end
+%                             %                          Data=cat(2,XData.',imgDATA.')
+%                             dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
+%                             MATLABCallOrigin(Data,dataname,'Raster')
+%                         
+%                     case "SetTLimits"
+%                         app.Datastore_class(app.Data_Selection,1).Change_TData("ephys");
+% 
+%                 end
+%             elseif app.Prim_Select.Value==0 & app.Aux_select.Value==0;
+%                 switch app.OperationDropDown.Value
+%                     case "SetTLimits"
+%                         prompt = {'Min Time (s):','Max Time(s):'};
+%                         dlgtitle = 'Change Time Dimension';
+%                         dims = 1;
+%                         definput = {'0','1'};
+%                         answer = cellfun(@str2double,inputdlg(prompt,dlgtitle,dims,definput));
+%                         data=app.Datastore_class(app.Data_Selection,1)
+%                         for file=1:size(data,1)
+%                             data(file,1).Change_TData("both",answer(1,1),answer(2,1));
+%                         end
+%                         return
+% 
+%                     case "CropX/T"
+%                         app.Crop_Time_DImension
+%                         return
+%                     case "CropX/T-Peak"
+%                         app.crop_from_EP_tidx
+%                         return
+%                     case "hist_Gramm"
+%                         figure
+%                         datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
+%                         datay=get(app.Prim_Chan_Ax.Children,'YData');% get ydata
+%                         dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
+%                         if iscell(datax)==1
+%                             g=gramm(x=datay,color=dataname)
+%                         else
+%                             g=gramm(x=datay)
+%                         end
+%                         g.set_names('x','Time(s)','y','au');
+%                         g.stat_bin
+%                         g.draw
+%                         assignin('base','hist_Gramm',g);
+%                     case "plot_Gramm"
+%                         figure
+%                         datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
+%                         datay=get(app.Prim_Chan_Ax.Children,'YData');% get ydata
+%                         dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
+%                         if iscell(datax)==1
+%                             g=gramm(x=datax,y=datay,color=dataname)
+%                         else
+%                             g=gramm(x=datax,y=datay)
+%                         end
+%                         g.set_names('x','Time(s)','y','au');
+%                         g.geom_line
+%                         g.draw
+%                         assignin('base','plot_Gramm',g);
+%                 end
+%             end
+            ImgLims=app.Prim_Chan_Ax.XLim;
+            hold(app.Prim_Chan_Ax,'on');
+            hold(app.Aux_Chan_Ax,'on');
+            try
+                %if a single trace
+                if app.Prim_Select.Value==1
+                    if isvector(imgY)
+                    cla(app.Prim_Chan_Ax);
+                    plot(app.Prim_Chan_Ax,imgY,'XData',imgX);
+                    end
                 end
-            elseif app.Prim_Select.Value==1 & app.Aux_select.Value==0
-                
-                switch app.OperationDropDown.Value
-                    case "CropX/T"
-                        app.Crop_Time_DImension
-                        return
-                    case "CropX/T-Peak"
-                        app.crop_from_EP_tidx
-                        return
-                    case "Copy2Clip"
-                        datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
-                        datay=get(app.Prim_Chan_Ax.Children,'YData');% get ydata
-                        dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
-                        [XYTrace]=app.CopyTraces2Clipboard(datax,datay,dataname)
-                        %                         [XYTraces]=app.CopyTraces2Clipboard(imgX,imgY)
-                    case "Histogram"
-                        prompt = {'Number of Bins:','Normalisation (count,pdf,probability):'};
-                        dlgtitle = 'Histogram Options';
-                        dims = [1 35];
-                        definput = {'30','count'};
-                        answer = inputdlg(prompt,dlgtitle,dims,definput)
-                        [N,edges,bin] = histcounts(imgY,str2double(answer(1,1)),'Normalization',answer{2,1})
-                        centres=diff(edges)+edges(1:end-1);
-                        centres=centres(:);
-                        imgX=centres;
-                        imgY=N
-                        cftool(imgX,imgY);
-                        a=0
-                    case "Normalise"
-                        max_val=1;baseline=0;
-                        y_scaled=imgY-min(imgY);
-                        y_scaled=y_scaled/max(y_scaled);
-                        imgY=y_scaled*(max_val-baseline)+baseline;
-                    case "Filter"
-                        imgY=sgolayfilt(imgY,2,app.filterSpinner.Value);
-                        imgX=imgX;
-                    case "Deconv iGlu"
-                        %                         quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
-                        %                         Q=cell2mat(quantal_amp);
-                        %                         [imgX,imgY]=decon_iGluTrace(imgX,imgY,0.02)
-                        default=defaultvars();
-                        imgY=deconvexp(imgX,imgY,default.tau);
-                    case "Diff 1"
-                        imgY=diff(imgY);
-                        imgX=imgX(2:end);
-                    case "Diff 2"
-                        imgY=diff(imgY,2);
-                        imgX=imgX(2:end);
-                    case "aaLS Smooth"
-                        signal=imgY;
-                        defaults=defaultvars();
-                        baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
-                        imgY=signal-baseline.';
-                        baselineindex=imgX>=app.Baseline_Min.Value & imgX<=app.Baseline_Max.Value;
-                        baseline_val=mean(imgY(1,baselineindex));
-                        imgY=imgY-baseline_val;
-                    case "50Hz"
-                        Fs=1/imgX(2)-imgX(1);
-                        imgY = notch50Hz(imgY,Fs,50,10); 
-                    case "DF/F"
-
-                    case "-Baseline"
-                    case 'Undo'
-                        imgX=app.last_op_imgX;
-                        imgY=app.last_op_imgY;
-                    case "Export Graphics"
-                        copygraphics(app.Prim_Chan_Ax,'BackgroundColor', 'none','Resolution',300);
-                    case "Maths"
-                        spaceList = { '+','-','*','/'};
-                        [idx, tf] = listdlg('ListString', spaceList,...
-                            'SelectionMode', 'Single', 'PromptString', 'Select Peak AP', 'Initialvalue', 1,'Name', 'Make choice', 'ListSize',[75,75]);
-                        value = inputdlg('Enter Value','Value',[1 55]);
-                        value=str2double(cell2mat(value));
-                        eval(sprintf('imgY=imgY%s%d',spaceList{1,idx},value));
-                    case "Traces2Origin"
-                        datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
-                        datay=get(app.Prim_Chan_Ax.Children,'YData');% get ydata
-                        dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
-                        [XYTrace]=app.CopyTraces2Clipboard(datax,datay,dataname)
-                        MATLABCallOrigin(XYTrace,dataname,'Traces')
-                        return
-                    case "Mat2Origin"
-                        if app.Datastore_class(app.Data_Selection, 1).Subtype=='Raster' & numel(app.Data_Selection)==1
-                            if str2double(app.Switch.Value)==1
-                                Data=cat(2,app.Datastore_class(app.Data_Selection, 1).XData.',app.Datastore_class(app.Data_Selection, 1).UG.')
-                            elseif str2double(app.Switch.Value)==2
-                                Data=cat(2,app.Datastore_class(app.Data_Selection, 1).XData.',app.Datastore_class(app.Data_Selection, 1).UR.')
-                            end
-                            %                          Data=cat(2,XData.',imgDATA.')
-                            dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
-                            MATLABCallOrigin(Data,dataname,'Raster')
-                        end
-                    case "SetTLimits"
-                        app.Datastore_class(app.Data_Selection,1).Change_TData("img");
+                if app.Aux_select.Value==1
+                    if isvector(ephysY)
+                    cla(app.Aux_Chan_Ax);
+                    plot(app.Aux_Chan_Ax,ephysY,'XData',ephysX);
+                    end
                 end
-            elseif app.Prim_Select.Value==0 & app.Aux_select.Value==1
-                switch app.OperationDropDown.Value
-                    case "CropX/T"
-                        app.Crop_Time_DImension
-                        return
-                    case "CropX/T-Peak"
-                        app.crop_from_EP_tidx
-                        return
-                    case "Copy2Clip"
-                        datax=get(app.Aux_Chan_Ax.Children,'XData');% get xdata
-                        datay=get(app.Aux_Chan_Ax.Children,'YData');% get ydata
-                        dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
-                        [XYTrace]=app.CopyTraces2Clipboard(datax,datay,dataname)
-                        return
-                    case "Normalise"
-                        max_val=1;baseline=0;
-                        y_scaled=imgY-min(imgY);
-                        y_scaled=y_scaled/max(y_scaled);
-                        imgY=y_scaled*(max_val-baseline)+baseline;
-                    case "Filter"
-                        ephysy=sgolayfilt(ephysy,2,app.filterSpinner.Value);
-                        ephysx=ephysx;
-                    case "Diff 1"
-                        ephysy=diff(ephysy);
-                        ephysx=ephysx(2:end);
-                    case "Diff 2"
-                        ephysy=diff(ephysy,2);
-                        ephysx=ephysx(2:end);
-                    case "50Hz"
-                        Fs=1/ephysx(2)-ephysx(1);
-                        ephysy = notch50Hz(ephysy,Fs,50,10); 
-                    case "aaLS Smooth"
-                        signal=ephysy;
-                        try
-                            defaults=defaultvars();
-                            baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
-                        catch ME
-                            signal=decimate(ephysy,10);
-                            ephysx=decimate(ephysx,10);
-                            defaults=defaultvars();
-                            baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
-                        end
-                        ephysy=signal-baseline.';
-                        baselineindex=ephysx>=app.Baseline_Min.Value & ephysx<=app.Baseline_Max.Value;
-                        baseline_val=mean(ephysy(1,baselineindex));
-                        ephysy=ephysy-baseline_val;
-
-                    case "DF/F"
-                    case "-Baseline"
-                        baselineindex=ephysx>=app.Baseline_Min.Value & ephysx<=app.Baseline_Max.Value;
-                        baseline_val=mean(ephysy(1,baselineindex));
-                        ephysy=ephysy-baseline_val;
-                    case "Undo"
-                        ephysx=app.last_op_ephysx;
-                        ephysy=app.last_op_ephysy ;
-                    case "Export Graphics"
-                        copygraphics(app.Aux_Chan_Ax,'BackgroundColor', 'none','Resolution',300);
-                    case "Maths"
-                        spaceList = { '+','-','*','/'};
-                        [idx, tf] = listdlg('ListString', spaceList,...
-                            'SelectionMode', 'Single', 'PromptString', 'Select Peak AP', 'Initialvalue', 1,'Name', 'Make choice', 'ListSize',[75,75]);
-                        value = inputdlg('Enter Value','Value',[1 55]);
-                        value=str2double(cell2mat(value));
-                        eval(sprintf('ephysy=ephysy%s%d',spaceList{1,idx},value));
-                    case "Traces2Origin"
-
-                        datax=get(app.Aux_Chan_Ax.Children,'XData');% get xdata
-                        datay=get(app.Aux_Chan_Ax.Children,'YData');% get ydata
-                        dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
-                        [XYTrace]=app.CopyTraces2Clipboard(datax,datay,dataname)
-                        MATLABCallOrigin(XYTrace,dataname,'Traces')
-                        return
-                     case "Mat2Origin"
-                        if app.Datastore_class(app.Data_Selection, 1).Subtype=='Raster' & numel(app.Data_Selection)==1
-                            Data=cat(2,app.Datastore_class(app.Data_Selection, 1).eXData.',app.Datastore_class(app.Data_Selection, 1).Aux1.')
-                        end
-                            %                          Data=cat(2,XData.',imgDATA.')
-                            dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
-                            MATLABCallOrigin(Data,dataname,'Raster')
-                        
-                    case "SetTLimits"
-                        app.Datastore_class(app.Data_Selection,1).Change_TData("ephys");
-
+            catch
+                %will be a cell array if not
+                if app.Prim_Select.Value==1
+                    if iscell(imgY)
+                    cla(app.Prim_Chan_Ax);
+                    cellfun(@(x,y) plot(app.Prim_Chan_Ax,x,'XData',y),imgY,imgX,"UniformOutput",true);
+                    end
                 end
-            elseif app.Prim_Select.Value==0 & app.Aux_select.Value==0;
-                switch app.OperationDropDown.Value
-                    case "SetTLimits"
-                        prompt = {'Min Time (s):','Max Time(s):'};
-                        dlgtitle = 'Change Time Dimension';
-                        dims = 1;
-                        definput = {'0','1'};
-                        answer = cellfun(@str2double,inputdlg(prompt,dlgtitle,dims,definput));
-                        data=app.Datastore_class(app.Data_Selection,1)
-                        for file=1:size(data,1)
-                            data(file,1).Change_TData("both",answer(1,1),answer(2,1));
-                        end
-                        return
-
-                    case "CropX/T"
-                        app.Crop_Time_DImension
-                        return
-                    case "CropX/T-Peak"
-                        app.crop_from_EP_tidx
-                        return
-                    case "hist_Gramm"
-                        figure
-                        datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
-                        datay=get(app.Prim_Chan_Ax.Children,'YData');% get ydata
-                        dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
-                        if iscell(datax)==1
-                            g=gramm(x=datay,color=dataname)
-                        else
-                            g=gramm(x=datay)
-                        end
-                        g.set_names('x','Time(s)','y','au');
-                        g.stat_bin
-                        g.draw
-                        assignin('base','hist_Gramm',g);
-                    case "plot_Gramm"
-                        figure
-                        datax=get(app.Prim_Chan_Ax.Children,'XData');% get xdata
-                        datay=get(app.Prim_Chan_Ax.Children,'YData');% get ydata
-                        dataname=get(app.Prim_Chan_Ax.Children,'DisplayName');
-                        if iscell(datax)==1
-                            g=gramm(x=datax,y=datay,color=dataname)
-                        else
-                            g=gramm(x=datax,y=datay)
-                        end
-                        g.set_names('x','Time(s)','y','au');
-                        g.geom_line
-                        g.draw
-                        assignin('base','plot_Gramm',g);
+                if app.Aux_select.Value==1
+                    if iscell(ephysY)
+                    cla(app.Aux_Chan_Ax);
+                    cellfun(@(x,y) plot(app.Aux_Chan_Ax,x,'XData',y),ephysY,ephysX,"UniformOutput",true);
+                    end
                 end
             end
-            cla(app.Prim_Chan_Ax);
-            cla(app.Aux_Chan_Ax);
-            ImgLims=app.Prim_Chan_Ax.XLim;
-            plot(app.Prim_Chan_Ax,imgY,'XData',imgX);
-            plot(app.Aux_Chan_Ax,ephysy,'XData',ephysx);
+            hold(app.Prim_Chan_Ax,'off');
+            hold(app.Aux_Chan_Ax,'off');
+            
+            app.Aux_Chan_Ax.ColorOrder= [0    0.4470    0.7410];
+            app.Prim_Chan_Ax.ColorOrder= [0    0.4470    0.7410];
+
             app.Prim_Chan_Ax.XLim=ImgLims;
             app.Aux_Chan_Ax.XLim=ImgLims;
         end
