@@ -124,9 +124,9 @@ end
 tagstruct.ImageLength = height;
 tagstruct.ImageWidth = width;
 
-% tagstruct.ResolutionUnit = 3;
-% tagstruct.XResolution=(width/options.xsize_um)*1e6;
-% tagstruct.YResolution=(height/options.ysize_um)*1e6;
+tagstruct.ResolutionUnit = 3;
+tagstruct.XResolution=(width/options.xsize_um);
+tagstruct.YResolution=(height/options.ysize_um);
 % tagstruct.ZResolution=(height/options.zsize_um)*1e6;
 tagstruct.PlanarConfiguration = Tiff.PlanarConfiguration.Chunky; % (RGB RGB,RGB RGB,RGB RGB), http://www.awaresystems.be/imaging/tiff/tifftags/planarconfiguration.html
 % (Unsupported)tagstruct.PlanarConfiguration = Tiff.PlanarConfiguration.Separate; % (RRR RRR, GGG GGG, BBB BBB), % http://www.awaresystems.be/imaging/tiff/tifftags/planarconfiguration.html
