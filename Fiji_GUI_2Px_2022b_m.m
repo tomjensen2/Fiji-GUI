@@ -4230,7 +4230,13 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
         % Menu selected function: FGUIfileMenu, LoadFGUIfileMenu
         function loadFGUI(app, event)
-            [filename, pathname] = uigetfile({'*.FGUI','Fiji-GUI Files (*.FGUI)'},'Select FGUI file', 'Select file(s)', 'MultiSelect', 'on');
+            if ~ispc
+            ff=fixfocus;
+                [filename, pathname] = uigetfile({'*.FGUI','Fiji-GUI Files (*.FGUI)'},'Select FGUI file', 'Select file(s)', 'MultiSelect', 'on');
+            delete(ff);
+            else
+                [filename, pathname] = uigetfile({'*.FGUI','Fiji-GUI Files (*.FGUI)'},'Select FGUI file', 'Select file(s)', 'MultiSelect', 'on');
+            end
             file2load=cat(2,pathname,filename)
             data=load(file2load, '-mat' )
 
@@ -5488,7 +5494,14 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
         % Menu selected function: LoadMESMenu
         function LoadMES_as_Objarray(app, event)
-            [file,path] = uigetfile(cat(2,app.defaultdir,'*.mes;*.mesc;*.hdf5;*.oib;*.abf;*.gor;*.tif;*.FGUI;*.mat;*.spc'),'MultiSelect','on');
+            if ~ispc
+                ff=fixfocus;
+                [file,path] = uigetfile(cat(2,app.defaultdir,'*.mes;*.mesc;*.hdf5;*.oib;*.abf;*.gor;*.tif;*.FGUI;*.mat;*.spc'),'MultiSelect','on');
+                delete(ff);
+            else
+                [file,path] = uigetfile(cat(2,app.defaultdir,'*.mes;*.mesc;*.hdf5;*.oib;*.abf;*.gor;*.tif;*.FGUI;*.mat;*.spc'),'MultiSelect','on');
+            end
+
             filename=cat(2,path,file);
             app.autoloadFGUI(filename);
         end
