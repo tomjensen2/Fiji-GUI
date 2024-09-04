@@ -1,13 +1,12 @@
-function trace_operations(prim,aux,Prim_Select,Aux_select,operation)
+function [imgX,imgY,ephysx,ephysy] = trace_operations(prim,aux,Prim_Select,Aux_select,operation)
             
-            PrimCh=get(prim,'Children');
-            imgX=PrimCh.XData;
-            imgY=PrimCh.YData;
+            
+            imgX=prim.XData;
+            imgY=prim.YData;
 
             try
-                SecCh=get(aux,'Children');
-                ephysx=SecCh.XData;
-                ephysy=SecCh.YData;
+                ephysx=aux.XData
+                ephysy=aux.YData;
             end
             h=findobj('Tag','Gui1');
             app=h.RunningAppInstance;  
@@ -308,10 +307,5 @@ function trace_operations(prim,aux,Prim_Select,Aux_select,operation)
                         assignin('base','plot_Gramm',g);
                 end
             end
-            ImgLims=prim.XLim;
-                      
-            plot(prim,imgY,'XData',imgX);
-            plot(aux,ephysy,'XData',ephysx);
-            prim.XLim=ImgLims;
-            aux.XLim=ImgLims;
+            
         end

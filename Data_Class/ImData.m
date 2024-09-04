@@ -2910,6 +2910,7 @@ classdef ImData < dynamicprops
        
         function objout = Line2_2_Mean1(objarray, func, linescan)
             % Define dimensions based on line scan or folded frame (FF)
+            ME.identifier='ok';
             if linescan == 1
                 dimOrder = [3, 2, 1];
             else
@@ -2944,11 +2945,12 @@ classdef ImData < dynamicprops
 
                 end
             end
-            if ME.identifier == 'MATLAB:catenate:dimensionMismatch'
+            if ME.identifier == "MATLAB:catenate:dimensionMismatch"
                 warndlg('Dimension mismatch, ensure the dataitems represent the structure imaged and XYT dimensions if not, the output may be incorrect');
+                objout = copyobj2(objarray(sizeind(1),1));
             end
             % Create output object from the largest imaging object as a template
-            objout = copyobj2(objarray(sizeind(1),1));
+            objout = copyobj2(objarray(1,1));
 
             % Apply the specified function if provided, otherwise just assign the array
             if isempty(func)

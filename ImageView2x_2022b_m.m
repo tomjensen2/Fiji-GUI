@@ -4139,10 +4139,11 @@ app.ReturnDATA=[];
                     copygraphics(ax,'BackgroundColor','none','Resolution',300,'ContentType','vector');
 
                 case "Mat 2 Origin"
-                    data=zeros(size(ax.Children.CData)+1)
-                    data(2:end,2:end)=ax.Children.CData
-                    data(2:end,1)=ax.Children.YData.'
-                    data(1,2:end)=ax.Children.XData
+                    ax1=findobj(ax, 'Type', 'image');
+                    data=zeros(size(ax1.CData)+1)
+                    data(2:end,2:end)=ax1.CData
+                    data(2:end,1)=ax1.YData.'
+                    data(1,2:end)=ax1.XData
                     data(1,1)=nan;
                     MATLABCallOrigin(data,'dataname','Raster')
                 case "Save as RGB"
