@@ -408,9 +408,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         IJ_Line_Selection               matlab.ui.control.Button
         DataItemListMenu                matlab.ui.container.ContextMenu
         TransfertonewfileMenu           matlab.ui.container.Menu
-        LoadFGUIfileMenu                matlab.ui.container.Menu
         LoadMESMenu                     matlab.ui.container.Menu
-        LoadImageFilesMenu              matlab.ui.container.Menu
         DatafilesfromClipboardMenu      matlab.ui.container.Menu
         New_Data_From_Clipboard         matlab.ui.container.Menu
         SaveAllMenu                     matlab.ui.container.Menu

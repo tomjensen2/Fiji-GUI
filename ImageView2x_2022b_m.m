@@ -4137,6 +4137,7 @@ app.ReturnDATA=[];
                 case "Export 2 Fig"
 %                     copyobj(app.MainImageAx,figure)
                     copygraphics(ax,'BackgroundColor','none','Resolution',300,'ContentType','vector');
+
                 case "Mat 2 Origin"
                     data=zeros(size(ax.Children.CData)+1)
                     data(2:end,2:end)=ax.Children.CData
@@ -4144,7 +4145,20 @@ app.ReturnDATA=[];
                     data(1,2:end)=ax.Children.XData
                     data(1,1)=nan;
                     MATLABCallOrigin(data,'dataname','Raster')
-
+                case "Save as RGB"
+                    options.color = true;
+                    options.compress = 'no';
+                    options.message = true;
+                    options.append = false;
+                    options.overwrite = false;
+                    options.xsize_um=range(ax.Children(2).XData);
+                    options.ysize_um=range(ax.Children(2).YData);
+                    options.zsize_um=1;
+                    [file,folder]=uiputfile('*.tif');
+                    path=fullfile(folder,file);
+                    frame = getframe(ax);
+                    img = frame.cdata;
+                    saveastiff(img,path,options);
             end
         end
     end
@@ -4429,10 +4443,10 @@ app.ReturnDATA=[];
 
             % Create OperationsListBox
             app.OperationsListBox = uilistbox(app.BackgroundTab);
-            app.OperationsListBox.Items = {'Copy Mat', 'Colour Bar', 'Export 2 Fig'};
+            app.OperationsListBox.Items = {'Copy Mat', 'Colour Bar', 'Export 2 Fig','Mat 2 Origin','Save as RGB'};
             app.OperationsListBox.Position = [15 224 90 99];
             app.OperationsListBox.Value = 'Copy Mat';
-
+           
             % Create GOButton
             app.GOButton = uibutton(app.BackgroundTab, 'push');
             app.GOButton.ButtonPushedFcn = createCallbackFcn(app, @Operations, true);
