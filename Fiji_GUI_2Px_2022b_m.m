@@ -7805,6 +7805,26 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
             app.NewDataMenu_18.Text = 'New Data';
 
+            %ADD CUSTOM FUNCTIONS INTO THIS LOCATION
+            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
+            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
+            %app.NewDataMenu_18.Text = 'New Data';
+
+            %ADD CUSTOM FUNCTION 1 HERE
+            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
+            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
+            %app.NewDataMenu_18.Text = 'New Data';
+
+            %ADD CUSTOM FUNCTION 2 HERE
+            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
+            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
+            %app.NewDataMenu_18.Text = 'New Data';
+
+            %ADD CUSTOM FUNCTION 3 HERE
+            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
+            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
+            %app.NewDataMenu_18.Text = 'New Data';
+
             % Create FLIMMenu
             app.FLIMMenu = uimenu(app.FijiGUIUIFigure);
             app.FLIMMenu.Text = 'FLIM/         ';
