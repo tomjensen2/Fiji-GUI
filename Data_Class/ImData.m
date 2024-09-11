@@ -2974,6 +2974,12 @@ classdef ImData < dynamicprops
                 objout.XData = objout.TData-objout.TData(1);
                 objout.TData = objout.TData-objout.TData(1);
             end
-end
+        end
+
+        function dataout = ImData2FIMAS(objarray)
+            dataout=fimdata_handle;
+        
+        end
+
     end
 end

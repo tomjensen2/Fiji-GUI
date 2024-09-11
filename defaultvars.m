@@ -63,4 +63,6 @@ function defaultvar=defaultvars()
         defaultvar.Custom_Functions(1,1)="@(x) diff(x)";
         defaultvar.Custom_Functions(1,2)="test";
 
+        %Add variables for custom functions that can be added
+
 end
