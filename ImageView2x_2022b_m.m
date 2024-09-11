@@ -4147,7 +4147,6 @@ app.ReturnDATA=[];
                     data(1,1)=nan;
                     MATLABCallOrigin(data,'dataname','Raster')
                 case "Save as RGB"
-
                     options.color = true;
                     options.compress = 'no';
                     options.message = true;
@@ -4161,8 +4160,6 @@ app.ReturnDATA=[];
                     frame = getframe(ax);
                     img = frame.cdata;
                     saveastiff(img,path,options);
-
-
             end
         end
     end
