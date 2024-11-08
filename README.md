@@ -116,7 +116,7 @@ The Fiji GUI interface is quite busy but I think reasonable user friendly.  I sh
 
 ### Dataitem List / input-output
 
-![Untitled](README.png)
+![Untitled](README/README.png)
 
 The main point of interface is with the Listbox (app.Listbox2) displaying imported data displayed as the concatenation of the item number - data type  - the dataitem comment, which can be edited in the text field box below it.
 
