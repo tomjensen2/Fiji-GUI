@@ -505,12 +505,12 @@ classdef ImData < dynamicprops
                     dims2revmean=ismember(datadims,obj.TimeDim);
                     [~,col]=find(dims2mean);
                     [~,rcol]=find(dims2revmean);
-                    Gdata=squeeze(nanmean(input1,col));Rdata=squeeze(nanmean(input2,col));
+                    Gdata=squeeze(mean(input1,col,"omitnan"));Rdata=squeeze(mean(input2,col,"omitnan"));
                     try
                         F0indices= TData>= F0min & TData <=F0max;
                         ind=1:1:numel(F0indices);
                         f0end=max(ind(F0indices));
-                        Gdatarev=squeeze(nanmean(input1(:,[f0end:size(input1,2)]),rcol));Rdatarev=squeeze(nanmean(input2(:,[f0end:size(input1,2)]),rcol));
+                        Gdatarev=squeeze(mean(input1(:,[f0end:size(input1,2)]),rcol,"omitnan"));Rdatarev=squeeze(mean(input2(:,[f0end:size(input1,2)]),rcol,"omitnan"));
                     catch
                         Gdatarev=[];
                         Rdatarev=[];
@@ -530,8 +530,8 @@ classdef ImData < dynamicprops
                     F0indices=TData>=F0min & TData<=F0max;
                     ind=1:1:numel(F0indices);
                     f0end=max(ind(F0indices));
-                    f_0_G_raw = nanmean(Gdata(:,F0indices),2);
-                    f_0_R_raw = nanmean(Rdata(:,F0indices),2);
+                    f_0_G_raw = mean(Gdata(:,F0indices),2,"default","omitnan");
+                    f_0_R_raw = mean(Rdata(:,F0indices),2,"default","omitnan");
                     scandataG_DF=bsxfun(@minus,double(Gdata(:,:)),f_0_G_raw);
                     scandataR_DF=bsxfun(@minus,double(Rdata(:,:)),f_0_R_raw);
                     GData=bsxfun(@rdivide,double(scandataG_DF(:,:)),f_0_G_raw);
@@ -540,8 +540,8 @@ classdef ImData < dynamicprops
 
                 elseif Norm==2 % DeltaF
                     F0indices=TData>=F0min & TData<=F0max;
-                    f_0_G_raw = nanmean(Gdata(:,F0indices),2);
-                    f_0_R_raw = nanmean(Rdata(:,F0indices),2);
+                    f_0_G_raw = mean(Gdata(:,F0indices),2,"default","omitnan");
+                    f_0_R_raw = mean(Rdata(:,F0indices),2,"default","omitnan");
                     scandataG_DF=bsxfun(@minus,double(Gdata(:,:)),f_0_G_raw);
                     scandataR_DF=bsxfun(@minus,double(Rdata(:,:)),f_0_R_raw);
                     GData=scandataG_DF;
@@ -552,8 +552,8 @@ classdef ImData < dynamicprops
 
                 elseif Norm==3 %dG/R
                     F0indices=TData>=F0min & TData<=F0max;
-                    f_0_G_raw = nanmean(Gdata(:,F0indices),2);
-                    f_0_R_raw = nanmean(Rdata(:,F0indices),2);
+                    f_0_G_raw = mean(Gdata(:,F0indices),2,"default","omitnan");
+                    f_0_R_raw = mean(Rdata(:,F0indices),2,"default","omitnan");
                     scandataG_DF=bsxfun(@minus,double(Gdata(:,:)),f_0_G_raw);
                     scandataG_DFR=double(scandataG_DF)./double(Rdata);
                     scandataR_DF=bsxfun(@minus,double(Rdata(:,:)),f_0_R_raw);
@@ -564,8 +564,8 @@ classdef ImData < dynamicprops
                     RData=Rdata;
                 elseif Norm==5 %R/R0
                     F0indices=TData>=F0min & TData<=F0max;
-                    f_0_G_raw = nanmean(Gdata(:,F0indices),2);
-                    f_0_R_raw = nanmean(Rdata(:,F0indices),2);
+                    f_0_G_raw = mean(Gdata(:,F0indices),2,"default","omitnan");
+                    f_0_R_raw = mean(Rdata(:,F0indices),2,"default","omitnan");
                     scandataG_DF=bsxfun(@minus,double(Gdata(:,:)),f_0_G_raw);
                     scandataG_DFR=double(scandataG_DF)./double(Rdata);
                     scandataR_DF=bsxfun(@minus,double(Rdata(:,:)),f_0_R_raw);
@@ -681,7 +681,7 @@ classdef ImData < dynamicprops
             if channel==1; input=DATA.UG; elseif channel==2 input=DATA.UR; end
             data=input;
             F0indices=TData>=F0min & TData<=F0max;
-            f_0_G_raw = nanmean(data(:,F0indices),2);
+            f_0_G_raw = mean(data(:,F0indices),2,'default','omitnan');
             scandataG_DF=bsxfun(@minus,double(data(:,:)),f_0_G_raw);
             if Norm==1 %DF/F
                 data=bsxfun(@rdivide,double(scandataG_DF(:,:)),f_0_G_raw);
@@ -707,7 +707,7 @@ classdef ImData < dynamicprops
             try
                 %             colormap(handle,cmap);
             end
-            YProf=nanmean(data,2);
+            YProf=mean(data,2,"default","omitnan");
         end
         %% Plots Framescan data as Image F, DF or DF/F
         function [handle_out,data,TData,YData,XData]= FF_Data_2D(DATA,Framenum,channel,handle,Norm,F0min,F0max,cmap,Xh,Yh);
