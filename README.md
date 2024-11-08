@@ -68,11 +68,11 @@ If ImageJ integration is wanted any recent Fiji package is required, most simply
     On Mac this requires right clicking Fiji.app and clicking ‘**Open Package Contents**’, the same will have to be done to access the /java directory in the MATLAB app
     
 
-![Untitled](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Untitled.png)
+![Untitled](README/Untitled.png)
 
 The MATLAB/java directory should look similar to below once complete, 
 
-![Untitled](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Untitled%201.png)
+![Untitled](README/Untitled%201.png)
 
 ### Increasing the Java heap memory
 
@@ -82,7 +82,7 @@ In MATLAB open the Home tab and click Preferences.
 
 Click on General and Java Heap Memory: use the slider to increase the value
 
-![Menu options to change Java Heap memory allocation](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Java_Heap.png)
+![Menu options to change Java Heap memory allocation](README/Java_Heap.png)
 
 Menu options to change Java Heap memory allocation
 
@@ -92,7 +92,7 @@ A key point for correct installation is to make sure the GUI knows where to look
 
 This file will also set many default variables for many functions so it may be worth looking through what can be preset before startup. 
 
-![Untitled](Fiji-GUI%2051a1180ce9b84133a84f9ee13452ecd6/Untitled%202.png)
+![Untitled](README/Untitled%202.png)
 
 ### Setting the MATLAB path
 
@@ -118,7 +118,7 @@ The Fiji GUI interface is quite busy but I think reasonable user friendly.  I sh
 
 ![Untitled](README.png)
 
-The main point of interface is with the Listbox (app.Listbox2) displaying imported data displayed as the concatenation of the item number - [data type (see)](https://www.notion.so/The-ImData-Class-90a7263f2cd54511adccbc54ab05c8d7?pvs=21) - the dataitem comment, which can be edited in the text field box below it.
+The main point of interface is with the Listbox (app.Listbox2) displaying imported data displayed as the concatenation of the item number - data type  - the dataitem comment, which can be edited in the text field box below it.
 
 A single click on an listbox item will call the function to parse the item, and display the averaged trace of the UG property (default) on the primary data axis with the Aux1 property (default) on the secondary axis.  Options in the GUI enable changing default channels, enabling common normalization parameters.  Choice to automatically open items in ImageJ…
 
@@ -132,7 +132,7 @@ All imaging data in Fiji-GUI is stored as a n by 1 array of ImData objects in th
 
 On startup the property is populated with an empty ImData object _template.  
 
-The main point of interface is with the Listbox (app.Listbox2) displaying imported data displayed as the concatenation of the item number - [data type (see)](https://www.notion.so/Data-Types-8fe4143be95d4555acb2b4a46a4a9a85?pvs=21) - comment.
+The main point of interface is with the Listbox (app.Listbox2) displaying imported data displayed as the concatenation of the item number - data type (see) - comment.
 
 If any operation adds or removes items from the app.Datastore_Class property the .findComment function should be called with this Listbox as the input argument.  This will repopulate the listbox with the updated list.
 
