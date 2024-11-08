@@ -29,24 +29,6 @@ In large part this is a wrapper for many inbuilt MATLAB functions and a number o
 
 And many others….
 
-# **Quick Links (docs in progress)**
-
-## [**Installation**](https://www.notion.so/Fiji-GUI-51a1180ce9b84133a84f9ee13452ecd6?pvs=21)
-
-## [The Interface](https://www.notion.so/Fiji-GUI-51a1180ce9b84133a84f9ee13452ecd6?pvs=21)
-
-## [Data Import, Combination and Storage](https://www.notion.so/Fiji-GUI-51a1180ce9b84133a84f9ee13452ecd6?pvs=21)
-
-## [Data Manipulation/Combination](https://www.notion.so/Fiji-GUI-51a1180ce9b84133a84f9ee13452ecd6?pvs=21)
-
-## [Data Extraction](https://www.notion.so/Fiji-GUI-51a1180ce9b84133a84f9ee13452ecd6?pvs=21)
-
-## [The ImData Class](https://www.notion.so/Fiji-GUI-51a1180ce9b84133a84f9ee13452ecd6?pvs=21)
-
-## [Data Output](https://www.notion.so/Fiji-GUI-51a1180ce9b84133a84f9ee13452ecd6?pvs=21)
-
-## [Development](https://www.notion.so/Fiji-GUI-51a1180ce9b84133a84f9ee13452ecd6?pvs=21)
-
 ---
 
 # Installation
