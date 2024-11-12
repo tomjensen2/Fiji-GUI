@@ -6,6 +6,7 @@
     - Ideal for working with episodic imaging data or from unstructured imaging data such as spontaneous responses or epileptiform activity.
     - Opens Femtonics .mes and .mesc files, preserving metadata on equipment states
     - Opens any imaging file type ImageJ can handle and enables combination with other data types such as patch clamp electrophysiology, FLIM and reference between data        types
+
 Fiji-GUI is a MATLAB based neuroscience oriented data analysis program for integrated live cell imaging/electrophysiology data.  It is largely focused on time series (XT/XYT) image processing in the context of additional recording modalities such as patch clamp or field electrophysiology, but can also make some multi-purpose tasks carried out in ImageJ considerably more simple.
 
 FIJI-GUI is designed around use opening Femtonics .mes and .mesc files but can effectively be used for any image file type supported be Fiji/ImageJ.  Specific routines are also present for managing Olympus .oib files and all imaging formats can be really combined with electrophysiology data from axon .abf or WinWCP .wcp files.
