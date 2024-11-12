@@ -1,7 +1,6 @@
-# Fiji-GUI.
+# Fiji-GUI.- Live cell Imaging and electrophysiology analysis GUI integrated with ImageJ
 
-- **Highlights**
-    - Live cell Imaging and electrophysiology analysis GUI integrated with ImageJ
+- **Highlights**    
     - Opens Femtonics .mes and .mesc files, preserving metadata on equipment states
     - Opens any imaging file type ImageJ can handle and enables combination with other data types such as patch clamp electrophysiology, FLIM and reference between data types
     - Enable easy one-click access to ImageJ functions aided by metadata from the image loaded
