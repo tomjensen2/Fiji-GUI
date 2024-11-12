@@ -4019,6 +4019,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             a=app.Prim_Chan_Ax.Children; %get line plots
             a=flipud(a); %axes are stored FILO so Flip array
             %Get data from axes,stored as cell array of structures
+            app.TabGroup3.SelectedTab = app.PlottingTab;%set plotting tab open
+
             for cursor=1:5  %each of the arrays
                 app.cursordata{1,cursor}=struct("Mean",[],"Minimum",[],"Maximum",[],"StDev",[],"Sum",[]);
                 for numplots=1:size(a,1) %each of the plots in the axes
