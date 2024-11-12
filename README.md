@@ -125,6 +125,8 @@ A single click on an listbox item will call the function to parse the item, and 
 Note the **Find Dataitems** textbox.
 
 Often I will have recordings with >100 individual trials in different conditions, sometimes with multiple ROIs.  Once these are separated it can become time consuming to parse the file names/numbers.  As such I added a routine to search the comments field of the ImData array and return the items with either a text string or numeric index see video:
+https://github.com/user-attachments/assets/9c5cf9cf-4420-4ef0-bc7e-4f4a6005e61f
+
 
 # Data Import, Combination and Storage
 
