@@ -1,12 +1,11 @@
-# Fiji-GUI.
+# Fiji-GUI.- Live cell Imaging and electrophysiology analysis GUI integrated with ImageJ
 
-- **Highlights**
-    - Live cell Imaging and electrophysiology analysis GUI integrated with ImageJ
-    - Opens Femtonics .mes and .mesc files, preserving metadata on equipment states
-    - Opens any imaging file type ImageJ can handle and enables combination with other data types such as patch clamp electrophysiology, FLIM and reference between data types
+- **Highlights**    
     - Enable easy one-click access to ImageJ functions aided by metadata from the image loaded
-    - Easy extraction of statistics from the imaging data, peaks timings and statistics can be found semi-automatically or manually for multiple channels without having to reduce the dimensions of the data.
+    - Easy extraction of statistics from the imaging data, peaks timings and statistics can be found semi-automatically or manually for multiple channels without having        to reduce the dimensions of the data.
     - Ideal for working with episodic imaging data or from unstructured imaging data such as spontaneous responses or epileptiform activity.
+    - Opens Femtonics .mes and .mesc files, preserving metadata on equipment states
+    - Opens any imaging file type ImageJ can handle and enables combination with other data types such as patch clamp electrophysiology, FLIM and reference between data        types
 
 Fiji-GUI is a MATLAB based neuroscience oriented data analysis program for integrated live cell imaging/electrophysiology data.  It is largely focused on time series (XT/XYT) image processing in the context of additional recording modalities such as patch clamp or field electrophysiology, but can also make some multi-purpose tasks carried out in ImageJ considerably more simple.
 
@@ -126,6 +125,8 @@ A single click on an listbox item will call the function to parse the item, and 
 Note the **Find Dataitems** textbox.
 
 Often I will have recordings with >100 individual trials in different conditions, sometimes with multiple ROIs.  Once these are separated it can become time consuming to parse the file names/numbers.  As such I added a routine to search the comments field of the ImData array and return the items with either a text string or numeric index see video:
+https://github.com/user-attachments/assets/9c5cf9cf-4420-4ef0-bc7e-4f4a6005e61f
+
 
 # Data Import, Combination and Storage
 
