@@ -2976,7 +2976,8 @@ classdef ImData < dynamicprops
             end
         end
 
-        function dataout = ImData2FIMAS(objarray)
+        function dataout = ImData2FIMAS(obj)
+            
             dataout=fimdata_handle;
         
         end

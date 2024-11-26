@@ -4160,6 +4160,17 @@ app.ReturnDATA=[];
                     frame = getframe(ax);
                     img = frame.cdata;
                     saveastiff(img,path,options);
+                case "Scale Bar"
+                    if app.MeasureButton.Value==1
+                        pixPerUm = 1/app.DATA.x_pixel_size;
+                    elseif app.MeasureButton.Value==0
+                        pixPerUm = 1/app.DATA.bkgx_pixel_size;
+                    end
+                    scalebarLength = 1;  % scalebar will be 10 micrometer long
+                    unit = sprintf('%sm', '\mu'); % micrometer
+                    hScalebar = scalebar(ax, 'x', scalebarLength, unit, 'Location', 'southeast', ...
+                     'ConversionFactor', pixPerUm);
+
             end
         end
     end
@@ -4444,8 +4455,8 @@ app.ReturnDATA=[];
 
             % Create OperationsListBox
             app.OperationsListBox = uilistbox(app.BackgroundTab);
-            app.OperationsListBox.Items = {'Copy Mat', 'Colour Bar', 'Export 2 Fig','Mat 2 Origin','Save as RGB'};
-            app.OperationsListBox.Position = [15 224 90 99];
+            app.OperationsListBox.Items = {'Copy Mat', 'Colour Bar', 'Export 2 Fig','Mat 2 Origin','Save as RGB','Scale Bar'};
+            app.OperationsListBox.Position = [10 215 90 110];
             app.OperationsListBox.Value = 'Copy Mat';
            
             % Create GOButton
