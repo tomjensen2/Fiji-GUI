@@ -1,5 +1,5 @@
 function defaultvar=defaultvars()
-%% Function to initialise the default parameters for various functions
+%% Function to initialise the default parameters 
         
         %defaults for Rho binning
         defaultvar.Rho_binsize=0.075
