@@ -1,4 +1,4 @@
-function setup_run_first=setup_run_first()
+function defaultvar=setup_run_first()
 %% Function to initialise the default parameters and output defaults as .json file
 %% In Progress, should save editing the defaultvars.m file        
         %defaults for Rho binning
@@ -92,19 +92,19 @@ targetFile2 = fullfile(targetDir, [f1, e1]);
 
 % Copy the file
 try
-    copyfile(ij_file, targetFile);
+    copyfile(ij_file, targetFile,'f');
     fprintf('IJ File successfully copied to: %s\n', targetFile);
-    copyfile(mij_file, targetFile2);
+    copyfile(mij_file, targetFile2,'f');
     fprintf('MIJ File successfully copied to: %s\n', targetFile);
 catch ME
     error('Failed to copy the file: %s', ME.message);
 end
 
         %default path for PC MATLAB java files
-        defaultvar.PCpath2add1=sprintf("%s%s",'javaaddpath ',targetFile);
-        defaultvar.PCpath2add2=sprintf("%s%s",'javaaddpath ',targetFile2);
+        defaultvar.PCpath2add1=targetFile;
+        defaultvar.PCpath2add2=targetFile2;
         
 
-writestruct(defaultvar,sprintf('%s%s',defaultvar.FGUIpath,'/defaults.json'))        
+writestruct(defaultvar,sprintf('%s%s',defaultvar.FGUIpath,'\defaults.json'))        
 
 end

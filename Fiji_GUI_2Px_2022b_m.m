@@ -2115,24 +2115,33 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
         % Code that executes after component creation
         function startupFcn(app)
-            app.default_vars=defaultvars;
-            if ispc==1
-                app.MLpath=app.default_vars.MLpath;
-                app.Macrospath=app.default_vars.Macrospath;
-                app.Documentspath=app.default_vars.Documentspath;
-                app.IJPath=app.default_vars.IJPath;
-                app.FGUIpath=app.default_vars.FGUIpath;
+            % Check if the 'defaults.json' file exists
+            jsonFilePath=fullfile(pwd,'defaults.json');
+            if isfile(jsonFilePath)
+                fprintf('Found defaults.json at: %s\n', jsonFilePath);
             else
-                app.MLpath=app.default_vars.macMLpath;
-                app.Macrospath=app.default_vars.macMacrospath;
-                app.Documentspath=app.default_vars.macDocumentspath;
-                app.IJPath=app.default_vars.macIJPath;
-                app.FGUIpath=app.default_vars.macFGUIpath;
+                fprintf('defaults.json not found in the script root directory: %s\n', pwd);
+                defaultvars=setup_run_first();
             end
-            try
-                app.defaultdir=app.default_vars.Documentspath;
-            catch
-            end
+            defaultvars=readstruct("defaults.json");
+            app.default_vars=defaultvars;
+            % if ispc==1
+            %     app.MLpath=app.default_vars.MLpath;
+            %     app.Macrospath=app.default_vars.Macrospath;
+            %     app.Documentspath=app.default_vars.Documentspath;
+            %     app.IJPath=app.default_vars.IJPath;
+            %     app.FGUIpath=app.default_vars.FGUIpath;
+            % else
+            %     app.MLpath=app.default_vars.macMLpath;
+            %     app.Macrospath=app.default_vars.macMacrospath;
+            %     app.Documentspath=app.default_vars.macDocumentspath;
+            %     app.IJPath=app.default_vars.macIJPath;
+            %     app.FGUIpath=app.default_vars.macFGUIpath;
+            % end
+            % try
+            %     app.defaultdir=app.default_vars.Documentspath;
+            % catch
+            % end
             app.file2change=[];
             app.SharedData=0;
             app.DATAfile=[];
@@ -2209,18 +2218,11 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.ArrayDataDisplay=tiledlayout(app.Panel_2,1,1,"TileSpacing","none","Padding","none");
             app.ArrayDataplot=nexttile(app.ArrayDataDisplay,1,[1 1]);
 
-            if ispc==1
-                eval(app.default_vars.PCpath2add1);
-                eval(app.default_vars.PCpath2add2);
-                %javaaddpath 'C:\Program Files\MATLAB\R2022b\java\ij-1.53t.jar';
-
-                MIJ.start(app.IJPath);
-            else
-                eval(app.default_vars.macpath2add1);
-                eval(app.default_vars.macpath2add2);
-                MIJ.start(app.IJPath);
-
-            end
+          
+            javaaddpath(app.default_vars.PCpath2add1);
+            javaaddpath(app.default_vars.PCpath2add2);
+            MIJ.start(app.default_vars.IJPath);
+           
             app.Prim_ax_brush=brush(app.Prim_Chan_Ax);
             app.IJM=ij.IJ()
             banner=app.IJM.openImage(cat(2,app.FGUIpath,'Icons/FijiGUI.png'));
@@ -2263,9 +2265,9 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                     MIJ.run('ROI Manager...');
 
                 case "ROI Manager Add"
-                    app.IJM.runMacroFile(cat(2,app.Macrospath,'AddROI.txt'))
+                    app.IJM.runMacroFile(cat(2,app.default_vars.Macrospath,'AddROI.txt'))
                 case 'Run Macro'
-                    app.IJM.runMacroFile(cat(2,app.Macrospath,'Percentile Threhold.txt'))
+                    app.IJM.runMacroFile(cat(2,app.default_vars.Macrospath,'Percentile Threhold.txt'))
                 case "Fiji Profile"
                     if app.Datastore_class(app.Data_Selection,1).Type=="FF"
                         MIJ.run('Plot Z-axis Profile')
@@ -2393,7 +2395,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 MIJ.run('Plot Z-axis Profile');
             end
             img=app.IJM.getImage;
-            app.IJM.runMacroFile(cat(2,app.Macrospath,'MATlogprofile.txt'));
+            app.IJM.runMacroFile(cat(2,app.default_vars.Macrospath,'MATlogprofile.txt'));
             app.profile=str2num(MIJ.getLog);
             app.roi_2_plot=app.profile(:,2);
             MIJ.selectWindow('Log');
@@ -2877,7 +2879,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
         % Button pushed function: RefreshButton_2
         function Refresh_List_of_IJ_Macros(app, event)
-            a=dir(app.Macrospath);
+            a=dir(app.default_vars.Macrospath);
             files=struct2cell(a);
             app.MacrosListBox_2.Items=files(1,[3:end]).';
             app.MacrosListBox_2.ItemsData =fullfile(files(2,2:end).',files(1,2:end).');
@@ -6504,7 +6506,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         % Button pushed function: RunMacroButton_3
         function MacroRun(app, event)
             txt=app.MacrotorunTextArea.Value;
-            text=sprintf('%s%s',app.Macrospath,'test.txt');
+            text=sprintf('%s%s',app.default_vars.Macrospath,'test.txt');
             writecell(txt, text, 'QuoteStrings',false);
             pause(2);
             app.IJM.runMacroFile(text);
@@ -6516,7 +6518,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         % Value changed function: MacrosListBox_2
         function loadmacro2text(app, event)
 
-            a=dir(app.Macrospath);
+            a=dir(app.default_vars.Macrospath);
             files=struct2cell(a);
             app.MacrosListBox_2.Items=files(1,[3:end]).';
             app.MacrosListBox_2.ItemsData =fullfile(files(2,3:end).',files(1,3:end).');
@@ -6526,7 +6528,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
         % Button pushed function: SaveNewButton
         function Save_new_macro(app, event)
-            text=sprintf('%s%s',app.Macrospath,'new.txt')
+            text=sprintf('%s%s',app.default_vars.Macrospath,'new.txt')
             [filename, pathname, filterindex] = uiputfile(text);
             filetosave=fullfile(pathname,filename)
             txt=app.MacrotorunTextArea.Value
