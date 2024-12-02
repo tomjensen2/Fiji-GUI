@@ -30,8 +30,8 @@ for i=1:size(struct_data,1)
         case 'XY'
 
             XYData=ImData;
-            greens=["H1","pmtUG","UG"];
-            reds=["H2","pmtUR","UR"];
+            greens=["H1","pmtUG","UG","UGFLIM"];
+            reds=["H2","pmtUR","UR","URFLIM"];
             tirs=["TiR","TIR","tir"];
             XYDataTable=struct2table(current_datafile,"AsArray",true);
             ChannelTable=XYDataTable(:,'Channel')
