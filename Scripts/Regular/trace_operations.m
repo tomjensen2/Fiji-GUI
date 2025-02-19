@@ -144,7 +144,7 @@ function [imgX,imgY,ephysx,ephysy] = trace_operations(prim,aux,Prim_Select,Aux_s
                         imgX=app.last_op_imgX;
                         imgY=app.last_op_imgY;
                     case "Export Graphics"
-                        copygraphics(prim,'BackgroundColor', 'none','Resolution',300);
+                        copygraphics(app.Plot_Panel.Children(1).Children(2),'BackgroundColor', 'none','Resolution',300);
                     case "Maths"
                         spaceList = { '+','-','*','/'};
                         [idx, tf] = listdlg('ListString', spaceList,...

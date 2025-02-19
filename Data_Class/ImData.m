@@ -348,6 +348,115 @@ classdef ImData < dynamicprops
                     src.XDim=0;src.YDim=0;src.TimeDim=2;src.tauDim=1;src.DepthDim=0;
             end
         end
+
+        function ellipseParams = selectEllipseROI(obj, I_avg)
+        % selectEllipseROI - Display the time-average image and let the user
+        % draw an elliptical ROI with options to load or save a default ROI.
+        %
+        % This method loads the default ellipse (if available) automatically when
+        % the figure is created and then allows the user to adjust it.
+        % When the ROI is finalized (double-clicked), the figure window closes.
+        %
+        % Output:
+        %   ellipseParams - a struct containing the full ellipse geometry:
+        %       major         - major axis length (via regionprops)
+        %       minor         - minor axis length (via regionprops)
+        %       Centroid      - [x, y] center of the ellipse (from ROI.Center)
+        %       SemiAxes      - [semiAxis1, semiAxis2] (from ROI.SemiAxes)
+        %       RotationAngle - the rotation angle of the ellipse (in degrees)
+        defaults=readstruct('defaults.json');
+        % Define the default file (change path if needed)
+        defaultFile = defaults.FGUIpath+'/Utility/defaultEllipse.mat';
+        
+        % Create a figure and display the time-average image.
+        hFig = figure('Name','Draw Ellipse ROI on Time-Averaged Image');
+        imshow(I_avg, []);
+        title('Draw/adjust ellipse ROI. Use buttons to load/save default.');
+        
+        % If a default ellipse exists, load it automatically.
+        if exist(defaultFile, 'file')
+            loaded = load(defaultFile);
+            if isfield(loaded, 'defaultEllipse')
+                defaultEllipse = loaded.defaultEllipse;
+                hEllipse = drawellipse('Center', defaultEllipse.Center, ...
+                                       'SemiAxes', defaultEllipse.SemiAxes, ...
+                                       'RotationAngle', defaultEllipse.RotationAngle, ...
+                                       'Label','ROI');
+                disp('Default ellipse loaded automatically.');
+            else
+                hEllipse = drawellipse('Label','ROI');
+            end
+        else
+            hEllipse = drawellipse('Label','ROI');
+        end
+        
+        % Create UI buttons for saving (and reloading, if desired) the default ellipse.
+        uicontrol('Style', 'pushbutton', 'String', 'Load Default',...
+            'Position', [20 20 100 30],...
+            'Callback', @loadDefaultEllipse);
+        uicontrol('Style', 'pushbutton', 'String', 'Save Default',...
+            'Position', [140 20 100 30],...
+            'Callback', @saveDefaultEllipse);
+        
+        % Wait for the user to finalize the ROI (double-click to confirm)
+        wait(hEllipse);  
+        center = hEllipse.Center;
+        semiAxes = hEllipse.SemiAxes;
+        rotAngle = hEllipse.RotationAngle;
+        % Once finalized, close the figure window automatically.
+        
+        
+        % Extract the full ellipse geometry.
+        % center    = hEllipse.Center;      % [x, y]
+        % semiAxes  = hEllipse.SemiAxes;      % [semiAxis1, semiAxis2]
+        % rotAngle  = hEllipse.RotationAngle; % in degrees
+        
+        % Also compute major and minor axes via regionprops.
+        mask = createMask(hEllipse);
+        stats = regionprops(mask, 'MajorAxisLength', 'MinorAxisLength');
+        if isempty(stats)
+            error('No valid ellipse ROI detected. Please try again.');
+        end
+        major = stats.MajorAxisLength;
+        minor = stats.MinorAxisLength;
+        
+        % Return the ellipse parameters.
+        ellipseParams = struct('major', major, 'minor', minor, ...
+                               'Centroid', center, 'SemiAxes', semiAxes, ...
+                               'RotationAngle', rotAngle);
+        close(hFig);
+        %% Nested callback: Load default ellipse.
+        function loadDefaultEllipse(~, ~)
+            if exist(defaultFile, 'file')
+                loaded = load(defaultFile);
+                if isfield(loaded, 'defaultEllipse')
+                    % Delete the current ROI and re-create it with stored parameters.
+                    delete(hEllipse);
+                    defaultEllipse = loaded.defaultEllipse;
+                    hEllipse = drawellipse('Center', defaultEllipse.Center, ...
+                                           'SemiAxes', defaultEllipse.SemiAxes, ...
+                                           'RotationAngle', defaultEllipse.RotationAngle, ...
+                                           'Label', 'ROI');
+                    disp('Default ellipse loaded.');
+                else
+                    disp('Default file does not contain full ellipse parameters.');
+                end
+            else
+                disp('No default ellipse file found.');
+            end
+        end
+        
+        %% Nested callback: Save current ellipse as default.
+        function saveDefaultEllipse(~, ~)
+            % Save the full geometry of the ellipse.
+            defaultEllipse.Center = hEllipse.Center;
+            defaultEllipse.SemiAxes = hEllipse.SemiAxes;
+            defaultEllipse.RotationAngle = hEllipse.RotationAngle;
+            save(defaultFile, 'defaultEllipse');
+            disp('Default ellipse saved.');
+        end
+    end
+
         %%  asymmetric least squares smmothing
         function baseline = asLS_smooth(signal, smoothness_param, asym_param)
 
@@ -2981,6 +3090,107 @@ classdef ImData < dynamicprops
             dataout=fimdata_handle;
         
         end
+
+        function objout = geodesicFlattenXYT(obj)
+% GEODESICFLATTENXYT  Process a 3D image (XYT):
+%  - Loads a multi-frame TIFF stack.
+%  - Computes the time-average image.
+%  - Lets you draw an elliptical ROI on the average image.
+%  - Measures the ellipse to determine its half-axes a and b, and centroid.
+%  - Applies an arcsin-based geodesic correction to each frame,
+%    producing an output image whose dimensions are increased to reflect 
+%    the geodesic distances.
+%
+% The mapping is defined as:
+%   x = cx + b * sin(Xgeo / b)
+%   y = cy + a * sin(Ygeo / a)
+%
+% This results in an output flattened image with:
+%    width  ~ pi * b
+%    height ~ pi * a
+%
+% Author: Dr Tom Jensen + ChatGPT
+    objout=copyobj2(obj);
+    % Get datainfo
+    numFrames = length(obj.TData);
+    imHeight = obj.y_pixel_num;
+    imWidth  = obj.x_pixel_num;
+    channels={'UG','UR'};
+    for channel=1:2;
+    I_stack=obj.(channels{1,channel});
+    %% Step 2. Compute the time-average image and display it for ROI selection
+    if channel==1
+    I_avg = mean(I_stack, 3);
+    % hFig = figure('Name','Draw Ellipse ROI on Time-Averaged Image');
+    % imshow(I_avg, []);
+    % title('Draw an elliptical ROI around the object, then double-click to finish');
+    % 
+    % % Let the user draw an ellipse ROI
+    % hEllipse = drawellipse('Label','ROI');
+    % wait(hEllipse);  % wait until ROI drawing is complete
+    % 
+
+    %% Step 3. Extract ellipse parameters
+    % mask = createMask(hEllipse);
+    % stats = regionprops(mask, 'MajorAxisLength', 'MinorAxisLength', 'Centroid');
+    % if isempty(stats)
+    %     error('No valid ellipse ROI detected. Please try again.');
+    % end
+    ellipseParams=obj.selectEllipseROI(I_avg)
+    major = ellipseParams.major;
+    minor = ellipseParams.minor;
+    cx    = ellipseParams.Centroid(1);
+    cy    = ellipseParams.Centroid(2);
+    
+    % Define half-axes:
+    % Here, we assume 'a' corresponds to the vertical half-length and 'b'
+    % to the horizontal half-length. Adjust if necessary.
+    a = major / 2;  
+    b = minor / 2; 
+    end
+    %% Step 4. Define output (flattened) image coordinate grid.
+    % The arcsin mapping expands the range:
+    %    Xgeo in [-b*(pi/2), +b*(pi/2)]  -> width ~ pi*b
+    %    Ygeo in [-a*(pi/2), +a*(pi/2)]  -> height ~ pi*a
+    outWidth  = round(pi * b);
+    outHeight = round(pi * a);
+    
+    % Create output grid (with origin at the center of the output image)
+    [XgeoGrid, YgeoGrid] = meshgrid(1:outWidth, 1:outHeight);
+    cxOut = outWidth / 2;
+    cyOut = outHeight / 2;
+    % Coordinates in the geodesic (flattened) space
+    Xgeo = XgeoGrid - cxOut;
+    Ygeo = YgeoGrid - cyOut;
+    
+    %% Step 5. Process each frame: apply the inverse arcsin mapping.
+    flattenedStack = zeros(outHeight, outWidth, numFrames);
+    % Loop over each frame
+    for k = 1:numFrames
+        I = I_stack(:,:,k);
+        
+        % Compute mapping:
+        % x = cx + b * sin(Xgeo / b)
+        % y = cy + a * sin(Ygeo / a)
+        xMap = cx + b .* sin(Xgeo ./ b);
+        yMap = cy + a .* sin(Ygeo ./ a);
+        
+        % Use interp2 for interpolation (x corresponds to columns, y to rows)
+        I_flat = interp2(I, xMap, yMap, 'linear', 0);
+        flattenedStack(:,:,k) = I_flat;
+    end
+    objout.(channels{1,channel})=flattenedStack;
+    flattenedStack=[];
+    end
+    objout.XData=xMap(1,:);
+    objout.YData=yMap(:,1).';
+    objout.x_pixel_size=objout.XData(2)-objout.XData(1);
+    objout.y_pixel_size=objout.YData(2)-objout.YData(1);
+    objout.x_pixel_num=outWidth;
+    objout.y_pixel_num=outHeight;
+    objout.comment=sprintf('%s_%s',"geodesicFlattenXYT",objout.comment);
+    % output=flattenedStack;    
+end
 
     end
 end

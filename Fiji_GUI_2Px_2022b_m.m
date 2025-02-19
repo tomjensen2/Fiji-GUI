@@ -109,6 +109,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         RasterPlotMenu                  matlab.ui.container.Menu
         GetMapsFromEphysPeaksMenu       matlab.ui.container.Menu
         NewDataMenu_18                  matlab.ui.container.Menu
+        UserFunctions                   matlab.ui.container.Menu
         FLIMMenu                        matlab.ui.container.Menu
         NTCMenu                         matlab.ui.container.Menu
         OGB1Menu                        matlab.ui.container.Menu
@@ -1763,9 +1764,27 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.ProminenceMenu.MenuSelectedFcn = createCallbackFcn(app, @epeakparams, true);
             app.ProminenceMenu.Text = 'Prominence';
 
-            % Plot Dummy Data
-%             plot(app.Prim_Chan_Ax,1:1:100,1:1:100)
-%             plot(app.Aux_Chan_Ax,1:1:100,1:1:100)
+            % Custom Menu Items
+            %ADD CUSTOM FUNCTIONS INTO THIS LOCATION
+            app.UserFunctions = uimenu(app.FunctionsMenu);
+            app.UserFunctions.Text = app.default_vars.Custom_Functions(1,2);
+            app.UserFunctions.MenuSelectedFcn = createCallbackFcn(app, @t_filter2_3D, true);
+
+            %ADD CUSTOM FUNCTION 1 HERE
+            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
+            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
+            %app.NewDataMenu_18.Text = 'New Data';
+
+            %ADD CUSTOM FUNCTION 2 HERE
+            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
+            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
+            %app.NewDataMenu_18.Text = 'New Data';
+
+            %ADD CUSTOM FUNCTION 3 HERE
+            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
+            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
+            %app.NewDataMenu_18.Text = 'New Data';
+%             
 
             %set unused listeners
             %             app.Aux_Chan_Ax.ButtonDownFcn = createCallbackFcn(app, @BrushCall, true);
@@ -2395,7 +2414,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 MIJ.run('Plot Z-axis Profile');
             end
             img=app.IJM.getImage;
-            app.IJM.runMacroFile(cat(2,app.default_vars.Macrospath,'MATlogprofile.txt'));
+            app.IJM.runMacroFile(sprintf('%s%s',app.default_vars.Macrospath,'MATlogprofile.txt'));
             app.profile=str2num(MIJ.getLog);
             app.roi_2_plot=app.profile(:,2);
             MIJ.selectWindow('Log');
@@ -5631,14 +5650,14 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             Channels=["UG","UR","TiR"];
             if event.Source.Text=="All"
                 for i=1:size(Channels,2)
-                    arrayfun(@(x) x.IJsave2tif(folder,Channels(i),1),data2crop,'UniformOutput',1);
+                    arrayfun(@(x) x.IJsave2tif(folder,Channels(i),1,0,0,0.1),data2crop,'UniformOutput',0);
                 end
             elseif event.Source.Text=="UG"
-                arrayfun(@(x) x.IJsave2tif(folder,event.Source.Text,1),data2crop,'UniformOutput',1);
+                arrayfun(@(x) x.IJsave2tif(folder,event.Source.Text,1,0,0,0.1),data2crop,'UniformOutput',0);
             elseif event.Source.Text=="UR"
-                arrayfun(@(x) x.IJsave2tif(folder,event.Source.Text,1),data2crop,'UniformOutput',1);
+                arrayfun(@(x) x.IJsave2tif(folder,event.Source.Text,1,0,0,0.1),data2crop,'UniformOutput',0);
             elseif event.Source.Text=="Combined"
-                arrayfun(@(x) x.IJsave2tif(folder,event.Source.Text,1),data2crop,'UniformOutput',1);
+                arrayfun(@(x) x.IJsave2tif(folder,event.Source.Text,1,0,0,0.1),data2crop,'UniformOutput',0);
             end
 
 
@@ -6785,7 +6804,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         % Menu selected function: DiGluSnFRkineticsMenu, FrameScanMenu_2,
         % ...and 4 other components
         function t_filter2_3D(app, event)
-            app.default_vars=defaultvars();
+            % app.default_vars=defaultvars();
             if event.Source.Text=="Line Scan"
                 bindata = inputdlg('Bin Width (Pixels)');
                 bindata=cell2mat(bindata);
@@ -6802,8 +6821,11 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 %                 obj_out=obj_in.t_Filter(app.filterSpinner.Value,[],bindata,@(x) custom_zscore(x,0,2));
             elseif event.Source.Parent.Text=="Deconvolution"
                 obj_out=obj_in.t_Filter(bindata,@(x) deconvexp(obj_in.TData,x,app.default_vars.tau));
-            elseif event.Source.Parent.Text=="Custom Function"
-                obj_out=obj_in;% here insert code for inputdlg and the function to apply
+            elseif event.Source.Text==app.default_vars.Custom_Functions(1,2);
+                func=str2func(app.default_vars.Custom_Functions(1,1));
+                obj_out=obj_in.t_Filter(bindata,@(x) func(x));
+            elseif event.Source.Text=="Geodesic Spacial Correction";
+                obj_out=arrayfun(@(x) x.geodesicFlattenXYT,obj_in,"UniformOutput",true);
             end
 
             app.Datastore_class=cat(1,app.Datastore_class,obj_out);
@@ -7679,9 +7701,9 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
             % Create Auto_2D_Peak_locsMenu_2
             app.Auto_2D_Peak_locsMenu_2 = uimenu(app.FunctionsMenu);
-            app.Auto_2D_Peak_locsMenu_2.MenuSelectedFcn = createCallbackFcn(app, @Auto_2D_Peak_locations, true);
+            app.Auto_2D_Peak_locsMenu_2.MenuSelectedFcn = createCallbackFcn(app, @t_filter2_3D, true);
             app.Auto_2D_Peak_locsMenu_2.Separator = 'on';
-            app.Auto_2D_Peak_locsMenu_2.Text = 'Auto_2D_Peak_locs';
+            app.Auto_2D_Peak_locsMenu_2.Text = 'Geodesic Spacial Correction';
 
             % Create NormalisationMenu_2
             app.NormalisationMenu_2 = uimenu(app.FunctionsMenu);
@@ -7812,26 +7834,6 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
             app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
             app.NewDataMenu_18.Text = 'New Data';
-
-            %ADD CUSTOM FUNCTIONS INTO THIS LOCATION
-            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
-            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
-            %app.NewDataMenu_18.Text = 'New Data';
-
-            %ADD CUSTOM FUNCTION 1 HERE
-            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
-            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
-            %app.NewDataMenu_18.Text = 'New Data';
-
-            %ADD CUSTOM FUNCTION 2 HERE
-            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
-            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
-            %app.NewDataMenu_18.Text = 'New Data';
-
-            %ADD CUSTOM FUNCTION 3 HERE
-            %app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
-            %app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
-            %app.NewDataMenu_18.Text = 'New Data';
 
             % Create FLIMMenu
             app.FLIMMenu = uimenu(app.FijiGUIUIFigure);

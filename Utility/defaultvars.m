@@ -44,8 +44,8 @@ function defaultvar=defaultvars()
         defaultvar.IJPath='C:/Users/Thomas Jensen/Documents/Fiji.app/';
 
         %default path for mac MATLAB java files
-        defaultvar.macpath2add1="javaaddpath '/Applications/MATLAB_R2022b.app/java/MIJ.jar'";
-        defaultvar.macpath2add2="javaaddpath '/Applications/MATLAB_R2022b.app/java/ij-1.53f.jar'";
+        defaultvar.macpath2add1="javaaddpath '/Applications/MATLAB_R2024a.app/java/MIJ.jar'";
+        defaultvar.macpath2add2="javaaddpath '/Applications/MATLAB_R2024a.app/java/ij-1.53f.jar'";
        
         %default Mac paths on install
         defaultvar.macFGUIpath='/Users/thomasjensen/Documents/Github/Fiji-GUI/';

@@ -1,0 +1,32 @@
+{
+    "Rho_binsize": 0.075,
+    "Kalman_gain": 0.7,
+    "Kalman_Percentvar": 0.5,
+    "aals_smoothness": 10000.0,
+    "aals_min_diff": 0.0001,
+    "pixel_size": 0.11,
+    "smooth": 2.0,
+    "ScX": 1.0,
+    "psffwhm": 0.35,
+    "gain": 0.2,
+    "background": 200.0,
+    "tau": 0.02,
+    "smoothing_window": 2.0,
+    "sgolay_order": 1.0,
+    "sgolay_num": 3.0,
+    "keeptimeidx": "keep",
+    "times": "[0.2,0.3,0.4,0.5,0.6]",
+    "back": "0.05",
+    "forward": "0.02",
+    "Custom_Functions": [
+        "@(x) diff(x)",
+        "Diff1"
+    ],
+    "FGUIpath": "/Users/thomasjensen/Documents/GitHub/Fiji-GUI",
+    "MLpath": "/Users/thomasjensen/Documents/MATLAB",
+    "Macrospath": "/Users/thomasjensen/Documents/GitHub/Fiji-GUI/Scripts/IJ Macros/",
+    "Documentspath": "/Users/thomasjensen/Documents",
+    "IJPath": "/Users/thomasjensen/Documents/Fiji.app",
+    "PCpath2add1": "/Applications/MATLAB_R2024a.app/java/ij-1.53f.jar",
+    "PCpath2add2": "/Applications/MATLAB_R2024a.app/java/mij.jar"
+}
