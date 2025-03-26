@@ -122,6 +122,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         CombineDecayfromDataitemsMenu   matlab.ui.container.Menu
         DebugMenu                       matlab.ui.container.Menu
         DebugMenu_2                     matlab.ui.container.Menu
+        DebugMenu_3                     matlab.ui.container.Menu
         DataOutputMenu                  matlab.ui.container.Menu
         SaveSelectedDataasFGUIMenu      matlab.ui.container.Menu
         ImportmatrixfromworkspaceMenu   matlab.ui.container.Menu
@@ -247,6 +248,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         SecAx_info_label                matlab.ui.control.Label
         PrimAx_info_label               matlab.ui.control.Label
         Plot_Panel                      matlab.ui.container.Panel
+        Popup_Panel                     matlab.ui.container.Panel
         PlotSelectedCheckBox            matlab.ui.control.CheckBox
         DownY                           matlab.ui.control.Button
         UpY                             matlab.ui.control.Button
@@ -1606,10 +1608,10 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
 
 
-        function results = Prepare_trace_data_plots(app)
+        function results = Prepare_trace_data_plots(app,target)
             %%%generate_standard_trace_Display
 
-            app.Maindisplay=tiledlayout(app.Plot_Panel,3,1,"TileSpacing","none","Padding","none");
+            app.Maindisplay=tiledlayout(target,3,1,"TileSpacing","none","Padding","none");
             app.Prim_Chan_Ax=nexttile(app.Maindisplay,1,[2 1])
             app.Aux_Chan_Ax=nexttile(app.Maindisplay,3,[1 1]);
             app.Aux_Chan_Ax.XTick=[]
@@ -1791,7 +1793,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             %             app.Aux_Chan_Ax.ButtonDownFcn.Enabled=false
             %             app.Prim_Chan_Ax.ButtonDownFcn.Enabled=false
             %        app.Aux_Chan_Ax.Tag='Auxillary'
-
+            app.XList=addlistener(app.Prim_Chan_Ax, 'XLim', 'PostSet', @(src, evnt)app.XLim_shift_listener);
+            app.Prim_ax_brush=brush(app.Prim_Chan_Ax);
         end
 
         function results = Set_Brush_Listen(app)
@@ -2231,9 +2234,9 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.ROIsListBox.Items=a;
             app.ROIsListBox.ItemsData=b;
             %            %%%generate_standard_trace_Display
-            app.Prepare_trace_data_plots;
+            app.Prepare_trace_data_plots(app.Plot_Panel);
             %%Important LISTENER for Primary channel X-Axis, incompatable with <2020b for
-            app.XList=addlistener(app.Prim_Chan_Ax, 'XLim', 'PostSet', @(src, evnt)app.XLim_shift_listener);
+            
             app.ArrayDataDisplay=tiledlayout(app.Panel_2,1,1,"TileSpacing","none","Padding","none");
             app.ArrayDataplot=nexttile(app.ArrayDataDisplay,1,[1 1]);
 
@@ -2242,7 +2245,6 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             javaaddpath(app.default_vars.PCpath2add2);
             MIJ.start(app.default_vars.IJPath);
            
-            app.Prim_ax_brush=brush(app.Prim_Chan_Ax);
             app.IJM=ij.IJ()
             banner=app.IJM.openImage(cat(2,app.FGUIpath,'Icons/FijiGUI.png'));
             banner.show();
@@ -2907,7 +2909,26 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         % Menu selected function: DebugMenu
         function Callback_to_Insert_Breakpoint(app, event)
             %insert breakpoint to make debug button
-            'Insert a Breakpoint'
+            DefaultsEditor('defaults.json');
+        end
+        %menu select funct
+        function Callback_to_make_popups(app, event)
+            %first handle checking then
+            if event.Source.Checked==0
+                event.Source.Checked=1;
+            %if popout is wanted then
+            %clear app.Plot_Panel
+                % Create a UI figure
+                fig = uifigure('Name', 'Full-Panel Figure');
+                % Create a panel that fills the entire figure using normalized units
+                app.Plot_Panel = uipanel(fig, 'Units', 'normalized', 'Position', [0 0 1 1]);
+                app.Prepare_trace_data_plots(app.Plot_Panel);
+
+            elseif event.Source.Checked==1
+                event.Source.Checked=0;
+                delete(fig)
+                app.Prepare_trace_data_plots(app.Plot_Panel);
+            end
         end
 
         % Selection changed function: ButtonGroup
@@ -6626,7 +6647,11 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
         % Menu selected function: ClearDataMenu
         function Peakfind_Data(app, event)
-            app.UITable_2.Data=[]
+            if event.Source.Text=="Copy Data"
+                UITable2Clip(app.UITable_2);
+            elseif event.Source.Text=="Clear Data"
+                app.UITable_2.Data=[];
+            end    
         end
 
         % Value changed function: FFButton
@@ -6732,16 +6757,16 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             if event.Source.Text=="New Data"
                 obj_in=copyobj2(app.Datastore_class(app.Data_Selection,1));
                 obj_out=obj_in.bleach_correct(bindata);
-                app.Datastore_class=cat(1,app.Datastore_class,obj_out)
-                app.Datastore_class.findComment(app.ListBox_2)
+                app.Datastore_class=cat(1,app.Datastore_class,obj_out);
+                app.Datastore_class.findComment(app.ListBox_2);
             elseif event.Source.Text=="Replace Data"
                 obj_in=app.Datastore_class(app.Data_Selection,1);
                 obj_out=obj_in.bleach_correct(bindata);
-                app.Datastore_class=cat(1,app.Datastore_class,obj_out)
-                app.Datastore_class.findComment(app.ListBox_2)
+                app.Datastore_class=cat(1,app.Datastore_class,obj_out);
+                app.Datastore_class.findComment(app.ListBox_2);
 
             end
-            app.Datastore_class.findComment(app.ListBox_2)
+            app.Datastore_class.findComment(app.ListBox_2);
         end
 
         % Menu selected function: NewDataMenu_15, ReplaceDataMenu_4
@@ -7888,12 +7913,20 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
             % Create DebugMenu
             app.DebugMenu = uimenu(app.FijiGUIUIFigure);
-            app.DebugMenu.MenuSelectedFcn = createCallbackFcn(app, @Callback_to_Insert_Breakpoint, true);
-            app.DebugMenu.Text = 'Debug/           ';
+            app.DebugMenu.Text = 'Defaults/           ';
+       
 
             % Create DebugMenu_2
             app.DebugMenu_2 = uimenu(app.DebugMenu);
-            app.DebugMenu_2.Text = 'Debug';
+            app.DebugMenu_2.Text = 'Edit Default Values';
+            app.DebugMenu_2.MenuSelectedFcn = createCallbackFcn(app, @Callback_to_Insert_Breakpoint, true);
+
+            % Create DebugMenu_2
+            app.DebugMenu_3 = uimenu(app.DebugMenu);
+            app.DebugMenu_3.Text = 'Popout Plots';
+            app.DebugMenu_3.MenuSelectedFcn = createCallbackFcn(app, @Callback_to_make_popups, true);
+           
+
 
             % Create DataOutputMenu
             app.DataOutputMenu = uimenu(app.FijiGUIUIFigure);
@@ -9637,7 +9670,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
             % Create OperationDropDown
             app.OperationDropDown = uidropdown(app.FijiGUIUIFigure);
-            app.OperationDropDown.Items = {'Filter', 'Copy2Clip', 'Normalise', 'SetTLimits', 'CropX/T', 'CropX/T-Peak', 'Histogram', 'Deconv iGlu', 'Diff 1', 'Diff 2', 'aaLS Smooth', 'DF/F', 'DF', '-Baseline', 'Maths', 'Undo', 'Export Graphics', 'Concatenate', 'Traces2Origin', 'Mat2Origin', '50Hz'};
+            app.OperationDropDown.Items = {'Filter', 'Copy2Clip', 'Normalise', 'SetTLimits', 'CropX/T', 'CropX/T-Peak', 'Histogram', 'Deconv iGlu', 'Diff 1', 'Diff 2', 'aaLS Smooth','aaLS Test', 'DF/F', 'DF', '-Baseline', 'Maths', 'Undo', 'Export Graphics', 'Concatenate', 'Traces2Origin', 'Mat2Origin', '50Hz','plot_Gramm'};
             app.OperationDropDown.Position = [1068 708 76 22];
             app.OperationDropDown.Value = 'Filter';
 
@@ -9884,6 +9917,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
             % Create CopyDataMenu
             app.CopyDataMenu = uimenu(app.ContextMenu4);
+            app.CopyDataMenu.MenuSelectedFcn = createCallbackFcn(app, @Peakfind_Data, true);
             app.CopyDataMenu.Text = 'Copy Data';
 
             % Assign app.ContextMenu4

@@ -1,5 +1,6 @@
 function [imgX,imgY,ephysx,ephysy] = trace_operations(prim,aux,Prim_Select,Aux_select,operation)
-            
+            defaults=readstruct("defaults.json");
+            %app.default_vars=defaultvars;
             
             imgX=prim.XData;
             imgY=prim.YData;
@@ -14,10 +15,10 @@ function [imgX,imgY,ephysx,ephysy] = trace_operations(prim,aux,Prim_Select,Aux_s
             if Prim_Select==1 & Aux_select==1
                 switch operation
                     case "CropX/T"
-                        app.Crop_Time_DImension
+                        app.Crop_Time_DImension;
                         return
                     case "CropX/T-Peak"
-                        app.crop_from_EP_tidx
+                        app.crop_from_EP_tidx;
                         return
 
                     case "Normalise"
@@ -35,8 +36,8 @@ function [imgX,imgY,ephysx,ephysy] = trace_operations(prim,aux,Prim_Select,Aux_s
                         %                         quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
                         %                         Q=cell2mat(quantal_amp);
                         %                         [imgX,imgY]=decon_iGluTrace(imgX,imgY,Q)
-                        default=defaultvars();
-                        imgY=deconvexp(imgX,imgY,default.tau);
+                       
+                        imgY=deconvexp(imgX,imgY,defaults.tau);
                     case "Diff 1"
                         imgY=diff(imgY);
                         ephysy=diff(ephysy);
@@ -50,12 +51,23 @@ function [imgX,imgY,ephysx,ephysy] = trace_operations(prim,aux,Prim_Select,Aux_s
                         ephysx=ephysx(2:end);
                     case "aaLS Smooth"
                         signal=imgY;
-                        defaults=defaultvars();
+                        %defaults=defaultvars();
                         baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
                         imgY=signal-baseline.';
                         baselineindex=imgX>=app.Baseline_Min.Value & imgX<=app.Baseline_Max.Value;
                         baseline_val=mean(imgY(1,baselineindex));
                         imgY=imgY-baseline_val;
+                    case "aaLS Test"
+                        signal=imgY;
+                        %defaults=defaultvars();
+                        baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
+                        imgY=baseline.';
+                        %Plots the fitting line profile
+                        hold(app.Prim_Chan_Ax,'on');
+                            plot(app.Prim_Chan_Ax,imgX,imgY);
+                            pause(3)
+                        hold(app.Prim_Chan_Ax,'off');
+                        return
                     case "DF/F"
 
                     case "DF"
@@ -118,8 +130,8 @@ function [imgX,imgY,ephysx,ephysy] = trace_operations(prim,aux,Prim_Select,Aux_s
                         %                         quantal_amp = inputdlg('Enter Quantal Amplitude, or whatever');
                         %                         Q=cell2mat(quantal_amp);
                         %                         [imgX,imgY]=decon_iGluTrace(imgX,imgY,0.02)
-                        default=defaultvars();
-                        imgY=deconvexp(imgX,imgY,default.tau);
+                        %default=defaultvars();
+                        imgY=deconvexp(imgX,imgY,defaults.tau);
                     case "Diff 1"
                         imgY=diff(imgY);
                         imgX=imgX(2:end);
@@ -128,12 +140,23 @@ function [imgX,imgY,ephysx,ephysy] = trace_operations(prim,aux,Prim_Select,Aux_s
                         imgX=imgX(2:end);
                     case "aaLS Smooth"
                         signal=imgY;
-                        defaults=defaultvars();
+                        %defaults=defaultvars();
                         baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
                         imgY=signal-baseline.';
-                        baselineindex=imgX>=app.Baseline_Min.Value & imgX<=app.Baseline_Max.Value;
-                        baseline_val=mean(imgY(1,baselineindex));
-                        imgY=imgY-baseline_val;
+                        %baselineindex=imgX>=app.Baseline_Min.Value & imgX<=app.Baseline_Max.Value;
+                        %baseline_val=mean(imgY(1,baselineindex));
+                        %imgY=imgY-baseline_val;
+                      
+                   case "aaLS Test"
+                        signal=imgY;
+                        %defaults=defaultvars();
+                        baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
+                        %Plots the fitting line profile
+                        hold(app.Prim_Chan_Ax,'on');
+                            plot(app.Prim_Chan_Ax,imgX,baseline.');
+                            pause(3)
+                        hold(app.Prim_Chan_Ax,'off');
+                        return
                     case "50Hz"
                         Fs=1/imgX(2)-imgX(1);
                         imgY = notch50Hz(imgY,Fs,50,10); 
@@ -207,12 +230,12 @@ function [imgX,imgY,ephysx,ephysy] = trace_operations(prim,aux,Prim_Select,Aux_s
                     case "aaLS Smooth"
                         signal=ephysy;
                         try
-                            defaults=defaultvars();
+                            %defaults=defaultvars();
                             baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
                         catch ME
                             signal=decimate(ephysy,10);
                             ephysx=decimate(ephysx,10);
-                            defaults=defaultvars();
+                            %defaults=defaultvars();
                             baseline = asLS_smooth(signal,defaults.aals_smoothness,defaults.aals_min_diff) ;
                         end
                         ephysy=signal-baseline.';

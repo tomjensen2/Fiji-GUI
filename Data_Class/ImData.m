@@ -2366,7 +2366,7 @@ classdef ImData < dynamicprops
                     objout(i,1)=obj(i,1);
                     objout(i,1).UG=Data_as_3D;
                     objout(i,1).comment=sprintf('Bleach_Correct| %s',obj(i,1).comment);
-                elseif obj(i,1).Type=="Line2"
+                elseif obj(i,1).Type=="Line2" | obj(i,1).Type=="Line1"
                     data2bin=double(obj(i,1).UG);
                     bin_dimension=1;
                     elements_2_bin=line2_binsize;
@@ -2499,18 +2499,18 @@ classdef ImData < dynamicprops
 
                     binned_data_as_cell=mat2cell(data2bin,a,size(data2bin,2));
                     mean_of_binned_cells=cellfun(@nanmean,binned_data_as_cell,repmat({bin_dimension},numel(a),1),'UniformOutput',0);
-                    baselines=cellfun(@(x) func(x),mean_of_binned_cells,"UniformOutput",false)
+                    baselines=cellfun(@(x) func(x),mean_of_binned_cells,"UniformOutput",false);
                     try
                         URbinned_data_as_cell=mat2cell(URdata2bin,a,size(URdata2bin,2));
                         URmean_of_binned_cells=cellfun(@nanmean,URbinned_data_as_cell,repmat({bin_dimension},numel(a),1),'UniformOutput',0);
-                        URbaselines=cellfun(@(x) func(x),URmean_of_binned_cells,"UniformOutput",false)
+                        URbaselines=cellfun(@(x) func(x),URmean_of_binned_cells,"UniformOutput",false);
                     end
                     obj(i,1).UG=cell2mat(baselines);
                     obj(i,1).UR=cell2mat(URbaselines);
-                    obj(i,1).ScX=imresize(obj(i,1).ScX,size(obj(i,1).UG))
-                    obj(i,1).ScY=imresize(obj(i,1).ScY,size(obj(i,1).UG))
-                    obj(i,1).predScX=imresize(obj(i,1).predScX,size(obj(i,1).UG))
-                    obj(i,1).predScY=imresize(obj(i,1).predScY,size(obj(i,1).UG))
+                    obj(i,1).ScX=imresize(obj(i,1).ScX,size(obj(i,1).UG));
+                    obj(i,1).ScY=imresize(obj(i,1).ScY,size(obj(i,1).UG));
+                    obj(i,1).predScX=imresize(obj(i,1).predScX,size(obj(i,1).UG));
+                    obj(i,1).predScY=imresize(obj(i,1).predScY,size(obj(i,1).UG));
                     obj(i,1).y_pixel_num=size(baselines,1);
                     obj(i,1).y_pixel_size=obj(i,1).y_pixel_size*line2_binsize;
                     obj(i,1).scanline.roi=[1;obj(i,1).y_pixel_num];

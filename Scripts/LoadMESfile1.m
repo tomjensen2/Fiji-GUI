@@ -345,7 +345,7 @@ for i=1:size(struct_data,1)
             
             roi(1,1)=1;
             roi(2,1)=Line2Data.y_pixel_num;
-            
+            Line2Data.ROIobj(1,1)=ROI('ParentType', Line2Data.Type, 'Coordinates', [roi(1,1), roi(2,1)], 'Comment', 'Cell A', 'ID', sprintf('%s_ROI_%d',Line2Data.comment,1));
             if size(Line2Data.scanline.roi,2)==1
                 Line2Data.scanline.roi=roi;
                 
@@ -370,13 +370,14 @@ for i=1:size(struct_data,1)
                     UG_data=Line2Data.UG; UR_data=Line2Data.UR; Ch3_data=[];
                     ChannelNames=["UG","UR","No Data"];
                     reference=sprintf("FemtoROI_%d",i1-1);
-%                     Line2Data.ROIobj(i1,1)=ROI(Yco,Xco,"Square",reference,UG_data, UR_data, Ch3_data,ChannelNames);
-                    
+%                     Line2Data.ROIobj(i1,1)=ROIobj(Yco,Xco,"Square",reference,UG_data, UR_data, Ch3_data,ChannelNames);
+                    Line2Data.ROIobj(i1,1)=ROI('ParentType', 'Line2', 'Coordinates', [xco(1,i1), xco(2,i1)], 'Comment', 'Cell A', 'ID', sprintf('%s_ROI_%d',Line2Data.comment,i1));
                 end
                 if size(roi)>1
                     Line2Data.scanline.roi=roi;
                 end
             end
+
             roi=[];
             Yco=[];
             Xco=[];

@@ -73,9 +73,12 @@ else
 end
 smoothness_matrix = smoothness_param*ones(1,size(difference_matrix,1));
 
-differ = zeros(MAX_ITER);
-
+    differ = zeros(MAX_ITER);
+  %progressbar(1);
+                    
+                        
 for count = 1:MAX_ITER
+    %progressbar(count/MAX_ITER);
     Weights = spdiags(penalty_vector, 0, signal_length, signal_length);
 
     C = chol(Weights + (smoothness_matrix .* difference_matrix') * difference_matrix);
