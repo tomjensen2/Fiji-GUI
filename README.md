@@ -35,13 +35,15 @@ And many others….
 
 Installing FIJI-GUI is a relatively simple process but unfortunately, to use the program with certain functionalities such as ImageJ integration it won’t compile as a .exe so the class file must be ran from MATLAB.
 
+***Key Point:*** For first run on PC run as Administrator.  This enables files to be copied to the MATLAB/Java directory in the startupfcn
+
 ## **Hardware Requirements:**
 
 Minimum recent PC or Mac, minimum 8GB if any large image volumes are to be processed, 16GB RAM would be recommended.  
 
 ## **Software Requirements:**
 
-MATLAB 2022b or greater (for all features), I would not recommend the initial release of the most recent version; sometimes bugs remain.
+MATLAB 2023b or greater (for all features), I would not recommend the initial release of the most recent version; sometimes bugs remain.
 
 For certain functions it is critical that the following toolboxes are installed: 
 
