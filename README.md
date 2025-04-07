@@ -64,10 +64,10 @@ If ImageJ integration is wanted any recent Fiji package is required, most simply
 
 1. Download .zip or clone the repository in Github 
 2. Copy the Fiji.app folder downloaded into the Documents directory of your PC or Mac and add both folders to the MATLAB path. For instructions see below
-3. Find mij.jar in the Fiji-GUI/Utility/For PC/ and copy to the MATLAB java folder
-4. Open the [Fiji.app](http://Fiji.app)/jars folder and copy the ij-1.*.jar file (see below) to the MATLAB java folder.  
+3. Find mij.jar in the Fiji-GUI/Utility/For PC/ and copy to the MATLAB java folder  ## now should be done semi-automatically on first run 
+4. Open the [Fiji.app](http://Fiji.app)/jars folder and copy the ij-1.*.jar file (see below) to the MATLAB java folder.  ## now should be done semi-automatically on first run 
     
-    On Mac this requires right clicking Fiji.app and clicking ‘**Open Package Contents**’, the same will have to be done to access the /java directory in the MATLAB app
+    On Mac this requires right clicking Fiji.app and clicking ‘**Open Package Contents**’, the same will have to be done to access the /java directory in the MATLAB app ## now should be done semi-automatically on first run 
     
 
 ![Untitled](README/Untitled.png)
