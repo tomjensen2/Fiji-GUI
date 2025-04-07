@@ -35,7 +35,7 @@ And many others….
 
 Installing FIJI-GUI is a relatively simple process but unfortunately, to use the program with certain functionalities such as ImageJ integration it won’t compile as a .exe so the class file must be ran from MATLAB.
 
-***Key Point:*** For first run on PC run as Administrator.  This enables files to be copied to the MATLAB/Java directory in the startupfcn
+***Key Point:*** For first run on PC run as Administrator.  This enables files to be copied to the MATLAB/Java directory in the startupfcn, in the current version the file defaults.json will be generated on first run bypassing the need to manually set the file paths
 
 ## **Hardware Requirements:**
 
@@ -89,12 +89,7 @@ Click on General and Java Heap Memory: use the slider to increase the value
 Menu options to change Java Heap memory allocation
 
 ### Setting the default paths for the GUI
-
-A key point for correct installation is to make sure the GUI knows where to look for files.  In the Fiji-GUI root folder the file defaultvars.m is present, the function in this file returns a structure containing defaults for various functions.  Lines 27-47 contain the default paths the GUI will search for change these to match the equivalent file locations on your computer.  
-
-This file will also set many default variables for many functions so it may be worth looking through what can be preset before startup. 
-
-![Untitled](README/Untitled%202.png)
+This should now be completed on first run and defaults.json should be generated
 
 ### Setting the MATLAB path
 
