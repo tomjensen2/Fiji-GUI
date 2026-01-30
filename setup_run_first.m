@@ -104,7 +104,7 @@ end
         defaultvar.PCpath2add1=targetFile;
         defaultvar.PCpath2add2=targetFile2;
         
-
-writestruct(defaultvar,sprintf('%s%s',defaultvar.FGUIpath,'\defaults.json'))        
+filePath = fullfile(defaultvar.FGUIpath, 'defaults.json');
+writestruct(defaultvar,sprintf('%s%s',defaultvar.FGUIpath,'/defaults.json'))        
 
 end

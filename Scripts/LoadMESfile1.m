@@ -34,7 +34,7 @@ for i=1:size(struct_data,1)
             reds=["H2","pmtUR","UR","URFLIM"];
             tirs=["TiR","TIR","tir"];
             XYDataTable=struct2table(current_datafile,"AsArray",true);
-            ChannelTable=XYDataTable(:,'Channel')
+            ChannelTable=XYDataTable(:,'Channel');
             greenidx=table2array(ChannelTable)==greens;
             redidx=table2array(ChannelTable)==reds;
             tiridx=table2array(ChannelTable)==tirs;
@@ -72,7 +72,7 @@ for i=1:size(struct_data,1)
             XYData.TData=[];
             XYData.XData=linspace(0,size(XYData.UG,XYData.XDim)*XYData.x_pixel_size,size(XYData.UG,XYData.XDim));
             XYData.YData=linspace(0,size(XYData.UG,XYData.YDim)*XYData.y_pixel_size,size(XYData.UG,XYData.YDim));
-            a=0
+            a=0;
             if size(XYData.UG,3)==1
                 XYData.ZData=0;
             else
@@ -254,7 +254,7 @@ for i=1:size(struct_data,1)
 %             Line2Data.XData=Line2Data.XData-Line2Data.XData(1)
 %             end
             starttime=0
-            Line2Data.YData=1:1:size(Line2Data.UG,1);
+            Line2Data.YData=linspace(0,size(Line2Data.UG,1)*Line2Data.y_pixel_size,Line2Data.y_pixel_num);
             Line2Data.TData=Line2Data.XData;
             Line2Data.source="MES";
             Line2Data.Subtype='Single';
@@ -336,7 +336,7 @@ for i=1:size(struct_data,1)
             UG_data=Line2Data.UG; UR_data=Line2Data.UR; Ch3_data=[];
             ChannelNames=["UG","UR","No Data"];
             reference="FemtoROI_All";
-%             Line2Data.ROIobj=ROI(Yco,Xco,"Square",reference,UG_data, UR_data, Ch3_data,ChannelNames);
+            %Line2Data.ROIobj=ROI(Yco,Xco,"Square",reference,UG_data, UR_data, Ch3_data,ChannelNames);
             
             
             %                             Line2Data.scanline.roi(1,1)=1;
@@ -345,7 +345,8 @@ for i=1:size(struct_data,1)
             
             roi(1,1)=1;
             roi(2,1)=Line2Data.y_pixel_num;
-            Line2Data.ROIobj(1,1)=ROI('ParentType', Line2Data.Type, 'Coordinates', [roi(1,1), roi(2,1)], 'Comment', 'Cell A', 'ID', sprintf('%s_ROI_%d',Line2Data.comment,1));
+            %Line2Data.ROIobj=ROI.createFullImageROI(Line2Data);
+           
             if size(Line2Data.scanline.roi,2)==1
                 Line2Data.scanline.roi=roi;
                 
@@ -371,7 +372,7 @@ for i=1:size(struct_data,1)
                     ChannelNames=["UG","UR","No Data"];
                     reference=sprintf("FemtoROI_%d",i1-1);
 %                     Line2Data.ROIobj(i1,1)=ROIobj(Yco,Xco,"Square",reference,UG_data, UR_data, Ch3_data,ChannelNames);
-                    Line2Data.ROIobj(i1,1)=ROI('ParentType', 'Line2', 'Coordinates', [xco(1,i1), xco(2,i1)], 'Comment', 'Cell A', 'ID', sprintf('%s_ROI_%d',Line2Data.comment,i1));
+                    %Line2Data.ROIobj(i1,1)=ROI('ParentType', 'Line2', 'Coordinates', [xco(1,i1), xco(2,i1)], 'Comment', 'Cell A', 'ID', sprintf('%s_ROI_%d',Line2Data.comment,i1));
                 end
                 if size(roi)>1
                     Line2Data.scanline.roi=roi;

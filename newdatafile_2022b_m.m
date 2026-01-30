@@ -57,7 +57,7 @@ classdef newdatafile_2022b_m < matlab.apps.AppBase
         
         
        
-       
+       defaultvars
         DATA % Description
         fileref % Description
         file2change % Description
@@ -151,7 +151,9 @@ classdef newdatafile_2022b_m < matlab.apps.AppBase
 
         % Code that executes after component creation
         function startupFcn(app)
-                    app.MLpath=userpath
+            defaultvars=readstruct("defaults.json");
+            app.defaultvars=defaultvars;
+            app.MLpath=userpath
             
             app.Macrospath=cat(2,app.MLpath,'/Fiji-GUI-2P/Main/Scripts/IJ Macros/')
             app.Documentspath=app.MLpath(1:size(app.MLpath,2)-6)
@@ -339,8 +341,8 @@ a=0
 
                 % Plot and extract values
                 MIJ.run('Plot Z-axis Profile');
-                text=cat(2,app.Macrospath,'MATlogprofile.txt');
-                h.RunningAppInstance.IJM.runMacroFile(text)
+                text=sprintf('%s%s',app.defaultvars.Macrospath,'MATlogprofile.txt');
+                h.RunningAppInstance.IJM.runMacroFile(text);
 %                 MIJ.run('MATlogprofile');
                 %set profile as current plot data
                 profile=str2num(MIJ.getLog);

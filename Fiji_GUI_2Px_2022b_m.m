@@ -109,6 +109,8 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         RasterPlotMenu                  matlab.ui.container.Menu
         GetMapsFromEphysPeaksMenu       matlab.ui.container.Menu
         NewDataMenu_18                  matlab.ui.container.Menu
+        GetLSYProfilesMenu              matlab.ui.container.Menu
+        NewDataMenu_19                  matlab.ui.container.Menu
         UserFunctions                   matlab.ui.container.Menu
         FLIMMenu                        matlab.ui.container.Menu
         NTCMenu                         matlab.ui.container.Menu
@@ -694,7 +696,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             %app.XList=addlistener(app.Prim_Chan_Ax, 'XLim', 'PostSet', @(src, evnt)app.XLim_shift_listener)
             if app.Prim_Chan_Ax.XLim ~= app.Aux_Chan_Ax.XLim
                 app.Aux_Chan_Ax.XLim = app.Prim_Chan_Ax.XLim;
-            elseif app.Aux_Chan_Ax.XLim ~=app.Prim_Chan_Ax.XLim;
+            elseif app.Aux_Chan_Ax.XLim ~=app.Prim_Chan_Ax.XLim
                 app.Prim_Chan_Ax.XLim = app.Aux_Chan_Ax.XLim;
             end
         end
@@ -2173,7 +2175,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             [ ver, date ] = version;
             release_yr = str2double(datestr(date,'YYYY'));
             switch release_yr
-                case {2019,2020,2021,2022,2023,2024}
+                case {2019,2020,2021,2022,2023,2024,2025,2026}
                     feature('accel','on');
                 otherwise
                     errordlg(sprintf('Incompatible MATLAB Version.\nCurrent Version %s\nRequire >R2019b',ver),'Version Error','modal');
@@ -2409,9 +2411,9 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             if event.Source.Text=="Profile X"
                 MIJ.run('Plot Profile');
             elseif event.Source.Text=="Profile Y"
-                MIJ.run('Plots...', 'width=530 height=300 font=12 draw draw_ticks minimum=0 maximum=0 vertical interpolate');
+                MIJ.run('Profile Plot Options...', 'width=530 height=300 font=12 draw draw_ticks minimum=0 maximum=0 vertical interpolate');
                 MIJ.run('Plot Profile'); %plot profile    
-                MIJ.run('Plots...', 'width=530 height=300 font=12 draw draw_ticks minimum=0 maximum=0 interpolate');
+                MIJ.run('Profile Plot Options...', 'width=530 height=300 font=12 draw draw_ticks minimum=0 maximum=0 interpolate');
             elseif event.Source.Text=="Profile Z"
                 MIJ.run('Plot Z-axis Profile');
             end
@@ -5210,12 +5212,14 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             elseif data2crop.file=="Line2"
                 data2crop.UG=data2crop.UG(ycrop,xcrop,:);
                 data2crop.UR=data2crop.UR(ycrop,xcrop,:);
-                data2crop.ScX=data2crop.ScX(ycrop,xcrop,:);
-                data2crop.ScY=data2crop.ScY(ycrop,xcrop,:);
+                %data2crop.ScX=data2crop.ScX(ycrop,xcrop,:);
+                %data2crop.ScY=data2crop.ScY(ycrop,xcrop,:);
                 data2crop.XData=data2crop.XData(xcrop);
                 data2crop.YData=data2crop.YData(ycrop);
 
                 try
+                    data2crop.ScX=data2crop.ScX(ycrop,xcrop,:);
+                    data2crop.ScY=data2crop.ScY(ycrop,xcrop,:);
                     data2crop.TiR=data2crop.TiR(ycrop,xcrop,:)  ;
                 end
                 %             data2crop.YData=data2crop.YData(ycrop);
@@ -6456,7 +6460,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
 
 
             app.Datastore_class=cat(1,app.Datastore_class,Dataitem);
-            app.Datastore_class.findComment(app.ListBox_2)
+            app.Datastore_class.findComment(app.ListBox_2);
         end
 
         % Button pushed function: LoadButton
@@ -6473,7 +6477,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         % Callback function: SaveButton_2, SaveTableasmatMenu
         function Save_Event_Table(app, event)
             [file,folder]=uiputfile('*.fijiEvt');
-            filename=cat(2,folder,file)
+            filename=cat(2,folder,file);
 
         end
 
@@ -6483,22 +6487,22 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 MIJ.closeAllWindows;
             end
             MIJ.createImage(app.Datastore_class(app.Data_Selection,1).bkgTiR);
-            a="MIJ.run('Properties...', 'unit=micron pixel_width=%d pixel_height=%d')"
+            a="MIJ.run('Properties...', 'unit=micron pixel_width=%d pixel_height=%d')";
 
-            xpix=app.Datastore_class(app.Data_Selection,1).bkgx_pixel_size
-            ypix=app.Datastore_class(app.Data_Selection,1).bkgy_pixel_size
-            eval(sprintf(a,xpix,ypix))
-            app.lastimgtype="BKG"
+            xpix=app.Datastore_class(app.Data_Selection,1).bkgx_pixel_size;
+            ypix=app.Datastore_class(app.Data_Selection,1).bkgy_pixel_size;
+            eval(sprintf(a,xpix,ypix));
+            app.lastimgtype="BKG";
         end
 
         % Menu selected function: XaxisMenu
         function Concatenate(app, event)
             Dataitem=copyobj2(app.Datastore_class(app.Data_Selection,1));
             if event.Source.Text=="X axis"
-                objout=Dataitem.Concat_Data(2)
+                objout=Dataitem.Concat_Data(2);
             end
-            app.Datastore_class=cat(1,app.Datastore_class,objout)
-            app.Datastore_class.findComment(app.ListBox_2)
+            app.Datastore_class=cat(1,app.Datastore_class,objout);
+            app.Datastore_class.findComment(app.ListBox_2);
         end
 
         % Menu selected function: NewDataMenu_11
@@ -6509,18 +6513,18 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             dlgtitle = 'Threshold Parameters';
             dims = 1;
             definput = {'11000','1'};
-            Recording_Data = cellfun(@str2double,inputdlg(prompt,dlgtitle,dims,definput))
+            Recording_Data = cellfun(@str2double,inputdlg(prompt,dlgtitle,dims,definput));
 
 
             if event.Source.Text=="New Data"
                 Dataitem=copyobj2(app.Datastore_class(app.Data_Selection,1));
                 Data_out=arrayfun(@(x) x.Threshold(Recording_Data(2,1),Recording_Data(1,1),nan,app.MinSpinner.Value,app.MaxSpinner.Value),Dataitem,'UniformOutput',true)
                 %                [Data_out]=Dataitem.Threshold(Recording_Data(2,1),Recording_Data(1,1),nan,app.MinSpinner.Value,app.MaxSpinner.Value)
-                app.Datastore_class=cat(1,app.Datastore_class,Data_out)
-                app.Datastore_class.findComment(app.ListBox_2)
+                app.Datastore_class=cat(1,app.Datastore_class,Data_out);
+                app.Datastore_class.findComment(app.ListBox_2);
             elseif event.Source.Text=="Replace Data"
                 Dataitem=copyobj(app.Datastore_class(app.Data_Selection,1));
-                [Data_out]=Dataitem.Threshold(Recording_Data(2,1),Recording_Data(1,1),nan,app.MinSpinner.Value,app.MaxSpinner.Value)
+                [Data_out]=Dataitem.Threshold(Recording_Data(2,1),Recording_Data(1,1),nan,app.MinSpinner.Value,app.MaxSpinner.Value);
                 %                app.Datastore_class=cat(1,app.Datastore_class,Data_out)
                 %                app.Datastore_class.findComment(app.ListBox_2)
             end
@@ -6529,18 +6533,18 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
         % Menu selected function: CCImageMenu
         function CCImage(app, event)
             Dataitem=copyobj2(app.Datastore_class(app.Data_Selection,1));
-            w2d=inputdlg('Enter Window size (pixels)', 'Window Size',[1 35],{'4'})
-            w2d=str2double(cell2mat(w2d))
-            [obj]=Dataitem.CrossCorMap(app.Switch.Value,app.MinSpinner.Value,app.MaxSpinner.Value,w2d)
-            app.Datastore_class=cat(1,app.Datastore_class,obj)
-            app.Datastore_class.findComment(app.ListBox_2)
+            w2d=inputdlg('Enter Window size (pixels)', 'Window Size',[1 35],{'4'});
+            w2d=str2double(cell2mat(w2d));
+            [obj]=Dataitem.CrossCorMap(app.Switch.Value,app.MinSpinner.Value,app.MaxSpinner.Value,w2d);
+            app.Datastore_class=cat(1,app.Datastore_class,obj);
+            app.Datastore_class.findComment(app.ListBox_2);
         end
 
         % Button pushed function: ClearSessionButton
         function Clear_Session(app, event)
             Data_mid=ImData;
-            app.Datastore_class=Data_mid
-            app.Datastore_class.findComment(app.ListBox_2)
+            app.Datastore_class=Data_mid;
+            app.Datastore_class.findComment(app.ListBox_2);
         end
 
         % Button pushed function: RunMacroButton_3
@@ -6613,7 +6617,7 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
                 AllResps=reshape(Resps,numel(Peaks),1);
 
                 for tnum = 1:size(trialnums,2)
-                    trnum_2(tnum:size(trialnums,2):numel(trialnums))=trialnums(1:1:numel(trialnums(:,1)))
+                    trnum_2(tnum:size(trialnums,2):numel(trialnums))=trialnums(1:1:numel(trialnums(:,1)));
                 end
                 AllLocs=AllLocs+trnum_2.';
 
@@ -6814,6 +6818,26 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.Datastore_class.findComment(app.ListBox_2);
         end
 
+         % Menu selected function: SplitbyFemtonicsROIsMenu
+        function getYProfiles(app, event)
+            if iscell(app.ListBox_2.Value)==1
+                selected_dataitems=cell2mat(app.ListBox_2.Value);
+            else
+                selected_dataitems=app.ListBox_2.Value;
+            end
+
+            %HERE ADD CURSOR STRUCT
+            %cursorstruct=app.cursorstruct;%placeholder
+            %             for filenum=1:size(selected_dataitems,2)
+            %             c=1
+            Data=copyobj2(app.Datastore_class(selected_dataitems,1));
+           
+            dataout=arrayfun(@(x) x.LS_yprofile(app.cursorstruct),Data,'UniformOutput',false);
+            dataout=vertcat(dataout{:});
+            app.Datastore_class=cat(1,app.Datastore_class,dataout);
+            app.Datastore_class.findComment(app.ListBox_2);
+        end
+
         % Menu selected function: XDimMenu, YDimMenu
         function Callback_to_FF2Line2(app, event)
             obj_in=copyobj2(app.Datastore_class(app.Data_Selection,1));
@@ -6847,10 +6871,15 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             elseif event.Source.Parent.Text=="Deconvolution"
                 obj_out=obj_in.t_Filter(bindata,@(x) deconvexp(obj_in.TData,x,app.default_vars.tau));
             elseif event.Source.Text==app.default_vars.Custom_Functions(1,2);
-                func=str2func(app.default_vars.Custom_Functions(1,1));
-                obj_out=obj_in.t_Filter(bindata,@(x) func(x));
+                % func=str2func(app.default_vars.Custom_Functions(1,1));
+                % obj_out=obj_in.t_Filter(bindata,@(x) func(x));
+                modelpath=sprintf('%s%s',app.default_vars.FGUIpath,'/Utility/DeepInterpolation-MATLAB_TJ/XTmodel_18FF.mat');
+                obj_out=arrayfun(@(x) deepintout(x,modelpath),obj_in,"UniformOutput",true);
             elseif event.Source.Text=="Geodesic Spacial Correction";
                 obj_out=arrayfun(@(x) x.geodesicFlattenXYT,obj_in,"UniformOutput",true);
+            elseif event.Source.Text=="DeepInterpolation:iGluSnFR";
+                modelpath=sprintf('%s%s',app.default_vars.FGUIpath,'/Utility/DeepInterpolation-MATLAB_TJ/XTmodel_18FF.mat');
+                obj_out=arrayfun(@(x) deepintout(x,modelpath),obj_in,"UniformOutput",true);
             end
 
             app.Datastore_class=cat(1,app.Datastore_class,obj_out);
@@ -7859,6 +7888,15 @@ classdef Fiji_GUI_2Px_2022b_m < matlab.apps.AppBase
             app.NewDataMenu_18 = uimenu(app.GetMapsFromEphysPeaksMenu);
             app.NewDataMenu_18.MenuSelectedFcn = createCallbackFcn(app, @Get_Maps, true);
             app.NewDataMenu_18.Text = 'New Data';
+
+            % Create GetLSYProfilesMenu
+            app.GetLSYProfilesMenu = uimenu(app.FunctionsMenu);
+            app.GetLSYProfilesMenu.Text = 'Get Line2 YProfiles from Cursors';
+
+            % Create NewDataMenu_18
+            app.NewDataMenu_19 = uimenu(app.GetLSYProfilesMenu);
+            app.NewDataMenu_19.MenuSelectedFcn = createCallbackFcn(app, @getYProfiles, true);
+            app.NewDataMenu_19.Text = 'New Data';
 
             % Create FLIMMenu
             app.FLIMMenu = uimenu(app.FijiGUIUIFigure);

@@ -3991,7 +3991,7 @@ end
        
        
         app.ReturnDATA=copyobj2(app.DATA)
-        app.ReturnDATA=app.ReturnDATA.crop_data(1,x(1,1),x(2,1),'ask')
+        app.ReturnDATA=app.ReturnDATA.crop_data(1,x(1,1),x(2,1),'ask',"t")
         app.ReturnDATA.scanline.roi=[1;size(app.ReturnDATA.UG,1)]
         app.ReturnDATA.comment=sprintf('LSROI | %s,',app.ReturnDATA.comment);
           a=findall(app.YProfile,'Type','ConstantLine')

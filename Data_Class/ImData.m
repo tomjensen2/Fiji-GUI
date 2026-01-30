@@ -944,33 +944,32 @@ classdef ImData < dynamicprops
         %% Gets the comments from Imdata files and sends the list to Listbox handle
         function [Items,types,Index] = findComment(objarr,handle)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %%%     ImData Method   findType
-            %%%     Gets object array indexes,types and comments, concatenantes them
-            %%%     and outputs to Listbox.  Use case: populate index of ImData objects
-            %%%     after a function is ran
+            %%% ImData Method findType
+            %%% Gets object array indexes,types and comments, concatenantes them
+            %%% and outputs to Listbox. Use case: populate index of ImData objects
+            %%% after a function is ran
             %%%
-            %%%     Input Arguements:
-            %%%                 handle: handle to Listbox,UIListbo
-            %%%                 array, alternately with the string 'clip' sends the
-            %%%                 comments to the system clipboard
-            %%%                %%%
-            %%%     Output Variable
-            %%%                 Logical_Index, binary index of objects matching
-            %%%                 Numerical index: row numbers of matching objects
-            %%%                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% Input Arguements:
+            %%% handle: handle to Listbox,UIListbo
+            %%% array, alternately with the string 'clip' sends the
+            %%% comments to the system clipboard
+            %%% %%%
+            %%% Output Variable
+            %%% Logical_Index, binary index of objects matching
+            %%% Numerical index: row numbers of matching objects
+            %%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-            comments = convertCharsToStrings(arrayfun(@(o) cell2mat(convertCharsToStrings(o.comment)), objarr, 'UniformOutput', false));
-            types = convertCharsToStrings(arrayfun(@(o) cell2mat(convertCharsToStrings(o.Type)), objarr, 'UniformOutput', false));
-            Index=1:1:size(objarr,1).';
-            Indexstr=convertCharsToStrings(arrayfun(@num2str,Index.',"UniformOutput",false));
-            spacer=repmat("_   ",size(comments,1),1);
-            for checkcom=1:size(comments,1)
-                if isempty(comments{checkcom,1})==1
-                    comments{checkcom,1}='|';
-                end
+            for i = 1:size(objarr, 1)
+                % Get the index, Type, and Comment
+                Index(i,1) = i; % Convert index to string
+                stIndex = num2str(i);
+                typeStr = string(objarr(i).Type); % Convert Type to string
+                commentStr = string(objarr(i).comment); % Convert Comment to string
+
+                % Concatenate the strings in the desired format
+                Items{i,1} = sprintf('%s___%s___%s', stIndex, typeStr, commentStr);
             end
-            Items=join(cat(2,Indexstr,spacer,types,spacer,comments));
             if handle=='clip'
                 fancyClipboard(mat2cell2(comments,'eframe'));
             else
@@ -2894,7 +2893,7 @@ classdef ImData < dynamicprops
                 img.show();
                  if save==1
                 pause(1);
-                eval(sprintf("MIJ.run('Tiff...','path=%s%s_%s.tif');",path,matlab.lang.makeValidName(Data.comment),Channel));
+                eval(sprintf("MIJ.run('Tiff...','path=%s%s_%s.tif');",path,Data.comment,Channel));
                 img.close();
                 end
             elseif Data.Type=="FF"
@@ -3190,7 +3189,31 @@ classdef ImData < dynamicprops
     objout.y_pixel_num=outHeight;
     objout.comment=sprintf('%s_%s',"geodesicFlattenXYT",objout.comment);
     % output=flattenedStack;    
-end
-
+        end
+        function objout = LS_yprofile(obj,times)
+            objout=copyobj2(obj);
+            for s=1:size(times,1)
+                objout(s,1)=copyobj2(obj)
+            end
+            for i1 = 1:size(times,1)
+                ind = times(i1).selectedC1XIndices;
+                if objout(i1).Type == "Line2"
+                    %get the data
+                    for i=objout(i1).Channel
+                        name=cell2mat(i);
+                        try
+                        objout(i1,1).(name)=nanmean(objout(i1,1).(name)(:,ind),2).';
+                        catch ME
+                        
+                        end
+                    end
+                    objout(i1).XData=objout(i1).YData;
+                    objout(i1).TData=objout(i1).XData;
+                end
+            objout(i1).Type='Line1';
+            objout(i1).file='Line1';
+            objout(i1).comment= sprintf('%s_%s-%s_%s)','YProfile', num2str(times(i1).Minimum,2), num2str(times(i1).Maximum,2),objout.comment);
+            end
+        end
     end
 end

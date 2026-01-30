@@ -1,0 +1,39 @@
+// ImageJ Macro: Save all open images into a selected folder with unique filenames
+// and record filenames into a CSV file.
+macro "Save Open Images to Folder with CSV Log" {
+    // Ask user for save folder
+   saveDir = getDirectory("Choose a folder to save images");
+
+// Handle both cancel cases and keep it block-style
+if (saveDir == null || saveDir == "") {
+    showMessage("Cancelled", "No folder selected.");
+    return; // or use exit("No folder selected.");
+}
+    // Prepare CSV file path
+    csvPath = saveDir + "saved_images_log.csv";
+    // Prepare CSV header
+    File.saveString("OriginalTitle, SavedFilename\n", csvPath);
+    // Count how many images are open
+    n = nImages;
+    if (n == 0) exit("No images are open.");
+    // Loop through all open images
+    for (i = 1; i <= n; i++) {
+        selectImage(i);
+        origTitle = getTitle();
+        // Sanitize the original title (remove illegal filename chars)
+        safeTitle = replace(origTitle, "[\\\\/:*?\"<>|]", "_");
+        // Build a unique filename with timestamp and index
+        timestamp = getTime();
+        uniqueName = safeTitle + "_" + i + "_" + timestamp + ".tif";
+        // Build full save path
+        savePath = saveDir + uniqueName;
+        // Save as TIFF (you can change this to another format if needed)
+        saveAs("Tiff", savePath);
+        // Append to CSV log
+        File.append(origTitle + "," + uniqueName + "\n", csvPath);
+    }
+    // Notify user
+    print("All images saved to: " + saveDir);
+    print("CSV log saved as: " + csvPath);
+    showMessage("Done", "Saved " + n + " images to:\n" + saveDir + "\n\nCSV log:\n" + csvPath);
+}

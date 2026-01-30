@@ -1,53 +1,50 @@
 classdef ROI
     % ROI class for managing regions of interest (ROIs)
     % Supports both typical frame scan ROIs and 'Line2' ROIs for line scans.
-    %
-    % Version 1.0.0
+    % Includes geometric, intensity, and metadata tracking.
+    % Version 1.1.0
 
     properties (Constant)
-        Version = '1.0.0';
+        Version = '1.1.0';
     end
-    
+
     properties
-        Parent          % Handle to the parent ImData object
-        ParentType      % (Optional) Imaging type string if needed
-        ROIType         % ROI shape/type (e.g., 'square', 'oval', 'polygon', 'Line2')
-        Coordinates     % For frame scans: [x y width height] or Nx2 for polygons;
-                        % For 'Line2': a vector of y-values
-        ROIHandle       % Interactive ROI handle (if created)
-        Comment         % Name or comment for the ROI
-        
-        % Computed geometric properties:
-        Area            
-        Centroid        
-        Perimeter       
-        Orientation     
-        MajorAxisLength 
-        MinorAxisLength 
-        Circularity     
-        Eccentricity    
-        
-        % Additional metadata:
-        ID              
-        Color           % e.g., [1 0 0] for red
-        CreationDate    
-        
-        % Pixel intensity statistics:
-        IntensityMean   
-        IntensityMedian 
-        IntensityStd    
-        IntensityTotal  
-        
-        % Binary mask of the ROI:
-        Mask            
-            
-        % Time series data (optional):
-        TimeSeries      
+        Parent
+        ParentType
+        ROIType
+        Coordinates
+        ROIHandle
+        Comment
+        Tag                  % Optional tag (e.g., 'soma', 'dendrite', 'noise')
+
+        % Geometry
+        Area
+        Centroid
+        Perimeter
+        Orientation
+        MajorAxisLength
+        MinorAxisLength
+        Circularity
+        Eccentricity
+
+        % Metadata
+        ID
+        Color
+        CreationDate
+
+        % Intensity
+        IntensityMean
+        IntensityMedian
+        IntensityStd
+        IntensityTotal
+
+        % ROI Data
+        Mask
+        TimeSeries
     end
-    
-    methods
+
+    methods (Access = public)
         function obj = ROI(varargin)
-            % Constructor: Initialize ROI using name-value pairs.
             p = inputParser;
             addParameter(p, 'Parent', [], @(x) isobject(x));
             addParameter(p, 'ParentType', '', @ischar);
@@ -55,6 +52,7 @@ classdef ROI
             addParameter(p, 'Coordinates', [], @(x) isnumeric(x));
             addParameter(p, 'ROIHandle', [], @(x) true);
             addParameter(p, 'Comment', '', @ischar);
+            addParameter(p, 'Tag', '', @ischar);
             addParameter(p, 'ID', '', @ischar);
             addParameter(p, 'Color', [1 0 0], @(x) isnumeric(x) && numel(x)==3);
             addParameter(p, 'CreationDate', datetime('now'), @(x) isdatetime(x));
@@ -65,13 +63,14 @@ classdef ROI
             addParameter(p, 'Mask', [], @(x) islogical(x) || isnumeric(x));
             addParameter(p, 'TimeSeries', [], @(x) isnumeric(x));
             parse(p, varargin{:});
-            
+
             obj.Parent = p.Results.Parent;
             obj.ParentType = p.Results.ParentType;
             obj.ROIType = p.Results.ROIType;
             obj.Coordinates = p.Results.Coordinates;
             obj.ROIHandle = p.Results.ROIHandle;
             obj.Comment = p.Results.Comment;
+            obj.Tag = p.Results.Tag;
             obj.ID = p.Results.ID;
             obj.Color = p.Results.Color;
             obj.CreationDate = p.Results.CreationDate;
@@ -81,8 +80,7 @@ classdef ROI
             obj.IntensityTotal = p.Results.IntensityTotal;
             obj.Mask = p.Results.Mask;
             obj.TimeSeries = p.Results.TimeSeries;
-            
-            % Initialize computed properties.
+
             obj.Area = [];
             obj.Centroid = [];
             obj.Perimeter = [];
@@ -91,27 +89,19 @@ classdef ROI
             obj.MinorAxisLength = [];
             obj.Circularity = [];
             obj.Eccentricity = [];
-            
+
             obj = obj.computeStats();
         end
-        
+
         function obj = computeStats(obj)
-            % computeStats computes geometric properties based on ROIType.
             if isempty(obj.Coordinates)
                 return;
             end
             if strcmpi(obj.ROIType, 'Line2')
-                if ~isnumeric(obj.Coordinates)
-                    error('For a Line2 ROI, Coordinates must be a numeric vector.');
-                end
-                if numel(obj.Coordinates) < 2
-                    error('For a Line2 ROI, at least two y-values are required.');
-                end
                 y_low = min(obj.Coordinates);
                 y_high = max(obj.Coordinates);
-                obj.Area = abs(y_high - y_low);  % Vertical span
+                obj.Area = abs(y_high - y_low);
                 obj.Centroid = mean([y_low, y_high]);
-                % Other properties not applicable for Line2.
                 obj.Perimeter = [];
                 obj.Orientation = [];
                 obj.MajorAxisLength = [];
@@ -120,68 +110,40 @@ classdef ROI
                 obj.Eccentricity = [];
                 return;
             end
-            
-            % Standard ROI calculations (for rectangle, ellipse, polygon, etc.)
+
             switch lower(obj.ROIType)
                 case {'square', 'rectangle'}
-                    if numel(obj.Coordinates)==4
-                        x = obj.Coordinates(1);
-                        y = obj.Coordinates(2);
-                        width = obj.Coordinates(3);
-                        height = obj.Coordinates(4);
-                        obj.Area = width * height;
-                        obj.Centroid = [x + width/2, y + height/2];
-                        obj.Perimeter = 2*(width + height);
-                        obj.MajorAxisLength = max(width, height);
-                        obj.MinorAxisLength = min(width, height);
-                        obj.Orientation = 0;
-                        obj.Circularity = 4*pi*obj.Area/(obj.Perimeter^2);
-                        obj.Eccentricity = (max(width,height) > 0) ...
-                            * sqrt(1 - (min(width,height)/max(width,height))^2);
-                    end
-                % Additional cases for 'oval', 'polygon', etc. would follow...
+                    x = obj.Coordinates(1);
+                    y = obj.Coordinates(2);
+                    width = obj.Coordinates(3);
+                    height = obj.Coordinates(4);
+                    obj.Area = width * height;
+                    obj.Centroid = [x + width/2, y + height/2];
+                    obj.Perimeter = 2*(width + height);
+                    obj.MajorAxisLength = max(width, height);
+                    obj.MinorAxisLength = min(width, height);
+                    obj.Orientation = 0;
+                    obj.Circularity = 4*pi*obj.Area/(obj.Perimeter^2);
+                    obj.Eccentricity = sqrt(1 - (min(width,height)/max(width,height))^2);
                 otherwise
-                    % Leave properties empty if not applicable.
+                    % No computation for unhandled types
             end
         end
-        
+
         function obj = computeIntensityStats(obj, img)
-            % computeIntensityStats computes pixel intensity stats for the ROI.
-            % If no image is passed, attempt to use the parent's image data.
             if nargin < 2 || isempty(img)
-                if ~isempty(obj.Parent) && isprop(obj.Parent, 'UG')
+                if ~isempty(obj.Parent) && isprop(obj.Parent, 'UG') && ~isempty(obj.Parent.UG)
                     img = obj.Parent.UG;
                 else
                     error('No image provided and Parent image data is unavailable.');
                 end
             end
-            
+
             if isempty(obj.Mask)
-                if strcmpi(obj.ROIType, 'polygon') && ~isempty(obj.Coordinates)
-                    [rows, cols] = size(img);
-                    xCoords = obj.Coordinates(:,1);
-                    yCoords = obj.Coordinates(:,2);
-                    obj.Mask = poly2mask(xCoords, yCoords, rows, cols);
-                elseif numel(obj.Coordinates)==4
-                    [rows, cols] = size(img);
-                    mask = false(rows, cols);
-                    x = round(obj.Coordinates(1));
-                    y = round(obj.Coordinates(2));
-                    w = round(obj.Coordinates(3));
-                    h = round(obj.Coordinates(4));
-                    mask(y:min(y+h-1,rows), x:min(x+w-1,cols)) = true;
-                    obj.Mask = mask;
-                elseif strcmpi(obj.ROIType, 'Line2')
-                    % For Line2, create a mask that covers all columns at the given y-values.
-                    [rows, cols] = size(img);
-                    mask = false(rows, cols);
-                    y_low = min(obj.Coordinates);
-                    y_high = max(obj.Coordinates);
-                    mask(round(y_low):round(y_high), :) = true;
-                    obj.Mask = mask;
-                end
+                imgSize = size(img);
+                obj.Mask = obj.generateMask(imgSize);
             end
-            
+
             if ~isempty(obj.Mask)
                 roiPixels = img(obj.Mask);
                 obj.IntensityMean = mean(roiPixels(:));
@@ -190,11 +152,95 @@ classdef ROI
                 obj.IntensityTotal = sum(roiPixels(:));
             end
         end
+
+        function mask = getMask(obj)
+            if isempty(obj.Mask)
+                dummy = ones(512, 512);
+                obj.Mask = obj.generateMask(size(dummy));
+            end
+            mask = obj.Mask;
+        end
     end
-    
-    methods(Static)
+
+    methods (Access = private)
+        function mask = generateMask(obj, imgSize)
+            switch lower(obj.ROIType)
+                case 'polygon'
+                    xCoords = obj.Coordinates(:,1);
+                    yCoords = obj.Coordinates(:,2);
+                    mask = poly2mask(xCoords, yCoords, imgSize(1), imgSize(2));
+                case {'rectangle', 'square'}
+                    x = round(obj.Coordinates(1));
+                    y = round(obj.Coordinates(2));
+                    w = round(obj.Coordinates(3));
+                    h = round(obj.Coordinates(4));
+                    mask = false(imgSize(1), imgSize(2));
+                    mask(max(1,y):min(y+h-1,imgSize(1)), max(1,x):min(x+w-1,imgSize(2))) = true;
+                case 'line2'
+                    y_low = round(min(obj.Coordinates));
+                    y_high = round(max(obj.Coordinates));
+                    mask = false(imgSize(1), imgSize(2));
+                    mask(max(1,y_low):min(y_high,imgSize(1)), :) = true;
+                otherwise
+                    warning('Unknown ROIType "%s". Returning empty mask.', obj.ROIType);
+                    mask = false(imgSize(1), imgSize(2));
+            end
+        end
+    end
+
+    methods (Static)
+        function roi = createFullImageROI(parent)
+            if nargin < 1 || isempty(parent)
+                error('Parent image object must be provided.');
+            end
+
+            if ~isprop(parent, 'Type') || isempty(parent.Type)
+                error('Parent must have a valid Type property (e.g., Line2, XY, FF).');
+            end
+
+            roiType = '';
+            coords = [];
+
+            switch lower(parent.Type)
+                case 'line2'
+                    if isprop(parent, 'YData') && ~isempty(parent.YData)
+                        yCoords = [min(parent.YData), max(parent.YData)];
+                    else
+                        yCoords = [1, 512];
+                    end
+                    roiType = 'Line2';
+                    coords = yCoords;
+                case {'xy', 'ff'}
+                    if isprop(parent, 'XData') && isprop(parent, 'YData') && ...
+                            ~isempty(parent.XData) && ~isempty(parent.YData)
+                        x = min(parent.XData);
+                        y = min(parent.YData);
+                        width = max(parent.XData) - x + 1;
+                        height = max(parent.YData) - y + 1;
+                    else
+                        x = 1; y = 1; width = 512; height = 512;
+                    end
+                    roiType = 'rectangle';
+                    coords = [x, y, width, height];
+                otherwise
+                    warning('Unknown imaging type "%s", defaulting to rectangle ROI.', parent.Type);
+                    x = 1; y = 1; width = 512; height = 512;
+                    roiType = 'rectangle';
+                    coords = [x, y, width, height];
+            end
+
+            roi = ROI( ...
+                'Parent', parent, ...
+                'ROIType', roiType, ...
+                'Coordinates', coords, ...
+                'Comment', 'Full image ROI' ...
+            );
+
+            roi = roi.computeStats();
+            roi = roi.computeIntensityStats();
+        end
+
         function updateListBox(listboxHandle, roiArray)
-            % updateListBox updates a listbox with ROI names.
             if isempty(roiArray)
                 set(listboxHandle, 'String', {});
                 return;
@@ -209,7 +255,5 @@ classdef ROI
             end
             set(listboxHandle, 'String', names);
         end
-        
-        % Other static analytic methods (e.g., correlation, FFT) remain unchanged.
     end
 end
